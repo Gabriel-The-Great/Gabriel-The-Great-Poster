@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gabriel The Great - Poster</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 40px 30px;
+            height: fit-content;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 4px solid #e94560;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        h1 span {
+            background: #e94560;
+            color: white;
+            font-size: 1rem;
+            padding: 4px 12px;
+            border-radius: 30px;
+            margin-left: 10px;
+        }
+
+        .input-area {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: border 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #e94560;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #saveBtn {
+            background: #e94560;
+            color: white;
+        }
+
+        #clearAllBtn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0 15px 0;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .post-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .post-item {
+            background: #ffffff;
+            border: 1px solid #eee;
+            border-radius: 14px;
+            padding: 18px 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: box-shadow 0.2s;
+        }
+
+        .post-item:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-content {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: #1a1a2e;
+            word-break: break-word;
+            flex: 1;
+        }
+
+        .post-meta {
+            font-size: 0.7rem;
+            color: #aaa;
+            margin-top: 6px;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #dc3545;
+            font-size: 1.4rem;
+            cursor: pointer;
+            padding: 0 8px;
+            margin-left: 12px;
+            opacity: 0.6;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 1;
+            transform: scale(1.2);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            font-size: 1.1rem;
+        }
+
+        .empty-state .big-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #aaa;
+            font-size: 0.85rem;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        footer strong {
+            color: #e94560;
+        }
+
+        @media (max-width: 500px) {
+            .container { padding: 20px 15px; }
+            h1 { font-size: 1.6rem; }
+            button { padding: 10px 20px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>
+            📢 Gabriel The Great
+            <span>Poster</span>
+        </h1>
+
+        <div class="input-area">
+            <textarea id="postInput" placeholder="What's on your mind, Gabriel? Write your post here..."></textarea>
+            <div class="actions">
+                <button id="saveBtn">➕ Save Post</button>
+                <button id="clearAllBtn" style="background:#f8d7da; color:#721c24;">🗑️ Delete All</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <span id="postCount">0 posts</span>
+            <span style="font-size:0.8rem; color:#aaa;">💾 Saved in your browser</span>
+        </div>
+
+        <div class="post-list" id="postList">
+            <!-- Posts will appear here -->
+        </div>
+
+        <footer>
+            Built with ❤️ by <strong>Gabriel the Great</strong> — turning ideas into code.
+        </footer>
+    </div>
+
+    <script>
+        // === The Brain of the App ===
+
+        const postInput = document.getElementById('postInput');
+        const saveBtn = document.getElementById('saveBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const postList = document.getElementById('postList');
+        const postCount = document.getElementById('postCount');
+
+        // Load posts from localStorage
+        function getPosts() {
+            try {
+                return JSON.parse(localStorage.getItem('gabrielPosts')) || [];
+            } catch {
+                return [];
+            }
+        }
+
+        function savePosts(posts) {
+            localStorage.setItem('gabrielPosts', JSON.stringify(posts));
+        }
+
+        function renderPosts() {
+            const posts = getPosts();
+            postCount.textContent = `${posts.length} post${posts.length !== 1 ? 's' : ''}`;
+
+            if (posts.length === 0) {
+                postList.innerHTML = `
+                    <div class="empty-state">
+                        <span class="big-icon">📭</span>
+                        No posts yet. Write your first one above!
+                    </div>
+                `;
+                return;
+            }
+
+            // Show newest first (reverse order)
+            const reversed = [...posts].reverse();
+            postList.innerHTML = reversed.map((post, index) => {
+                // The actual index in the original array
+                const realIndex = posts.length - 1 - index;
+                return `
+                    <div class="post-item">
+                        <div>
+                            <div class="post-content">${escapeHtml(post.text)}</div>
+                            <div class="post-meta">📅 ${post.date}</div>
+                        </div>
+                        <button class="delete-btn" data-index="${realIndex}" title="Delete post">✕</button>
+                    </div>
+                `;
+            }).join('');
+
+            // Attach delete events
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.dataset.index);
+                    deletePost(idx);
+                });
+            });
+        }
+
+        // Simple escape to prevent XSS (though content is safe)
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function addPost() {
+            const text = postInput.value.trim();
+            if (!text) {
+                alert('Please write something before posting!');
+                return;
+            }
+
+            const posts = getPosts();
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) +
+                ' at ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+
+            posts.push({
+                text: text,
+                date: dateStr
+            });
+
+            savePosts(posts);
+            postInput.value = '';
+            renderPosts();
+        }
+
+        function deletePost(index) {
+            const posts = getPosts();
+            if (index >= 0 && index < posts.length) {
+                posts.splice(index, 1);
+                savePosts(posts);
+                renderPosts();
+            }
+        }
+
+        function clearAllPosts() {
+            if (getPosts().length === 0) return;
+            if (confirm('Are you sure you want to delete ALL posts? This cannot be undone.')) {
+                savePosts([]);
+                renderPosts();
+            }
+        }
+
+        // Event listeners
+        saveBtn.addEventListener('click', addPost);
+        clearAllBtn.addEventListener('click', clearAllPosts);
+
+        // Allow Ctrl+Enter to save
+        postInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                addPost();
+            }
+        });
+
+        // Initial render
+        renderPosts();
+    </script>
+</body>
+</html>
