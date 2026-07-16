@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>GTG · Complete</title>
+    <title>Ngong Mawien</title>
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -270,7 +270,7 @@
 <div id="app">
     <!-- ===== AUTH ===== -->
     <div id="authScreen" class="auth-card">
-        <h2>🚀 GTG</h2>
+        <h2>🚀 Ngong Mawien</h2>
         <input type="text" id="loginIdentifier" placeholder="Email or Phone Number" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <button id="loginBtn">Login</button>
@@ -287,7 +287,7 @@
     <div id="appScreen" class="app-wrapper" style="display:none;">
         <!-- SIDEBAR -->
         <div class="sidebar">
-            <div class="brand">👑 GTG <span>Complete</span></div>
+            <div class="brand">👑 Ngong Mawien <span>Social</span></div>
             <div class="nav-item active" data-tab="feed"><span class="icon">📰</span> <span>Feed</span></div>
             <div class="nav-item" data-tab="stories"><span class="icon">🎞️</span> <span>Stories</span></div>
             <div class="nav-item" data-tab="bookmarks"><span class="icon">🔖</span> <span>Saved</span></div>
@@ -769,8 +769,8 @@
             snap.forEach(d => {
                 const data = d.data();
                 const likeCount = Object.keys(data.likes || {}).length;
-                const score = likeCount * 2 + (data.comments?.length || 0) * 5;
-                if (data.pinned) score + 100;
+                let score = likeCount * 2 + (data.comments?.length || 0) * 5;
+                if (data.pinned) score += 100;
                 posts.push({ id: d.id, data, score });
             });
             posts.sort((a,b) => b.score - a.score || b.data.timestamp?.seconds - a.data.timestamp?.seconds);
@@ -1273,7 +1273,7 @@
     // =============================================
     // INIT
     // =============================================
-    console.log('👑 GTG Complete loaded.');
+    console.log('👑 Ngong Mawien loaded.');
 </script>
 </body>
 </html>
