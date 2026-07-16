@@ -417,17 +417,27 @@
     // =============================================
     // FIREBASE CONFIG
     // =============================================
-    const firebaseConfig = {
-        apiKey: "AIzaSyCfU5-srt0ul68rXgx0RQzjNmJXdFYgIn0",
-        authDomain: "gabriel-the-great.firebaseapp.com",
-        projectId: "gabriel-the-great",
-        storageBucket: "gabriel-the-great.firebasestorage.app",
-        messagingSenderId: "983846361565",
-        appId: "1:983846361565:web:dd8b417b399cead4613e34"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+   // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyAksWz12FkFPTQZsvz6pWYwJbOFh03T6VI",
+  authDomain: "ngong-mawien.firebaseapp.com",
+  projectId: "ngong-mawien",
+  storageBucket: "ngong-mawien.firebasestorage.app",
+  messagingSenderId: "699594052339",
+  appId: "1:699594052339:web:d1f6d7abee35b66bcfdd86",
+  measurementId: "G-96YWRXTN1W"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 
     // =============================================
     // DOM REFS
