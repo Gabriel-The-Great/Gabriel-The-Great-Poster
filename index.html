@@ -567,31 +567,28 @@
     // PUBLISH POST
     // =============================================
     publishBtn.onclick = async () => {
-        const text = postContent.value.trim();
-        if (!text && !selectedImageBase64 && !selectedVoiceBase64 && !isPollMode) return;
-        const postData = {
-            authorId: auth.currentUser.uid,
-            authorName: currentUserData.name,
-            content: text || '',
-            image: selectedImageBase64 || '',
-            voice: selectedVoiceBase64 || '',
-            likes: [],
-            comments: [],
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        };
-        if (isPollMode) {
-            if (!pollOption1.value.trim() || !pollOption2.value.trim()) { alert("Poll needs at least 2 options."); return; }
-            postData.poll = { options: [{ text: pollOption1.value.trim(), votes: 0 }, { text: pollOption2.value.trim(), votes: 0 }] };
-            if (pollOption3.value.trim()) postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
-        }
-        try {
-            await db.collection('posts').add(postData);
-            postContent.value = ''; selectedImageBase64 = null; selectedVoiceBase64 = null;
-            imagePreview.style.display = 'none'; voicePreviewArea.style.display = 'none';
-            if (isPollMode) pollToggleBtn.click();
-        } catch (err) { alert(err.message); }
-    };
+    const text = postContent.value.trim();
+    if (!text && !selectedImageBase64 && !selectedVoiceBase64 && !isPollMode) return;
 
+    // ✅ FIX: Get author name from multiple fallback sources
+    const authorName = 
+        currentUserData?.name || 
+        auth.currentUser?.displayName || 
+        auth.currentUser?.email || 
+        'User';
+
+    const postData = {
+        authorId: auth.currentUser.uid,
+        authorName: authorName,
+        content: text || '',
+        image: selectedImageBase64 || '',
+        voice: selectedVoiceBase64 || '',
+        likes: [],
+        comments: [],
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+    // ... rest of the function
+};
     // =============================================
     // FEED (Edit, Delete, Share, Notifications)
     // =============================================
