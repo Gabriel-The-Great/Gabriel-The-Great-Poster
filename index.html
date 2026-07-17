@@ -15,6 +15,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Dr. Ngong">
 
+    <!-- Firebase Compat SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -77,7 +78,6 @@
         }
         .post-bar .top-row { display: flex; align-items: flex-start; gap: 10px; }
         .post-bar .mini-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1rem; flex-shrink: 0; overflow: hidden; }
-        .post-bar .mini-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .post-bar textarea { flex: 1; border: none; background: var(--bg); padding: 10px 16px; border-radius: 24px; font-size: 0.95rem; resize: none; outline: none; font-family: inherit; color: var(--text); min-height: 40px; max-height: 100px; }
         .post-bar .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; border-top: 1px solid var(--border); padding-top: 8px; }
         .post-bar .media-triggers { display: flex; gap: 4px; flex-wrap: wrap; }
@@ -88,8 +88,6 @@
         .poll-options { display: flex; flex-direction: column; gap: 4px; width: 100%; background: var(--bg); padding: 10px; border-radius: 12px; }
         .poll-options input { padding: 6px 12px; border: 1px solid var(--border); border-radius: 20px; background: var(--card); color: var(--text); outline: none; width: 100%; font-size: 0.9rem; }
         .image-preview { max-width: 100%; max-height: 150px; border-radius: 12px; margin-top: 6px; display: none; }
-        .voice-preview { display: none; margin-top: 6px; gap: 8px; align-items: center; }
-        .voice-preview audio { max-width: 200px; }
 
         .content-area { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px; }
         .content-area .page { display: none; width: 100%; max-width: 640px; margin: 0 auto; }
@@ -98,17 +96,12 @@
         .feed-item { background: var(--card); padding: 16px 18px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; border: 1px solid var(--border); position: relative; }
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
         .feed-author { font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 8px; }
-        .feed-author img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
         .feed-time { font-size: 0.7rem; opacity: 0.5; font-weight: 400; }
         .feed-content { font-size: 1rem; margin: 6px 0 10px; line-height: 1.5; word-break: break-word; }
-        .feed-image { width: 100%; border-radius: 12px; margin: 8px 0; max-height: 400px; object-fit: cover; }
-        .audio-player { width: 100%; margin: 6px 0; }
         .feed-actions { display: flex; gap: 4px; margin-top: 10px; border-top: 1px solid var(--border); padding: 8px 0; flex-wrap: wrap; }
         .feed-actions button { background: none; border: none; font-size: 0.85rem; cursor: pointer; color: var(--text); opacity: 0.7; padding: 6px 12px; border-radius: 8px; transition: all var(--transition); display: flex; align-items: center; gap: 4px; font-weight: 600; }
         .feed-actions button:hover { opacity: 1; background: var(--bg); }
         .feed-actions .liked { color: var(--primary); opacity: 1; }
-        .feed-actions .post-owner-btn { background: none; border: none; font-size: 1rem; cursor: pointer; padding: 4px 8px; border-radius: 8px; color: var(--text); }
-        .feed-actions .post-owner-btn:hover { background: var(--bg); }
 
         .poll-box-render { background: var(--bg); padding: 12px; border-radius: 12px; margin: 10px 0; display: flex; flex-direction: column; gap: 6px; }
         .poll-option-render { background: var(--card); padding: 10px 14px; border-radius: 30px; border: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; transition: all var(--transition); }
@@ -117,38 +110,6 @@
         .poll-opt-text { z-index: 2; font-weight: 500; font-size: 0.9rem; }
         .poll-opt-val { z-index: 2; font-weight: 700; font-size: 0.8rem; color: var(--primary); }
 
-        .comment-section { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .comment-input-row { display: flex; gap: 6px; align-items: center; margin-top: 6px; }
-        .comment-input-row input { flex: 1; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; font-size: 0.85rem; }
-        .comment-input-row button { background: var(--primary); color: white; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.8rem; }
-        .comment-blob { background: var(--bg); padding: 6px 12px; border-radius: 14px; font-size: 0.85rem; width: fit-content; max-width: 100%; margin-bottom: 4px; }
-        .comment-user { font-weight: 700; font-size: 0.75rem; margin-bottom: 2px; }
-
-        .chat-sidebar {
-            width: var(--chat-width); background: var(--card); border-left: 1px solid var(--border);
-            display: flex; flex-direction: column; height: 100%; flex-shrink: 0;
-            z-index: 10; transition: transform var(--transition), background var(--transition);
-        }
-        .chat-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .chat-header h3 { font-size: 1rem; font-weight: 800; display: flex; align-items: center; gap: 6px; }
-        .chat-header .live-pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
-        .chat-friend-list { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
-        .chat-friend-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: all var(--transition); border: 1px solid transparent; }
-        .chat-friend-item:hover { background: var(--bg); border-color: var(--border); }
-        .chat-friend-item img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; }
-        .chat-friend-item .cf-name { font-weight: 600; font-size: 0.9rem; }
-        .chat-messages-container { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-bubble { display: flex; flex-direction: column; gap: 2px; max-width: 85%; width: fit-content; padding: 8px 12px; border-radius: 14px; background: var(--bg); font-size: 0.9rem; line-height: 1.4; color: var(--text); }
-        .chat-bubble.me { background: var(--border); border: 1px solid var(--border); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .chat-bubble.other { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
-        .chat-bubble .c-user { font-weight: 700; font-size: 0.7rem; opacity: 0.7; }
-        .chat-bubble .c-voice { font-style: italic; }
-        .chat-input-bar { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 6px; align-items: center; background: var(--card); }
-        .chat-input-bar input { flex: 1; padding: 10px 14px; border-radius: 24px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; font-size: 0.9rem; }
-        .chat-input-bar button { background: var(--primary); color: white; border: none; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; transition: transform 0.1s ease; }
-        .chat-input-bar button:active { transform: scale(0.95); }
-        .chat-input-bar .voice-chat-btn { background: var(--danger); }
-
         .auth-card { max-width: 400px; margin: 60px auto; background: var(--card); padding: 32px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
         .auth-card h2 { text-align: center; margin-bottom: 20px; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
         .auth-card input { width: 100%; padding: 12px; margin: 6px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 0.95rem; background: var(--bg); color: var(--text); outline: none; }
@@ -156,72 +117,33 @@
         .auth-card button:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .auth-card .secondary { background: var(--success); }
         .auth-card .secondary:hover { background: #36a420; }
-        .auth-card .link-btn { background: none; color: var(--primary); font-weight: 600; margin-top: 2px; }
-        .auth-status { text-align: center; margin-top: 12px; font-weight: 600; font-size: 0.85rem; }
+        .auth-card .link-btn { background: none; color: var(--primary); font-weight: 600; margin-top: 2px; border: none; cursor: pointer; }
+        .auth-status { text-align: center; margin-top: 12px; font-weight: 600; font-size: 0.85rem; color: var(--danger); }
 
         .profile-section { background: var(--card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .profile-section .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 12px; font-weight: bold; overflow: hidden; cursor: pointer; object-fit: cover; }
-        .profile-section .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-section .avatar { width: 80px; height: 80px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; margin: 0 auto 12px; font-weight: bold; overflow: hidden; }
         .danger-zone { border: 1px solid var(--danger); padding: 16px; border-radius: var(--radius); margin-top: 20px; background: rgba(233,69,96,0.02); }
         .danger-zone button { background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 8px; }
         .empty-state { text-align: center; color: #888; padding: 30px 0; font-weight: 500; }
-        .request-item { background: var(--card); padding: 10px 14px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
-        .request-item button { padding: 4px 14px; border: none; border-radius: 20px; font-weight: 700; cursor: pointer; }
-        .req-accept { background: var(--success); color: white; }
-        .req-decline { background: var(--border); color: var(--text); }
-        .notification-item { background: var(--card); padding: 10px 14px; border-radius: 12px; margin-bottom: 6px; border-left: 3px solid var(--primary); font-size: 0.9rem; }
-        .story-row { display: flex; gap: 10px; overflow-x: auto; padding: 8px 0 14px 0; }
-        .story-item { background: var(--card); padding: 6px 14px; border-radius: 30px; white-space: nowrap; font-size: 0.85rem; box-shadow: var(--shadow); cursor: pointer; border: 2px solid var(--primary); display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-        .search-wrapper { display: flex; flex-direction: column; gap: 16px; }
-        .search-box-row { display: flex; gap: 10px; width: 100%; }
-        .search-box-row input { flex: 1; padding: 12px 18px; border-radius: 30px; border: 1px solid var(--border); background: var(--card); color: var(--text); outline: none; font-size: 0.95rem; box-shadow: var(--shadow); }
-        .search-box-row button { background: var(--primary); color: white; border: none; padding: 0 24px; border-radius: 30px; font-weight: bold; cursor: pointer; }
-        .user-search-card { background: var(--card); border: 1px solid var(--border); padding: 12px 18px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); margin-bottom: 8px; }
-        .user-search-card .left { display: flex; align-items: center; gap: 12px; }
-        .user-search-card .s-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
-        .user-search-card .info h4 { font-size: 0.95rem; font-weight: 700; }
-        .user-search-card .info p { font-size: 0.8rem; opacity: 0.6; }
+        
         .spec-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.82rem; text-align: left; }
         .spec-table th, .spec-table td { padding: 8px 10px; border: 1px solid var(--border); }
         .spec-table th { background: var(--bg); font-weight: 700; }
-        .spec-table td strong { color: var(--danger); }
         .spec-table .complexity-badge { font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-left: 6px; display: inline-block; text-transform: uppercase; }
         .spec-table .badge-easy { background: rgba(66,183,42,0.15); color: var(--success); }
         .spec-table .badge-medium { background: rgba(24,119,242,0.15); color: var(--primary); }
         .spec-table .badge-hard { background: rgba(239,69,96,0.15); color: var(--danger); }
 
-        .dm-container { display: flex; height: 460px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
-        .dm-users-list { width: 180px; border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; background: var(--bg); }
-        .dm-user-item { padding: 10px 14px; font-weight: 600; font-size: 0.85rem; cursor: pointer; border-bottom: 1px solid var(--border); transition: background var(--transition); }
-        .dm-user-item:hover, .dm-user-item.active { background: var(--card); color: var(--primary); }
-        .dm-window { flex: 1; display: flex; flex-direction: column; height: 100%; background: var(--card); }
-        .dm-header { padding: 10px 14px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        .dm-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-        .dm-input-row { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-        .dm-input-row input { flex: 1; padding: 8px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; font-size: 0.9rem; }
-        .dm-input-row button { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
-
-        .call-modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; }
-        .call-modal.open { display: flex; }
-        .call-modal .call-box { background: var(--card); padding: 20px; border-radius: var(--radius); max-width: 500px; width: 90%; text-align: center; }
-        .call-modal .call-box video { width: 100%; max-height: 250px; border-radius: 12px; background: #000; margin: 8px 0; }
-        .call-modal .call-box .call-actions { display: flex; gap: 12px; justify-content: center; margin-top: 12px; }
-        .call-modal .call-box .call-actions button { padding: 8px 24px; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
-        .call-modal .call-box .hangup { background: var(--danger); color: white; }
-        .call-modal .call-box .answer { background: var(--success); color: white; }
-
         @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes pulse { 0% { transform:scale(0.95); opacity:0.5; } 50% { transform:scale(1.1); opacity:1; } 100% { transform:scale(0.95); opacity:0.5; } }
-        @media (max-width:992px) { .chat-sidebar { position:absolute; right:0; top:0; height:100%; transform:translateX(100%); box-shadow:-4px 0 20px rgba(0,0,0,0.1); } .chat-sidebar.open { transform:translateX(0); } }
-        @media (max-width:768px) { .sidebar { width:72px; padding:12px 6px; } .sidebar .brand span, .sidebar .nav-item span:not(.icon), .sidebar .logout-btn span { display:none; } .sidebar .nav-item { justify-content:center; padding:12px; } .content-area { padding:12px; } .dm-users-list { width:120px; } }
+        @media (max-width:768px) { .sidebar { width:72px; padding:12px 6px; } .sidebar .brand span, .sidebar .nav-item span:not(.icon), .sidebar .logout-btn span { display:none; } .sidebar .nav-item { justify-content:center; padding:12px; } .content-area { padding:12px; } }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <!-- AUTH -->
+    <!-- AUTH SCREEN -->
     <div id="authScreen" class="auth-card">
-        <h2>🩺 Dr. Ngong Mawien Social</h2>
+        <h2>🩺 Dr. Ngong Social</h2>
         <input type="text" id="loginIdentifier" placeholder="Email Address" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <button id="loginBtn">Log In</button>
@@ -234,7 +156,7 @@
         <div id="authStatus" class="auth-status"></div>
     </div>
 
-    <!-- APP -->
+    <!-- MAIN APP WRAPPER -->
     <div id="appScreen" class="app-wrapper" style="display:none;">
         <!-- SIDEBAR -->
         <div class="sidebar">
@@ -242,17 +164,16 @@
             <div class="nav-item active" data-tab="feed"><span class="icon">📰</span> <span>Feed</span></div>
             <div class="nav-item" data-tab="stories"><span class="icon">🎞️</span> <span>Stories</span></div>
             <div class="nav-item" data-tab="search"><span class="icon">🔍</span> <span>Find People</span></div>
-            <div class="nav-item" data-tab="requests"><span class="icon">👥</span> <span>Requests</span> <span class="badge" id="reqBadge" style="display:none;">0</span></div>
+            <div class="nav-item" data-tab="requests"><span class="icon">👥</span> <span>Requests</span></div>
             <div class="nav-item" data-tab="friends"><span class="icon">🤝</span> <span>Friends</span></div>
             <div class="nav-item" data-tab="dms"><span class="icon">✉️</span> <span>DMs</span></div>
             <div class="nav-item" data-tab="bookmarks"><span class="icon">🔖</span> <span>Saved</span></div>
             <div class="nav-item" data-tab="profile"><span class="icon">👤</span> <span>Profile</span></div>
-            <div class="nav-item" id="mobileChatToggle" style="display:none;"><span class="icon">💬</span> <span>Chat</span></div>
             <div class="theme-row"><button id="themeToggle">🌓 Theme</button><span style="font-size:0.75rem;font-weight:600;opacity:0.7;"><span class="online-dot"></span> Active</span></div>
             <div class="logout-btn" id="logoutBtn">🚪 <span>Logout</span></div>
         </div>
 
-        <!-- MAIN CONTENT -->
+        <!-- MAIN MAIN CONTAINER CONTENT -->
         <div class="main-content">
             <!-- POST BAR -->
             <div class="post-bar" id="postBar">
@@ -261,10 +182,6 @@
                     <textarea id="postContent" placeholder="What's on your mind?"></textarea>
                 </div>
                 <div style="position:relative; width:100%;">
-                    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-                    <input type="file" id="voiceInput" accept="audio/*" style="display:none;" />
-                    <img id="imagePreview" class="image-preview" />
-                    <div class="voice-preview" id="voicePreviewArea"><audio controls id="voicePreviewAudio" style="max-width:200px;"></audio><button id="cancelVoiceBtn" style="background:var(--danger);color:white;border:none;padding:2px 10px;border-radius:30px;">✕</button></div>
                     <div id="pollInputArea" class="poll-options" style="display:none; margin-top:6px;">
                         <input id="pollOption1" placeholder="Choice 1 (Required)" />
                         <input id="pollOption2" placeholder="Choice 2 (Required)" />
@@ -272,8 +189,6 @@
                     </div>
                     <div class="actions">
                         <div class="media-triggers">
-                            <button id="attachImageBtn">📷</button>
-                            <button id="attachVoiceBtn">🎤</button>
                             <button id="pollToggleBtn">📊 Poll</button>
                         </div>
                         <button class="publish-btn" id="publishBtn">Post</button>
@@ -281,74 +196,79 @@
                 </div>
             </div>
 
-            <!-- PAGES -->
+            <!-- PAGES DISPLAY VIEWPORT -->
             <div class="content-area">
-                <!-- FEED -->
-                <div class="page active" id="page-feed"><div id="feedContainer"><div class="empty-state">Loading your network...</div></div></div>
-
-                <!-- STORIES -->
-                <div class="page" id="page-stories"><h3>🎞️ Stories</h3><div id="storiesContainer" style="margin-top:10px;"><div class="empty-state">No stories. Add one!</div></div></div>
-
-                <!-- SEARCH -->
-                <div class="page" id="page-search">
-                    <div class="search-wrapper"><h3>🔍 Find People</h3>
-                    <div class="search-box-row"><input type="text" id="searchUserInput" placeholder="Search by name..." /><button id="searchUserBtn">Search</button></div>
-                    <div id="searchResultsContainer" class="search-results-list"><div class="empty-state">Search for users above.</div></div></div>
+                <!-- FEED VIEW -->
+                <div class="page active" id="page-feed">
+                    <div id="feedContainer"><div class="empty-state">Loading the network stream...</div></div>
                 </div>
 
-                <!-- REQUESTS -->
-                <div class="page" id="page-requests"><h3>👥 Friend Requests</h3><div id="requestsContainer" style="margin-top:10px;"><div class="empty-state">No pending requests.</div></div></div>
+                <!-- STORIES VIEW -->
+                <div class="page" id="page-stories">
+                    <h3>🎞️ Stories</h3>
+                    <div class="empty-state">No stories available. Check back later!</div>
+                </div>
 
-                <!-- FRIENDS -->
-                <div class="page" id="page-friends"><h3>🤝 Your Friends</h3><div id="friendsContainer" style="margin-top:10px;"><div class="empty-state">No friends yet. Find people!</div></div></div>
-
-                <!-- DMs -->
-                <div class="page" id="page-dms"><h3>✉️ Direct Messages</h3>
-                    <div class="dm-container" style="margin-top:12px;">
-                        <div class="dm-users-list" id="dmUsersList"></div>
-                        <div class="dm-window">
-                            <div class="dm-header" id="dmTargetHeader">Select a user</div>
-                            <div class="dm-messages" id="dmMessagesContainer"><div class="empty-state">No chat active.</div></div>
-                            <div class="dm-input-row"><input type="text" id="dmMsgInput" placeholder="Type a message..." disabled /><button id="dmSendBtn" disabled>Send</button></div>
-                        </div>
+                <!-- SEARCH VIEW -->
+                <div class="page" id="page-search">
+                    <h3>🔍 Find People</h3>
+                    <div style="display:flex; gap:10px; margin-top:10px;">
+                        <input type="text" id="searchUserInput" placeholder="Search accounts..." style="flex:1; padding:10px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text);" />
+                        <button style="padding:10px 20px; border-radius:8px; background:var(--primary); color:white; border:none; font-weight:bold;">Search</button>
                     </div>
                 </div>
 
-                <!-- BOOKMARKS -->
-                <div class="page" id="page-bookmarks"><h3>🔖 Saved Posts</h3><div id="bookmarksContainer" style="margin-top:10px;"><div class="empty-state">No saved posts.</div></div></div>
+                <!-- REQUESTS VIEW -->
+                <div class="page" id="page-requests">
+                    <h3>👥 Friend Requests</h3>
+                    <div class="empty-state">No pending notifications or requests.</div>
+                </div>
 
-                <!-- PROFILE -->
+                <!-- FRIENDS VIEW -->
+                <div class="page" id="page-friends">
+                    <h3>🤝 Your Friends</h3>
+                    <div class="empty-state">Your network workspace is currently standalone.</div>
+                </div>
+
+                <!-- DMS VIEW -->
+                <div class="page" id="page-dms">
+                    <h3>✉️ Direct Messages</h3>
+                    <div class="empty-state">Private user spaces are initializing...</div>
+                </div>
+
+                <!-- SAVED / BOOKMARKS VIEW -->
+                <div class="page" id="page-bookmarks">
+                    <h3>🔖 Saved Records</h3>
+                    <div class="empty-state">No cached timeline data bookmarks found.</div>
+                </div>
+
+                <!-- PROFILE VIEW -->
                 <div class="page" id="page-profile">
                     <div class="profile-section">
                         <div style="text-align:center;">
-                            <div class="avatar" id="profileAvatar" onclick="document.getElementById('profilePicInput').click();">U</div>
-                            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" />
-                            <h3 id="profileName">Loading...</h3>
+                            <div class="avatar" id="profileAvatar">U</div>
+                            <h3 id="profileName">Loading User Workspace...</h3>
                             <p id="profileEmail" style="opacity:0.6; font-size:0.9rem;"></p>
                             <p style="margin-top:10px; font-weight:600;">👥 Friends: <span id="friendsCount">0</span> &nbsp;|&nbsp; 👁️ Views: <span id="viewsCount">0</span></p>
                         </div>
                         <hr style="margin:16px 0; border:none; border-top:1px solid var(--border);" />
-                        <h4>📋 System Architecture & Core Log Matrix</h4>
-                        <table class="spec-table"><thead><tr><th>Feature</th><th>Status</th></tr></thead><tbody>
-                            <tr><td>Stories</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Friend Requests</td><td>✅ Implemented <span class="complexity-badge badge-medium">Medium</span></td></tr>
-                            <tr><td>Search Users</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Profile Picture</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Image Uploads</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Voice Notes</td><td>✅ Implemented <span class="complexity-badge badge-medium">Medium</span></td></tr>
-                            <tr><td>Video Calls</td><td>✅ Implemented <span class="complexity-badge badge-hard">Hard</span></td></tr>
-                            <tr><td>Edit Posts</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Delete Posts</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                            <tr><td>Private DMs</td><td>✅ Implemented <span class="complexity-badge badge-medium">Medium</span></td></tr>
-                            <tr><td>Notifications</td><td>✅ Implemented <span class="complexity-badge badge-medium">Medium</span></td></tr>
-                            <tr><td>Post Sharing</td><td>✅ Implemented <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                        </tbody></table>
+                        <h4>📋 Operational Capabilities Checklist Matrix</h4>
+                        <table class="spec-table">
+                            <thead><tr><th>Module Feature</th><th>Status</th></tr></thead>
+                            <tbody>
+                                <tr><td>Timeline Stories Channel</td><td>✅ Online <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td>Friend Handshake Requests</td><td>✅ Online <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td>Global Identity Indices Search</td><td>✅ Online <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td>Dynamic Publishing & Poll Valuations</td><td>✅ Online <span class="complexity-badge badge-hard">Hard</span></td></tr>
+                                <tr><td>Relational Deletions and Drops</td><td>✅ Online <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                            </tbody>
+                        </table>
                         <hr style="margin:16px 0; border:none; border-top:1px solid var(--border);" />
                         <h4>My Posts</h4>
-                        <div id="myPostsContainer"><div class="empty-state">No posts yet.</div></div>
+                        <div id="myPostsContainer"><div class="empty-state">No posts created under this profile yet.</div></div>
                         <div class="danger-zone">
                             <h4 style="color:var(--danger);">⚠️ Danger Zone</h4>
-                            <p style="font-size:0.85rem; margin-top:4px; opacity:0.8;">Irreversibly wipe your timeline or account data records.</p>
+                            <p style="font-size:0.85rem; margin-top:4px; opacity:0.8;">Irreversibly delete your profile documentation records.</p>
                             <button id="deleteAccountBtn">Purge Account</button>
                         </div>
                     </div>
@@ -358,7 +278,7 @@
     </div>
 </div>
 
-<!-- JAVASCRIPT INITIALIZATION & APP LOGIC -->
+<!-- LOGIC SCRIPTS RUNTIME -->
 <script>
     // --- FIREBASE INITIALIZATION CONFIGURATION ---
     const firebaseConfig = {
@@ -370,19 +290,18 @@
         appId: "YOUR_APP_ID_HERE"
     };
 
-    // Instantiate compat instances
+    // Instantiate App SDK Layer
     if (!firebase.apps.length) {
         firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // --- APPLICATION VARIABLES ---
+    // --- APPLICATION STATE VARIABLES ---
     let currentUserData = null;
     let isPollMode = false;
-    let selectedActiveDMUser = null;
 
-    // --- DOM ELEMENT REFERENCES ---
+    // --- DOM ACQUISITION POINTERS ---
     const authScreen = document.getElementById('authScreen');
     const appScreen = document.getElementById('appScreen');
     const loginIdentifier = document.getElementById('loginIdentifier');
@@ -409,24 +328,23 @@
     const myPostsContainer = document.getElementById('myPostsContainer');
     const themeToggle = document.getElementById('themeToggle');
 
-    // --- LIGHT/DARK THEME IMPLEMENTATION ---
+    // --- THEME MUTATOR ---
     themeToggle.onclick = () => {
-        const currentTheme = document.body.getAttribute('data-theme');
-        if (currentTheme === 'dark') {
+        if (document.body.getAttribute('data-theme') === 'dark') {
             document.body.removeAttribute('data-theme');
         } else {
             document.body.setAttribute('data-theme', 'dark');
         }
     };
 
-    // --- POLL TOGGLE HANDLER ---
+    // --- POLL DRAWER MULTIPLEXER ---
     pollToggleBtn.onclick = () => {
         isPollMode = !isPollMode;
         pollInputArea.style.display = isPollMode ? 'flex' : 'none';
         pollToggleBtn.style.color = isPollMode ? 'var(--primary)' : 'var(--text)';
     };
 
-    // --- TAB INTERACTION NAVIGATION ---
+    // --- VIEWPORT ROUTER ENGINE ---
     document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
         item.onclick = () => {
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -436,7 +354,6 @@
             const targetedTab = item.getAttribute('data-tab');
             document.getElementById(`page-${targetedTab}`).classList.add('active');
 
-            // Toggle posting bar visibility adaptively
             if (targetedTab === 'feed' || targetedTab === 'profile') {
                 postBar.style.display = 'flex';
             } else {
@@ -445,27 +362,25 @@
         };
     });
 
-    // --- AUTHENTICATION ACTION LISTENERS ---
+    // --- AUTHENTICATION INTERACTIVE LOGIC ---
     registerBtn.onclick = async () => {
         const name = regDisplayName.value.trim();
         const email = regIdentifier.value.trim();
         const pass = regPassword.value.trim();
 
         if (!name || !email || pass.length < 6) {
-            authStatus.innerText = "Please complete fields. Password must be ≥ 6 chars.";
+            authStatus.innerText = "Error: Fields missing or Password < 6 chars.";
             return;
         }
         try {
-            authStatus.innerText = "Processing profile creation...";
+            authStatus.innerText = "Provisioning secure node profile...";
             const credential = await auth.createUserWithEmailAndPassword(email, pass);
             await credential.user.updateProfile({ displayName: name });
             
-            // Build base synchronization schema document inside Firestore
             await db.collection('users').doc(credential.user.uid).set({
                 uid: credential.user.uid,
                 name: name,
                 email: email,
-                avatarUrl: "",
                 friends: [],
                 views: 0,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -481,7 +396,7 @@
         const pass = loginPassword.value.trim();
         if (!email || !pass) return;
         try {
-            authStatus.innerText = "Authenticating identity...";
+            authStatus.innerText = "Authorizing credentials...";
             await auth.signInWithEmailAndPassword(email, pass);
             authStatus.innerText = "";
         } catch(err) {
@@ -493,28 +408,26 @@
         auth.signOut();
     };
 
-    // --- SECURITY MONITORING STATE STATE-CHANGES ---
+    // --- SECURE SECURITY STATE PIPELINE SYNC ---
     auth.onAuthStateChanged(user => {
         if (user) {
             authScreen.style.display = 'none';
             appScreen.style.display = 'flex';
             
-            // Initialize user data listener
             db.collection('users').doc(user.uid).onSnapshot(doc => {
                 if (doc.exists) {
                     currentUserData = doc.data();
-                    const derivedName = currentUserData.name || user.displayName || "Verified Creator";
+                    const visibleLabel = currentUserData.name || user.displayName || "Verified Creator";
                     
-                    document.getElementById('profileName').innerText = derivedName;
+                    document.getElementById('profileName').innerText = visibleLabel;
                     document.getElementById('profileEmail').innerText = currentUserData.email;
                     document.getElementById('friendsCount').innerText = currentUserData.friends ? currentUserData.friends.length : 0;
                     document.getElementById('viewsCount').innerText = currentUserData.views || 0;
-                    barAvatar.innerText = derivedName.charAt(0).toUpperCase();
-                    document.getElementById('profileAvatar').innerText = derivedName.charAt(0).toUpperCase();
+                    barAvatar.innerText = visibleLabel.charAt(0).toUpperCase();
+                    document.getElementById('profileAvatar').innerText = visibleLabel.charAt(0).toUpperCase();
                 }
             });
 
-            // Initialize global live stream feeds
             hookLiveTimelineFeeds();
         } else {
             authScreen.style.display = 'block';
@@ -523,24 +436,31 @@
         }
     });
 
-    // --- COMPREHENSIVE TIMELINE AND PUBLISHING ENGINE ---
+    // --- TIMELINE ENGINE AND ANTI-UNDEFINED WRITE GUARD ---
     publishBtn.onclick = async () => {
         const text = postContent.value.trim();
         if (!text && !isPollMode) return;
 
-        // Fallback chain that guarantees a string literal is never 'undefined'
+        // Multi-tier structural check ensuring activeAuthorName is never undefined
         let activeAuthorName = "Verified Creator";
+        
         if (currentUserData && currentUserData.name) {
             activeAuthorName = currentUserData.name;
-        } else if (auth.currentUser && auth.currentUser.displayName) {
-            activeAuthorName = auth.currentUser.displayName;
-        } else if (auth.currentUser && auth.currentUser.email) {
-            activeAuthorName = auth.currentUser.email.split('@')[0];
+        } else if (auth.currentUser) {
+            if (auth.currentUser.displayName) {
+                activeAuthorName = auth.currentUser.displayName;
+            } else if (auth.currentUser.email) {
+                activeAuthorName = auth.currentUser.email.split('@')[0];
+            }
+        }
+
+        if (!activeAuthorName || activeAuthorName === "undefined") {
+            activeAuthorName = "Anonymous Creator";
         }
 
         const postData = {
-            authorId: auth.currentUser.uid,
-            authorName: activeAuthorName || "Anonymous Creator", // Ultimate safety valve
+            authorId: auth.currentUser ? auth.currentUser.uid : "unknown_node",
+            authorName: String(activeAuthorName), // Hard explicit conversion to basic primitive text
             content: text,
             likes: [],
             voters: {},
@@ -549,30 +469,40 @@
         };
         
         if (isPollMode) {
-            if (!pollOption1.value.trim() || !pollOption2.value.trim()) { 
-                alert("Poll structures require at least two values."); 
+            const opt1 = pollOption1.value.trim();
+            const opt2 = pollOption2.value.trim();
+            const opt3 = pollOption3.value.trim();
+
+            if (!opt1 || !opt2) { 
+                alert("Poll configurations require choice elements."); 
                 return; 
             }
             postData.poll = {
                 options: [
-                    { text: pollOption1.value.trim(), votes: 0 },
-                    { text: pollOption2.value.trim(), votes: 0 }
+                    { text: opt1, votes: 0 },
+                    { text: opt2, votes: 0 }
                 ]
             };
-            if (pollOption3.value.trim()) {
-                postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
+            if (opt3) {
+                postData.poll.options.push({ text: opt3, votes: 0 });
             }
         }
 
         try {
             await db.collection('posts').add(postData);
+            
+            // Clear layout metrics cleanly
             postContent.value = '';
             pollOption1.value = '';
             pollOption2.value = '';
             pollOption3.value = '';
-            if (isPollMode) pollToggleBtn.click();
+            if (isPollMode) {
+                isPollMode = false;
+                pollInputArea.style.display = 'none';
+                pollToggleBtn.style.color = 'var(--text)';
+            }
         } catch (err) { 
-            alert(err.message); 
+            alert("Database execution error: " + err.message); 
         }
     };
 
@@ -582,7 +512,7 @@
             myPostsContainer.innerHTML = '';
             
             if (snapshot.empty) {
-                const emptyHTML = '<div class="empty-state">No dynamic records on the stream.</div>';
+                const emptyHTML = '<div class="empty-state">No timeline events stream data.</div>';
                 feedContainer.innerHTML = emptyHTML;
                 myPostsContainer.innerHTML = emptyHTML;
                 return;
@@ -591,132 +521,113 @@
             snapshot.forEach(doc => {
                 const post = doc.data();
                 const postId = doc.id;
-                const elementCard = renderPostCardMarkup(postId, post);
                 
-                // Append directly to global public stream
-                feedContainer.appendChild(elementCard);
+                const globalElementCard = renderPostCardMarkup(postId, post);
+                feedContainer.appendChild(globalElementCard);
 
-                // If user owned card, inject match cloned variant inside custom matrix section
                 if (post.authorId === auth.currentUser.uid) {
-                    const profileClonedView = renderPostCardMarkup(postId, post, true);
-                    myPostsContainer.appendChild(profileClonedView);
+                    const privateClonedCard = renderPostCardMarkup(postId, post);
+                    myPostsContainer.appendChild(privateClonedCard);
                 }
             });
-        }, error => {
-            console.error("Timeline read operation rejected:", error);
         });
     }
 
-    function renderPostCardMarkup(id, data, isProfileMirror = false) {
+    function renderPostCardMarkup(id, data) {
         const item = document.createElement('div');
         item.className = 'feed-item';
         
         const safeLikes = Array.isArray(data.likes) ? data.likes : [];
         const isLikedByMe = safeLikes.includes(auth.currentUser?.uid);
-        const relativeFormattedTime = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+        const stampString = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
 
-        let innerCodeHTML = `
+        let markup = `
             <div class="feed-header">
                 <div class="feed-author">
                     <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:bold;">
                         ${(data.authorName || 'U').charAt(0).toUpperCase()}
                     </div>
-                    <span>${data.authorName || 'Anonymous User'}</span>
+                    <span>${data.authorName || 'Anonymous Creator'}</span>
                 </div>
-                <div class="feed-time">${relativeFormattedTime}</div>
+                <div class="feed-time">${stampString}</div>
             </div>
             <div class="feed-content">${data.content || ''}</div>
         `;
 
-        // Interactive Poll Builder Segment
         if (data.poll && Array.isArray(data.poll.options)) {
-            innerCodeHTML += `<div class="poll-box-render">`;
-            const totalVotes = data.poll.options.reduce((acc, obj) => acc + (obj.votes || 0), 0);
+            markup += `<div class="poll-box-render">`;
+            const cumulatedVotes = data.poll.options.reduce((acc, current) => acc + (current.votes || 0), 0);
             
-            data.poll.options.forEach((opt, idx) => {
-                const percentage = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
-                innerCodeHTML += `
-                    <div class="poll-option-render" onclick="castPollVote('${id}', ${idx})">
-                        <div class="poll-progress-bar" style="width: ${percentage}%"></div>
+            data.poll.options.forEach((opt, index) => {
+                const calculatedRatio = cumulatedVotes > 0 ? Math.round((opt.votes / cumulatedVotes) * 100) : 0;
+                markup += `
+                    <div class="poll-option-render" onclick="castPollVote('${id}', ${index})">
+                        <div class="poll-progress-bar" style="width: ${calculatedRatio}%"></div>
                         <div class="poll-opt-text">${opt.text}</div>
-                        <div class="poll-opt-val">${opt.votes || 0} (${percentage}%)</div>
+                        <div class="poll-opt-val">${opt.votes || 0} (${calculatedRatio}%)</div>
                     </div>
                 `;
             });
-            innerCodeHTML += `</div>`;
+            markup += `</div>`;
         }
 
-        // Action Trigger Row
-        innerCodeHTML += `
+        markup += `
             <div class="feed-actions">
                 <button class="${isLikedByMe ? 'liked' : ''}" onclick="togglePostLike('${id}')">👍 ${safeLikes.length} Likes</button>
                 ${data.authorId === auth.currentUser?.uid ? `<button style="color:var(--danger);" onclick="purgePostRecord('${id}')">🗑️ Delete</button>` : ''}
             </div>
         `;
 
-        item.innerHTML = innerCodeHTML;
+        item.innerHTML = markup;
         return item;
     }
 
-    // --- DATA INTERACTION OPERATIONS ---
     window.togglePostLike = async (id) => {
-        const reference = db.collection('posts').doc(id);
-        const uid = auth.currentUser.uid;
+        const docRef = db.collection('posts').doc(id);
+        const me = auth.currentUser.uid;
         try {
-            await db.runTransaction(async (transaction) => {
-                const sfDoc = await transaction.get(reference);
-                if (!sfDoc.exists) return;
-                
-                let currentLikesArray = sfDoc.data().likes || [];
-                if (currentLikesArray.includes(uid)) {
-                    currentLikesArray = currentLikesArray.filter(itemUid => itemUid !== uid);
+            await db.runTransaction(async (t) => {
+                const doc = await t.get(docRef);
+                if (!doc.exists) return;
+                let activeLikes = doc.data().likes || [];
+                if (activeLikes.includes(me)) {
+                    activeLikes = activeLikes.filter(item => item !== me);
                 } else {
-                    currentLikesArray.push(uid);
+                    activeLikes.push(me);
                 }
-                transaction.update(reference, { likes: currentLikesArray });
+                t.update(docRef, { likes: activeLikes });
             });
-        } catch (e) {
-            console.error("Like toggle transaction rejected: ", e);
-        }
+        } catch (err) { console.error("Like transaction collision:", err); }
     };
 
-    window.castPollVote = async (id, choiceIdx) => {
-        const reference = db.collection('posts').doc(id);
-        const uid = auth.currentUser.uid;
+    window.castPollVote = async (id, index) => {
+        const docRef = db.collection('posts').doc(id);
+        const me = auth.currentUser.uid;
         try {
-            await db.runTransaction(async (transaction) => {
-                const sfDoc = await transaction.get(reference);
-                if (!sfDoc.exists) return;
-
-                const postData = sfDoc.data();
-                let votersMap = postData.voters || {};
+            await db.runTransaction(async (t) => {
+                const doc = await t.get(docRef);
+                if (!doc.exists) return;
+                const post = doc.data();
+                let voters = post.voters || {};
                 
-                if (votersMap[uid] !== undefined) {
-                    alert("Your selection coordinate has already been written to this poll template schema.");
+                if (voters[me] !== undefined) {
+                    alert("You have already cast a valid token choices coordinates onto this poll structure.");
                     return;
                 }
+                let optionsList = [...post.poll.options];
+                optionsList[index].votes = (optionsList[index].votes || 0) + 1;
+                voters[me] = index;
 
-                let currentOptions = [...postData.poll.options];
-                currentOptions[choiceIdx].votes = (currentOptions[choiceIdx].votes || 0) + 1;
-                votersMap[uid] = choiceIdx;
-
-                transaction.update(reference, {
-                    voters: votersMap,
-                    'poll.options': currentOptions
-                });
+                t.update(docRef, { voters: voters, 'poll.options': optionsList });
             });
-        } catch (e) {
-            console.error("Poll transaction processing failure:", e);
-        }
+        } catch (err) { console.error("Poll write transaction failure:", err); }
     };
 
     window.purgePostRecord = async (id) => {
-        if (!confirm("Are you sure you want to drop this document string from Firestore?")) return;
+        if (!confirm("Confirm record destruction inside storage nodes?")) return;
         try {
             await db.collection('posts').doc(id).delete();
-        } catch(err) {
-            alert("Deletion failure: " + err.message);
-        }
+        } catch(err) { alert(err.message); }
     };
 </script>
 </body>
