@@ -1,0 +1,21 @@
+{
+  "name": "Ngong Mawien Social",
+  "short_name": "Ngong Mawien",
+  "start_url": "/Gabriel-The-Great-Poster/",
+  "display": "standalone",
+  "background_color": "#1877f2",
+  "theme_color": "#1877f2",
+  "description": "Social platform by Gabriel Ngong Mawien",
+  "icons": [
+    {
+      "src": "https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=192",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=512",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
