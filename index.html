@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Ngong Mawien Social</title>
+    <title>Dr. Ngong Mawien Social</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta property="og:title" content="Ngong Mawien Social" />
-    <meta property="og:description" content="Connect with friends, share posts, and chat live. Built by Gabriel Ngong Mawien." />
+    <meta property="og:title" content="Dr. Ngong Mawien Social" />
+    <meta property="og:description" content="Connect with friends, share posts, and chat live. Built by Dr. Ngong Mawien." />
     <meta property="og:image" content="https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=512" />
     <meta property="og:url" content="https://gabriel-the-great.github.io/Gabriel-The-Great-Poster/" />
-    <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#1877f2" />
 
     <!-- Firebase SDKs (Compatibility Mode) -->
@@ -21,352 +20,312 @@
     <style>
         :root {
             --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e;
-            --border: #e4e6eb; --shadow: 0 2px 12px rgba(0,0,0,0.06);
-            --primary: #1877f2; --primary-hover: #1664d9;
+            --border: #e4e6eb; --shadow: 0 4px 18px rgba(0,0,0,0.05);
+            --primary: #1877f2; --primary-hover: #1466d6;
             --danger: #e94560; --success: #42b72a; --radius: 16px;
-            --sidebar-width: 240px; --transition: 0.25s ease;
+            --sidebar-width: 260px; --chat-width: 320px; --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         [data-theme="dark"] {
-            --bg: #18191a; --card: #242526; --text: #e4e6eb;
-            --border: #3e4042; --shadow: 0 2px 12px rgba(0,0,0,0.4);
+            --bg: #111212; --card: #1c1d1e; --text: #f5f6f7;
+            --border: #2f3031; --shadow: 0 4px 18px rgba(0,0,0,0.3);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: var(--bg); color: var(--text);
             height: 100vh; overflow: hidden;
             transition: background var(--transition), color var(--transition);
         }
-        .app-wrapper { display: flex; height: 100vh; overflow: hidden; }
+        .app-wrapper { display: flex; height: 100vh; overflow: hidden; position: relative; }
 
+        /* --- SIDEBAR --- */
         .sidebar {
             width: var(--sidebar-width); background: var(--card);
             border-right: 1px solid var(--border);
             display: flex; flex-direction: column;
-            padding: 20px 12px; height: 100%; flex-shrink: 0;
+            padding: 24px 16px; height: 100%; flex-shrink: 0;
             overflow-y: auto; z-index: 10;
             transition: background var(--transition), border var(--transition);
         }
         .sidebar .brand {
-            font-size: 1.8rem; font-weight: 800; color: var(--primary);
+            font-size: 1.25rem; font-weight: 800; color: var(--primary);
             padding-bottom: 20px; border-bottom: 1px solid var(--border);
-            margin-bottom: 20px; display: flex; align-items: center; gap: 8px;
+            margin-bottom: 20px; display: flex; align-items: center; gap: 6px;
+            white-space: nowrap;
         }
-        .sidebar .brand span { font-size: 0.7rem; opacity: 0.6; font-weight: 400; color: var(--text); }
+        .sidebar .brand span { font-size: 1.05rem; opacity: 0.8; font-weight: 400; color: var(--text); }
         .sidebar .nav-item {
             display: flex; align-items: center; gap: 14px;
             padding: 12px 16px; border-radius: 12px; cursor: pointer;
-            font-weight: 500; color: var(--text); margin-bottom: 2px;
-            transition: background var(--transition);
-            position: relative;
+            font-weight: 600; color: var(--text); margin-bottom: 4px;
+            transition: all var(--transition); position: relative;
         }
-        .sidebar .nav-item:hover { background: var(--bg); }
-        .sidebar .nav-item.active { background: var(--primary); color: white; }
-        .sidebar .nav-item .badge {
-            background: var(--danger); color: white; border-radius: 30px;
-            padding: 0 8px; font-size: 0.7rem; font-weight: bold; margin-left: auto;
-        }
-        .sidebar .nav-item .icon { font-size: 1.4rem; width: 28px; text-align: center; }
-        .sidebar .online-dot {
-            display: inline-block; width: 10px; height: 10px;
-            background: #31a24c; border-radius: 50%; margin-right: 4px;
-        }
-        .sidebar .theme-row {
-            margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .sidebar .theme-row button {
-            background: var(--bg); border: none; padding: 8px 16px;
-            border-radius: 30px; font-weight: 600; cursor: pointer; color: var(--text);
-        }
-        .sidebar .logout-btn {
-            background: transparent; border: 1px solid var(--border);
-            padding: 10px; border-radius: 12px; text-align: center;
-            font-weight: 600; cursor: pointer; color: var(--danger); margin-top: 10px;
-            transition: background var(--transition);
-        }
+        .sidebar .nav-item:hover { background: var(--bg); transform: translateX(2px); }
+        .sidebar .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(24,119,242,0.3); }
+        .sidebar .icon { font-size: 1.4rem; width: 28px; text-align: center; }
+        .sidebar .online-dot { display: inline-block; width: 10px; height: 10px; background: #31a24c; border-radius: 50%; margin-right: 4px; }
+        .sidebar .theme-row { margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .sidebar .theme-row button { background: var(--bg); border: none; padding: 8px 16px; border-radius: 30px; font-weight: 600; cursor: pointer; color: var(--text); }
+        .sidebar .logout-btn { background: transparent; border: 1px solid var(--border); padding: 12px; border-radius: 12px; text-align: center; font-weight: 600; cursor: pointer; color: var(--danger); margin-top: 12px; transition: all var(--transition); }
         .sidebar .logout-btn:hover { background: var(--danger); color: white; }
 
         .main-content { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; background: var(--bg); }
 
-        .post-bar {
-            background: var(--card); padding: 12px 20px;
-            border-bottom: 1px solid var(--border); flex-shrink: 0;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-        .post-bar .top-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-        .post-bar textarea {
-            flex: 1; border: none; background: var(--bg); padding: 10px 16px;
-            border-radius: 30px; font-size: 1rem; resize: none; outline: none;
-            font-family: inherit; color: var(--text); min-height: 44px; max-height: 100px;
-        }
-        .post-bar .actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .post-bar .actions button {
-            background: none; border: none; font-size: 1.3rem; cursor: pointer;
-            padding: 4px 8px; border-radius: 30px; color: var(--text);
-            transition: background var(--transition);
-        }
-        .post-bar .actions button:hover { background: var(--bg); }
-        .post-bar .publish-btn {
-            background: var(--primary); color: white !important; padding: 8px 24px !important;
-            border-radius: 30px !important; font-weight: 700 !important; font-size: 1rem !important;
-        }
-        .post-bar .publish-btn:hover { background: var(--primary-hover) !important; }
-        .image-preview { max-width: 100%; max-height: 150px; border-radius: 12px; display: none; margin-top: 4px; }
-        .voice-preview { display: none; margin-top: 4px; gap: 8px; align-items: center; }
-        .poll-options { display: flex; flex-direction: column; gap: 4px; margin-top: 4px; }
-        .poll-options input { padding: 6px 12px; border: 1px solid var(--border); border-radius: 20px; background: var(--bg); color: var(--text); }
+        /* --- PUBLISHER BAR --- */
+        .post-bar { background: var(--card); padding: 16px 24px; border-bottom: 1px solid var(--border); flex-shrink: 0; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
+        .post-bar .top-row { display: flex; align-items: flex-start; gap: 12px; }
+        .post-bar .mini-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.1rem; }
+        .post-bar textarea { flex: 1; border: none; background: var(--bg); padding: 12px 18px; border-radius: 24px; font-size: 1rem; resize: none; outline: none; font-family: inherit; color: var(--text); min-height: 44px; max-height: 120px; transition: background var(--transition); }
+        .post-bar textarea:focus { background: var(--border); }
+        .post-bar .actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; border-top: 1px solid var(--border); padding-top: 12px; }
+        .post-bar .media-triggers { display: flex; gap: 6px; }
+        .post-bar .media-triggers button { background: var(--bg); border: none; font-size: 1.2rem; cursor: pointer; padding: 8px 14px; border-radius: 20px; color: var(--text); transition: all var(--transition); display: flex; align-items: center; gap: 4px; }
+        .post-bar .media-triggers button:hover { background: var(--border); transform: translateY(-1px); }
+        .post-bar .publish-btn { background: var(--primary); color: white; padding: 10px 28px; border: none; border-radius: 24px; font-weight: 700; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 10px rgba(24,119,242,0.2); transition: all var(--transition); }
+        .post-bar .publish-btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
+        
+        .poll-options { display: flex; flex-direction: column; gap: 6px; width: 100%; background: var(--bg); padding: 12px; border-radius: 12px; }
+        .poll-options input { padding: 8px 14px; border: 1px solid var(--border); border-radius: 20px; background: var(--card); color: var(--text); outline: none; width: 100%; }
 
-        .content-area { flex: 1; overflow-y: auto; padding: 16px 24px; }
-        .content-area .page { display: none; }
-        .content-area .page.active { display: block; }
+        /* --- STREAM FEED --- */
+        .content-area { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+        .content-area .page { display: none; width: 100%; max-width: 640px; margin: 0 auto; }
+        .content-area .page.active { display: block; animation: fadeIn 0.3s ease; }
 
-        .feed-item {
-            background: var(--card); padding: 16px 20px; border-radius: var(--radius);
-            box-shadow: var(--shadow); margin-bottom: 16px;
-            transition: background var(--transition);
-        }
-        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
-        .feed-author { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
-        .feed-content { font-size: 1rem; margin: 6px 0; line-height: 1.5; }
-        .feed-image { width: 100%; border-radius: 12px; margin: 8px 0; max-height: 400px; object-fit: cover; }
-        .feed-actions {
-            display: flex; gap: 12px; margin-top: 12px;
-            border-top: 1px solid var(--border); padding-top: 12px; flex-wrap: wrap;
-        }
-        .feed-actions button {
-            background: none; border: none; font-size: 0.95rem; cursor: pointer;
-            color: var(--text); opacity: 0.7; transition: opacity var(--transition);
-            display: flex; align-items: center; gap: 4px;
-        }
-        .feed-actions button:hover { opacity: 1; }
-        .poll-option {
-            background: var(--bg); padding: 8px 14px; border-radius: 20px;
-            margin: 6px 0; cursor: pointer; display: flex; justify-content: space-between;
-            border: 1px solid var(--border); transition: 0.2s ease;
-        }
-        .poll-option:hover { background: var(--border); }
+        /* Feed Item Layout */
+        .feed-item { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); }
+        .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .feed-author { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
+        .feed-time { font-size: 0.8rem; opacity: 0.5; font-weight: 400; }
+        .feed-content { font-size: 1.05rem; margin: 8px 0 12px; line-height: 1.5; }
+        
+        /* Interactive Poll Engine */
+        .poll-box-render { background: var(--bg); padding: 14px; border-radius: 12px; margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
+        .poll-option-render { background: var(--card); padding: 12px 16px; border-radius: 30px; border: 1px solid var(--border); cursor: pointer; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden; transition: all var(--transition); }
+        .poll-option-render:hover { border-color: var(--primary); background: var(--border); }
+        .poll-progress-bar { position: absolute; top:0; left:0; height:100%; background: rgba(24,119,242,0.15); z-index: 1; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .poll-opt-text { z-index: 2; font-weight: 500; }
+        .poll-opt-val { z-index: 2; font-weight: 700; font-size: 0.9rem; color: var(--primary); }
 
-        .auth-card {
-            max-width: 420px; margin: 60px auto; background: var(--card);
-            padding: 32px; border-radius: var(--radius); box-shadow: var(--shadow);
+        .feed-actions { display: flex; gap: 4px; margin-top: 12px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 8px 0; justify-content: space-between; }
+        .feed-actions button { background: none; border: none; font-size: 0.95rem; cursor: pointer; color: var(--text); opacity: 0.7; padding: 8px 16px; border-radius: 8px; transition: all var(--transition); flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; font-weight: 600; }
+        .feed-actions button:hover { opacity: 1; background: var(--bg); }
+        .feed-actions button.liked { color: var(--primary); opacity: 1; }
+
+        /* Comment Streams */
+        .comment-section { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
+        .comment-input-row { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+        .comment-input-row input { flex: 1; padding: 10px 16px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; font-size: 0.9rem; }
+        .comment-input-row button { background: var(--primary); color: white; border: none; padding: 8px 16px; border-radius: 20px; font-weight: 700; cursor: pointer; font-size: 0.85rem; }
+        .comment-blob { background: var(--bg); padding: 8px 14px; border-radius: 16px; font-size: 0.9rem; width: fit-content; max-width: 100%; }
+        .comment-user { font-weight: 700; font-size: 0.8rem; margin-bottom: 2px; }
+
+        /* --- LIVE CHAT BAR (RIGHT HAND PANEL) --- */
+        .chat-sidebar {
+            width: var(--chat-width); background: var(--card); border-left: 1px solid var(--border);
+            display: flex; flex-direction: column; height: 100%; flex-shrink: 0;
+            z-index: 10; transition: transform var(--transition), background var(--transition);
         }
-        .auth-card h2 { text-align: center; margin-bottom: 20px; }
-        .auth-card input {
-            width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border);
-            border-radius: 12px; font-size: 1rem; background: var(--bg); color: var(--text);
-            outline: none;
-        }
-        .auth-card input:focus { border-color: var(--primary); }
-        .auth-card button {
-            width: 100%; padding: 14px; background: var(--primary); color: white;
-            border: none; border-radius: 12px; font-weight: 700; margin-top: 10px; cursor: pointer;
-        }
-        .auth-card button:hover { background: var(--primary-hover); }
+        .chat-header { padding: 18px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .chat-header h3 { font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .chat-header .live-pulse { width: 8px; height: 8px; background: var(--success); border-radius: 50%; animation: pulse 1.5s infinite; }
+        .chat-messages-container { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        
+        .chat-bubble { display: flex; flex-direction: column; gap: 4px; max-width: 85%; width: fit-content; padding: 10px 14px; border-radius: 16px; background: var(--bg); font-size: 0.92rem; line-height: 1.4; color: var(--text); }
+        .chat-bubble.me { background: var(--border); border: 1px solid var(--border); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .chat-bubble.other { background: var(--card); border: 1px solid var(--border); align-self: flex-start; border-bottom-left-radius: 4px; }
+        .chat-bubble .c-user { font-weight: 800; font-size: 0.75rem; opacity: 0.8; }
+
+        .chat-input-bar { padding: 16px; border-top: 1px solid var(--border); display: flex; gap: 8px; align-items: center; background: var(--card); }
+        .chat-input-bar input { flex: 1; padding: 12px 16px; border-radius: 24px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; font-size: 0.95rem; }
+        .chat-input-bar button { background: var(--primary); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; transition: transform 0.1s ease; }
+        .chat-input-bar button:active { transform: scale(0.95); }
+
+        /* --- ARCHITECTURE ARCHIVE TABLE --- */
+        .spec-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.88rem; text-align: left; }
+        .spec-table th, .spec-table td { padding: 10px 12px; border: 1px solid var(--border); }
+        .spec-table th { background: var(--bg); font-weight: 700; }
+        .spec-table td strong { color: var(--danger); }
+        .spec-table .complexity-badge { font-size: 0.75rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; margin-left: 6px; display: inline-block; text-transform: uppercase; }
+        .spec-table .badge-easy { background: rgba(66, 183, 42, 0.15); color: var(--success); }
+        .spec-table .badge-medium { background: rgba(24, 119, 242, 0.15); color: var(--primary); }
+        .spec-table .badge-hard { background: rgba(239, 69, 96, 0.15); color: var(--danger); }
+
+        /* --- AUTH CARD --- */
+        .auth-card { max-width: 400px; margin: 80px auto; background: var(--card); padding: 36px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .auth-card h2 { text-align: center; margin-bottom: 24px; font-size: 1.8rem; font-weight: 800; color: var(--primary); }
+        .auth-card input { width: 100%; padding: 14px; margin: 8px 0; border: 1px solid var(--border); border-radius: 12px; font-size: 1rem; background: var(--bg); color: var(--text); outline: none; transition: border var(--transition); }
+        .auth-card button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 700; margin-top: 12px; cursor: pointer; font-size: 1rem; transition: all var(--transition); }
+        .auth-card button:hover { background: var(--primary-hover); transform: translateY(-1px); }
         .auth-card .secondary { background: var(--success); }
         .auth-card .secondary:hover { background: #36a420; }
-        .auth-card .link-btn { background: none; color: var(--primary); font-weight: 600; }
-        .auth-status { text-align: center; margin-top: 12px; font-weight: 600; }
+        .auth-card .link-btn { background: none; color: var(--primary); font-weight: 600; margin-top: 4px; }
+        .auth-status { text-align: center; margin-top: 14px; font-weight: 600; font-size: 0.9rem; }
 
-        .chat-window {
-            background: var(--card); border-radius: var(--radius); padding: 16px;
-            max-height: 420px; overflow-y: auto; margin-bottom: 12px;
-        }
-        .chat-input-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-        .chat-input-area input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 30px; outline: none; background: var(--bg); color: var(--text); min-width: 100px; }
-        .chat-input-area button { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 30px; font-weight: 700; cursor: pointer; }
-        .vanish-toggle { background: var(--border); border: none; padding: 8px 14px; border-radius: 30px; font-size: 0.8rem; cursor: pointer; color: var(--text); font-weight: 600; }
-        .vanish-toggle.active { background: var(--danger); color: white; }
-        .typing-indicator { font-size: 0.8rem; color: #888; padding: 4px 8px; font-style: italic; }
+        .profile-section { background: var(--card); padding: 30px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .profile-section .avatar { width: 90px; height: 90px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-size: 2.6rem; margin: 0 auto 16px; font-weight: bold; }
+        .danger-zone { border: 1px solid var(--danger); padding: 20px; border-radius: var(--radius); margin-top: 30px; background: rgba(233,69,96,0.02); }
+        .danger-zone button { background: var(--danger); color: white; border: none; padding: 12px 24px; border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 10px; }
+        .empty-state { text-align: center; color: #888; padding: 40px 0; font-weight: 500; }
 
-        .sticker-picker {
-            display: none; background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius); padding: 12px; margin-top: 8px;
-            max-width: 320px; flex-wrap: wrap; gap: 6px; box-shadow: var(--shadow);
-            z-index: 20; position: absolute;
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0% { transform: scale(0.95); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.95); opacity: 0.5; } }
+        
+        @media (max-width: 992px) {
+            .chat-sidebar { position: absolute; right: 0; top: 0; height: 100%; transform: translateX(100%); box-shadow: -4px 0 20px rgba(0,0,0,0.1); }
+            .chat-sidebar.open { transform: translateX(0); }
         }
-        .sticker-picker.open { display: flex; }
-        .sticker-picker span { font-size: 1.8rem; cursor: pointer; padding: 4px; border-radius: 8px; }
-        .sticker-picker span:hover { background: var(--bg); }
-
-        .call-modal {
-            display: none; position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center;
-        }
-        .call-modal.open { display: flex; }
-        .call-modal .call-box {
-            background: var(--card); padding: 24px; border-radius: var(--radius);
-            max-width: 600px; width: 90%; text-align: center;
-        }
-        .call-modal .call-box video { width: 100%; max-height: 300px; border-radius: 12px; background: #000; margin: 8px 0; }
-        .call-modal .call-box .call-actions { display: flex; gap: 16px; justify-content: center; margin-top: 12px; }
-        .call-modal .call-box .call-actions button { padding: 10px 28px; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
-        .call-modal .call-box .hangup { background: var(--danger); color: white; }
-
-        .empty-state { text-align: center; color: #999; padding: 40px 0; }
-        .flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .profile-section { background: var(--card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); }
-        .profile-section .avatar {
-            width: 80px; height: 80px; border-radius: 50%;
-            background: var(--primary); color: white;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2.4rem; margin: 0 auto 12px; object-fit: cover; overflow: hidden;
-            cursor: pointer;
-        }
-        .search-box { display: flex; gap: 8px; margin-bottom: 16px; }
-        .search-box input { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 30px; background: var(--bg); color: var(--text); outline: none; }
-        .search-box button { padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
-        .danger-zone { border: 1px solid var(--danger); padding: 16px; border-radius: var(--radius); margin-top: 20px; }
-        .danger-zone button { background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; }
-
         @media (max-width: 768px) {
-            .sidebar { width: 72px; padding: 12px 8px; }
-            .sidebar .brand span, .sidebar .nav-item span:not(.icon) { display: none; }
-            .sidebar .nav-item { justify-content: center; padding: 12px; }
-            .sidebar .nav-item .badge { position: absolute; top: 2px; right: 2px; }
-            .content-area { padding: 12px; }
+            .sidebar { width: 76px; padding: 16px 8px; }
+            .sidebar .brand span, .sidebar .nav-item span:not(.icon), .sidebar .logout-btn span { display: none; }
+            .sidebar .nav-item { justify-content: center; padding: 14px; }
+            .content-area { padding: 16px; }
         }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <!-- 🔑 Authentication Screen -->
+    <!-- 🔑 Authentication Gateway Screen -->
     <div id="authScreen" class="auth-card">
-        <h2>🚀 NM Social</h2>
+        <h2>🚀 Dr. Ngong Mawien Social</h2>
         <input type="text" id="loginIdentifier" placeholder="Email Address" />
         <input type="password" id="loginPassword" placeholder="Password" />
-        <button id="loginBtn">Login</button>
-        <button class="link-btn" id="forgotPasswordBtn" style="background:none; color:var(--primary); padding:10px;">🔑 Forgot Password?</button>
-        <p style="text-align:center; margin:8px 0;">— or —</p>
+        <button id="loginBtn">Log In</button>
+        <button class="link-btn" id="forgotPasswordBtn">Forgot Password?</button>
+        <p style="text-align:center; margin:12px 0; color:#888; font-size:0.9rem;">— or —</p>
         <input type="text" id="regDisplayName" placeholder="Full Name" />
         <input type="text" id="regIdentifier" placeholder="Email Address" />
-        <input type="password" id="regPassword" placeholder="Password (min 6)" />
-        <button class="secondary" id="registerBtn">Create Account</button>
+        <input type="password" id="regPassword" placeholder="Password (min 6 characters)" />
+        <button class="secondary" id="registerBtn">Create New Account</button>
         <div id="authStatus" class="auth-status"></div>
     </div>
 
-    <!-- 🌐 Main Application Layout View Screen -->
+    <!-- 🌐 Core App Layout UI -->
     <div id="appScreen" class="app-wrapper" style="display:none;">
+        <!-- Left Sidebar -->
         <div class="sidebar">
-            <div class="brand">👑 Ngong Mawien <span>Social</span></div>
+            <div class="brand">🩺 Dr. Ngong Mawien <span>Social</span></div>
             <div class="nav-item active" data-tab="feed"><span class="icon">📰</span> <span>Feed</span></div>
-            <div class="nav-item" data-tab="stories"><span class="icon">🎞️</span> <span>Stories</span></div>
             <div class="nav-item" data-tab="bookmarks"><span class="icon">🔖</span> <span>Saved</span></div>
-            <div class="nav-item" data-tab="requests"><span class="icon">👥</span> <span>Requests</span> <span class="badge" id="reqBadge" style="display:none;">0</span></div>
-            <div class="nav-item" data-tab="chats"><span class="icon">💬</span> <span>Chats</span></div>
-            <div class="nav-item" data-tab="find"><span class="icon">🔍</span> <span>Find</span></div>
             <div class="nav-item" data-tab="profile"><span class="icon">👤</span> <span>Profile</span></div>
-            <div class="nav-item" id="notifBell"><span class="icon">🔔</span> <span>Alerts</span> <span class="badge" id="notifCount" style="display:none;">0</span></div>
+            <div class="nav-item" id="mobileChatToggle" style="display:none;"><span class="icon">💬</span> <span>Open Chat</span></div>
+            
             <div class="theme-row">
                 <button id="themeToggle">🌓 Theme</button>
-                <span style="font-size:0.8rem; opacity:0.6;"><span class="online-dot"></span> Online</span>
+                <span style="font-size:0.8rem; font-weight:600; opacity:0.7;"><span class="online-dot"></span> Active</span>
             </div>
-            <div class="logout-btn" id="logoutBtn">🚪 Logout</div>
+            <div class="logout-btn" id="logoutBtn">🚪 <span>Logout</span></div>
         </div>
 
+        <!-- Center Workstation Stream -->
         <div class="main-content">
+            <!-- ✍️ Publisher Bar -->
             <div class="post-bar" id="postBar">
                 <div class="top-row">
-                    <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+                    <div class="mini-avatar" id="barAvatar">U</div>
+                    <textarea id="postContent" placeholder="What's on your mind? Create a trend..."></textarea>
                 </div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; position: relative;">
-                    <input type="file" id="imageInput" accept="image/*" style="display:none;" />
-                    <img id="imagePreview" class="image-preview" />
-                    <div class="voice-preview" id="voicePreviewArea">
-                        <audio controls id="voicePreviewAudio" style="max-width:200px;"></audio>
-                        <button id="cancelVoiceBtn" style="background:var(--danger);color:white;border:none;padding:4px 12px;border-radius:30px;">✕</button>
+                <div style="position: relative; width: 100%;">
+                    <div id="pollInputArea" class="poll-options" style="display:none; margin-top:8px;">
+                        <input id="pollOption1" placeholder="Choice 1 (Required)" />
+                        <input id="pollOption2" placeholder="Choice 2 (Required)" />
+                        <input id="pollOption3" placeholder="Choice 3 (Optional)" />
                     </div>
-                    <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                        <button id="attachImageBtn">📷</button>
-                        <button id="voicePostBtn">🎤</button>
-                        <button id="stickerPostBtn">😊</button>
-                        <button id="pollToggleBtn">📊 Poll</button>
-                        <div class="sticker-picker" id="stickerPostPicker"></div>
+                    
+                    <div class="actions">
+                        <div class="media-triggers">
+                            <button id="pollToggleBtn">📊 <span>Poll</span></button>
+                        </div>
+                        <button class="publish-btn" id="publishBtn">Post to Feed</button>
                     </div>
-                    <div id="pollInputArea" style="display:none; width:100%; flex-wrap:wrap; gap:4px; margin-top:5px;">
-                        <input id="pollOption1" placeholder="Option 1" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
-                        <input id="pollOption2" placeholder="Option 2" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
-                        <input id="pollOption3" placeholder="Option 3 (optional)" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
-                    </div>
-                    <button class="publish-btn" id="publishBtn" style="margin-left:auto;">Post</button>
                 </div>
             </div>
 
             <div class="content-area">
+                <!-- 📰 Feed Page -->
                 <div class="page active" id="page-feed">
-                    <div class="search-box" style="margin-bottom:12px;">
-                        <input id="postSearchInput" placeholder="Search posts..." />
-                        <button id="postSearchBtn">🔍</button>
-                    </div>
-                    <div id="feedContainer"><div class="empty-state">Loading feed...</div></div>
-                </div>
-                <div class="page" id="page-stories"><div id="storiesContainer"><div class="empty-state">No stories yet.</div></div></div>
-                <div class="page" id="page-bookmarks"><div id="bookmarksContainer"><div class="empty-state">No saved posts yet.</div></div></div>
-                <div class="page" id="page-requests"><div id="requestsContainer"><div class="empty-state">No pending requests.</div></div></div>
-                <div class="page" id="page-find">
-                    <div class="search-box"><input id="searchInput" placeholder="Search by name..." /><button id="searchBtn">Search</button></div>
-                    <div id="searchResults"><div class="empty-state">Find friends to connect with.</div></div>
-                </div>
-                <div class="page" id="page-chats"><div id="chatListContainer"><div class="empty-state">No chats yet.</div></div></div>
-
-                <div id="chatWindowContainer" style="display:none;">
-                    <div class="flex" style="margin-bottom:12px;">
-                        <button style="background:none;border:none;font-size:1.6rem;cursor:pointer;color:var(--text);" id="backFromChat">←</button>
-                        <h3 id="chatPartnerName" style="flex:1;"></h3>
-                        <span id="onlineStatusChat" style="font-size:0.8rem;opacity:0.6;"><span class="online-dot"></span> Online</span>
-                        <button class="vanish-toggle" id="vanishToggle">🔮 OFF</button>
-                        <button style="background:var(--primary);color:white;border:none;padding:8px 16px;border-radius:30px;font-weight:700;cursor:pointer;" id="videoCallBtn">📹</button>
-                    </div>
-                    <div id="typingIndicator" class="typing-indicator" style="display:none;">typing...</div>
-                    <div class="chat-window" id="chatMessages"></div>
-                    <div class="chat-input-area" style="position:relative;">
-                        <input id="chatInput" placeholder="Type a message..." />
-                        <button id="stickerChatBtn">😊</button>
-                        <div class="sticker-picker" id="stickerChatPicker"></div>
-                        <button id="voiceChatBtn">🎤</button>
-                        <button id="sendChatBtn">Send</button>
-                    </div>
+                    <div id="feedContainer"><div class="empty-state">Loading your network streams...</div></div>
                 </div>
 
+                <!-- 🔖 Bookmarks Page -->
+                <div class="page" id="page-bookmarks">
+                    <h3>🔖 Saved Publications</h3>
+                    <div id="bookmarksContainer" style="margin-top:16px;"><div class="empty-state">No saved posts found.</div></div>
+                </div>
+
+                <!-- 👤 Profile Controls -->
                 <div class="page" id="page-profile">
                     <div class="profile-section">
                         <div style="text-align:center;">
-                            <div class="avatar" id="profileAvatar" onclick="document.getElementById('profilePicInput').click();">👤</div>
-                            <input type="file" id="profilePicInput" accept="image/*" style="display:none;" />
+                            <div class="avatar" id="profileAvatar">U</div>
                             <h3 id="profileName">Loading Profile...</h3>
-                            <p id="profileEmail"></p>
-                            <p style="margin-top:5px;">👥 Friends: <span id="friendsCount">0</span> &nbsp;|&nbsp; 👁️ Views: <span id="viewsCount">0</span></p>
+                            <p id="profileEmail" style="opacity:0.6; font-size:0.95rem;"></p>
+                            <p style="margin-top:12px; font-weight:600;">👥 Connections: <span id="friendsCount">0</span> &nbsp;|&nbsp; 👁️ Profile Views: <span id="viewsCount">0</span></p>
                         </div>
-                        <hr style="margin:16px 0; border-color:var(--border);" />
-                        <h4>My Posts</h4>
-                        <div id="myPostsContainer"><div class="empty-state">No personal posts yet.</div></div>
+                        
+                        <hr style="margin:24px 0; border:none; border-top:1px solid var(--border);" />
+                        
+                        <!-- 📋 Optimization & System Scope Logs Matrix -->
+                        <h4 style="margin-bottom:6px;">📋 System Architecture & Core Log Matrix</h4>
+                        <p style="font-size:0.85rem; opacity:0.7; margin-bottom:12px;">Roadmap tracking structural architecture, simplified layers, and un-implemented platform extensions:</p>
+                        <table class="spec-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature Element</th>
+                                    <th>Status / Strategy Context</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>Stories</strong></td><td>Removed – replaced directly with Chat Sidebar. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Friend Requests</strong></td><td>Removed – simplified application flow without relational gates. <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td><strong>Find People / Search Users</strong></td><td>Not implemented – centralized around core feed streams. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Profile Picture Upload</strong></td><td>Avatar layout is text-only (rendered dynamically via strings). <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Image/Photo Uploads in Posts</strong></td><td>Not implemented – database streamlined to clean text structures + polls. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Voice Notes</strong></td><td>Not implemented – binary media parsing layers completely omitted. <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td><strong>Video Calls</strong></td><td>Not implemented – webRTC or media streaming bridges decoupled. <span class="complexity-badge badge-hard">Hard</span></td></tr>
+                                <tr><td><strong>Edit Posts</strong></td><td>Not implemented – publication history reads sequentially. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Delete Posts</strong></td><td>Not implemented yet. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Private Direct Messages (DMs)</strong></td><td>Only central global chatroom space active to eliminate pipeline lookups. <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td><strong>Notifications</strong></td><td>Not implemented – stream updates run on direct pull snapshots. <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td><strong>Post Sharing</strong></td><td>Not implemented – deep internal duplication links skipped. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                            </tbody>
+                        </table>
+
+                        <hr style="margin:24px 0; border:none; border-top:1px solid var(--border);" />
+                        <h4 style="margin-bottom:12px;">My Publications Timeline</h4>
+                        <div id="myPostsContainer"><div class="empty-state">You haven't posted anything yet.</div></div>
+                        
                         <div class="danger-zone">
                             <h4 style="color:var(--danger);">⚠️ Danger Zone</h4>
+                            <p style="font-size:0.85rem; opacity:0.8; margin-top:4px;">Permanently delete authentication node and eliminate profile structures from Firestore instantly.</p>
                             <button id="deleteAccountBtn">🗑️ Permanently Delete Account</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 📹 Video Call Window Overlay Modal Container -->
-    <div class="call-modal" id="callModal">
-        <div class="call-box">
-            <h3 id="callStatus">🔔 Incoming Call...</h3>
-            <video id="localVideo" autoplay muted playsinline></video>
-            <video id="remoteVideo" autoplay playsinline></video>
-            <div class="call-actions">
-                <button class="hangup" id="hangupBtn">📴 Hang Up</button>
+        <!-- 💬 Chatroom Sidebar -->
+        <div class="chat-sidebar" id="chatSidebar">
+            <div class="chat-header">
+                <h3>💬 Live Chatroom <span class="live-pulse"></span></h3>
+            </div>
+            <div class="chat-messages-container" id="chatMessagesContainer">
+                <div class="empty-state">Waking up secure chat streams...</div>
+            </div>
+            <div class="chat-input-bar">
+                <input type="text" id="chatMsgInput" placeholder="Send an instant message..." />
+                <button id="chatSendBtn">⚡</button>
             </div>
         </div>
+
     </div>
 </div>
 
 <script>
     // =============================================
-    // FIREBASE CONFIG
+    // FIREBASE MASTER CONFIG
     // =============================================
     const firebaseConfig = {
         apiKey: "AIzaSyAksWz12FkFPTQZsvz6pWYwJbOFh03T6VI",
@@ -383,46 +342,26 @@
     const auth = firebase.auth();
 
     // =============================================
-    // DOM REFS
+    // DOM REFS ENGINE
     // =============================================
     const $ = id => document.getElementById(id);
     const authScreen = $('authScreen'), appScreen = $('appScreen');
     const loginIdentifier = $('loginIdentifier'), loginPassword = $('loginPassword'), loginBtn = $('loginBtn');
     const regName = $('regDisplayName'), regIdentifier = $('regIdentifier'), regPass = $('regPassword'), registerBtn = $('registerBtn');
-    const forgotPasswordBtn = $('forgotPasswordBtn');
-    const authStatus = $('authStatus'), logoutBtn = $('logoutBtn');
-    const postContent = $('postContent'), publishBtn = $('publishBtn'), imageInput = $('imageInput'), imagePreview = $('imagePreview');
-    const attachImageBtn = $('attachImageBtn'), voicePostBtn = $('voicePostBtn'), stickerPostBtn = $('stickerPostBtn'), stickerPostPicker = $('stickerPostPicker');
+    const authStatus = $('authStatus'), logoutBtn = $('logoutBtn'), forgotPasswordBtn = $('forgotPasswordBtn');
+    const postContent = $('postContent'), publishBtn = $('publishBtn');
     const pollToggleBtn = $('pollToggleBtn'), pollInputArea = $('pollInputArea'), pollOption1 = $('pollOption1'), pollOption2 = $('pollOption2'), pollOption3 = $('pollOption3');
-    const voicePreviewArea = $('voicePreviewArea'), voicePreviewAudio = $('voicePreviewAudio'), cancelVoiceBtn = $('cancelVoiceBtn');
-    const feedContainer = $('feedContainer'), requestsContainer = $('requestsContainer'), reqBadge = $('reqBadge');
-    const searchInput = $('searchInput'), searchBtn = $('searchBtn'), searchResults = $('searchResults');
-    const postSearchInput = $('postSearchInput'), postSearchBtn = $('postSearchBtn');
-    const chatListContainer = $('chatListContainer'), chatWindowContainer = $('chatWindowContainer');
-    const chatMessages = $('chatMessages'), chatInput = $('chatInput'), sendChatBtn = $('sendChatBtn'), backFromChat = $('backFromChat');
-    const chatPartnerName = $('chatPartnerName'), vanishToggle = $('vanishToggle'), videoCallBtn = $('videoCallBtn');
-    const stickerChatBtn = $('stickerChatBtn'), stickerChatPicker = $('stickerChatPicker'), voiceChatBtn = $('voiceChatBtn');
-    const typingIndicator = $('typingIndicator'), onlineStatusChat = $('onlineStatusChat');
-    const profileName = $('profileName'), profileEmail = $('profileEmail');
-    const friendsCount = $('friendsCount'), viewsCount = $('viewsCount'), myPostsContainer = $('myPostsContainer');
-    const bookmarksContainer = $('bookmarksContainer'), storiesContainer = $('storiesContainer');
-    const notifCount = $('notifCount'), notifBell = $('notifBell'), themeToggle = $('themeToggle');
-    const callModal = $('callModal'), localVideo = $('localVideo'), remoteVideo = $('remoteVideo');
-    const hangupBtn = $('hangupBtn'), profilePicInput = $('profilePicInput');
-    const deleteAccountBtn = $('deleteAccountBtn');
+    const feedContainer = $('feedContainer'), myPostsContainer = $('myPostsContainer'), bookmarksContainer = $('bookmarksContainer');
+    const profileName = $('profileName'), profileEmail = $('profileEmail'), friendsCount = $('friendsCount'), viewsCount = $('viewsCount');
+    const themeToggle = $('themeToggle'), barAvatar = $('barAvatar'), profileAvatar = $('profileAvatar'), deleteAccountBtn = $('deleteAccountBtn');
+    
+    // Chat DOM refs
+    const chatMessagesContainer = $('chatMessagesContainer'), chatMsgInput = $('chatMsgInput'), chatSendBtn = $('chatSendBtn'), chatSidebar = $('chatSidebar');
+
+    let currentUserData = null, isPollMode = false, feedUnsubscribe = null, chatUnsubscribe = null;
 
     // =============================================
-    // STATE MANAGEMENT
-    // =============================================
-    let currentUserData = null, currentTab = 'feed';
-    let selectedImageBase64 = null, selectedVoiceBase64 = null, voiceBlobURL = null;
-    let currentChatId = null, currentChatPartnerId = null, chatUnsubscribe = null;
-    let vanishMode = false, mediaRecorder = null, audioChunks = [];
-    let feedUnsubscribe = null, notifUnsubscribe = null, typingTimeout = null, storiesUnsub = null;
-    let isPollMode = false;
-
-    // =============================================
-    // THEME MANAGEMENT ENGINE
+    // THEME CONTROLLERS
     // =============================================
     let dark = localStorage.getItem('theme') === 'dark';
     if (dark) document.documentElement.setAttribute('data-theme', 'dark');
@@ -432,130 +371,60 @@
         localStorage.setItem('theme', dark ? 'dark' : 'light');
     };
 
-    // =============================================
-    // STICKER GENERATOR MODULE
-    // =============================================
-    const stickers = ['❤️','😊','😂','🎉','👍','🔥','💯','😍','🤩','🥳','😎','🤗','😇','🤣','😅','😆','🙃','😉','😌','😋','😜','🤪','😝'];
-    function buildStickerPicker(container, targetInput) {
-        container.innerHTML = '';
-        stickers.forEach(s => {
-            const span = document.createElement('span');
-            span.textContent = s;
-            span.onclick = (e) => { 
-                e.stopPropagation();
-                targetInput.value += s; 
-                container.classList.remove('open'); 
-            };
-            container.appendChild(span);
-        });
+    // Responsive Mobile Chat triggers
+    if(window.innerWidth <= 992) {
+        $('mobileChatToggle').style.display = 'flex';
+        $('mobileChatToggle').onclick = () => chatSidebar.classList.toggle('open');
     }
-    stickerPostBtn.onclick = (e) => { e.stopPropagation(); stickerPostPicker.classList.toggle('open'); if(stickerPostPicker.classList.contains('open')) buildStickerPicker(stickerPostPicker, postContent); };
-    stickerChatBtn.onclick = (e) => { e.stopPropagation(); stickerChatPicker.classList.toggle('open'); if(stickerChatPicker.classList.contains('open')) buildStickerPicker(stickerChatPicker, chatInput); };
-    document.addEventListener('click', () => { stickerPostPicker.classList.remove('open'); stickerChatPicker.classList.remove('open'); });
 
     // =============================================
-    // IMAGE HANDLING LOGIC
-    // =============================================
-    attachImageBtn.onclick = () => imageInput.click();
-    imageInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                selectedImageBase64 = event.target.result;
-                imagePreview.src = selectedImageBase64;
-                imagePreview.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    // =============================================
-    // POLL ELEMENT UI TOGGLE
+    // POLL TOGGLER ENGINE
     // =============================================
     pollToggleBtn.onclick = () => {
         isPollMode = !isPollMode;
-        if (isPollMode) {
-            pollInputArea.style.display = 'flex';
-            pollToggleBtn.style.background = 'var(--primary)';
-            pollToggleBtn.style.color = 'white';
-        } else {
-            pollInputArea.style.display = 'none';
-            pollToggleBtn.style.background = 'none';
-            pollToggleBtn.style.color = 'var(--text)';
-            pollOption1.value = '';
-            pollOption2.value = '';
-            pollOption3.value = '';
-        }
+        pollInputArea.style.display = isPollMode ? 'flex' : 'none';
+        pollToggleBtn.style.background = isPollMode ? 'var(--primary)' : 'var(--bg)';
+        pollToggleBtn.style.color = isPollMode ? 'white' : 'var(--text)';
     };
 
     // =============================================
-    // 👤 ACCOUNT AUTHENTICATION LOOP
+    // SECURE USER IDENTITY HANDSHAKES
     // =============================================
-
-    // 1. Account Creation
     registerBtn.onclick = async () => {
-        const name = regName.value.trim();
-        const email = regIdentifier.value.trim();
-        const password = regPass.value;
-
+        const name = regName.value.trim(), email = regIdentifier.value.trim(), password = regPass.value;
         if (!name || !email || password.length < 6) {
-            authStatus.textContent = "❌ Please complete all fields. Passwords must be 6+ characters.";
+            authStatus.textContent = "❌ Check fields. Password requires 6+ characters.";
             authStatus.style.color = "var(--danger)";
             return;
         }
-
         try {
-            authStatus.textContent = "Creating network account...";
-            authStatus.style.color = "var(--text)";
-            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
-            
-            await db.collection('users').doc(userCredential.user.uid).set({
-                name: name,
-                email: email,
-                uid: userCredential.user.uid,
-                friendsCount: 0,
-                viewsCount: 0,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            authStatus.textContent = "Deploying secure cryptographic profile data...";
+            const cred = await auth.createUserWithEmailAndPassword(email, password);
+            await db.collection('users').doc(cred.user.uid).set({
+                name: name, email: email, uid: cred.user.uid, friendsCount: 0, viewsCount: 1, createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            
-            authStatus.textContent = "✅ System profile deployed successfully!";
+            authStatus.textContent = "✅ System registration complete!";
             authStatus.style.color = "var(--success)";
-            regName.value = ''; regIdentifier.value = ''; regPass.value = '';
-        } catch (error) {
-            authStatus.textContent = "❌ " + error.message;
-            authStatus.style.color = "var(--danger)";
-        }
+        } catch (err) { authStatus.textContent = "❌ " + err.message; authStatus.style.color = "var(--danger)"; }
     };
 
-    // 2. User Sign-in Login
     loginBtn.onclick = async () => {
-        const email = loginIdentifier.value.trim();
-        const password = loginPassword.value;
-
-        if (!email || !password) {
-            authStatus.textContent = "❌ Missing key data profile credentials.";
-            authStatus.style.color = "var(--danger)";
-            return;
-        }
-
-        try {
-            authStatus.textContent = "Establishing security handshake...";
-            authStatus.style.color = "var(--text)";
-            await auth.signInWithEmailAndPassword(email, password);
-        } catch (error) {
-            authStatus.textContent = "❌ " + error.message;
-            authStatus.style.color = "var(--danger)";
-        }
+        const email = loginIdentifier.value.trim(), password = loginPassword.value;
+        if (!email || !password) { alert("Please provide authentication credentials."); return; }
+        try { await auth.signInWithEmailAndPassword(email, password); } 
+        catch (err) { authStatus.textContent = "❌ " + err.message; authStatus.style.color = "var(--danger)"; }
     };
 
-    // 3. Monitor Authentication Engine State Changes
+    forgotPasswordBtn.onclick = async () => {
+        const email = loginIdentifier.value.trim();
+        if(!email) { alert("Please input your email address in the box first."); return; }
+        try { await auth.sendPasswordResetEmail(email); alert("🔒 Reset security matrix link successfully dispatched to email inbox."); }
+        catch(err) { alert(err.message); }
+    };
+
     auth.onAuthStateChanged(async (user) => {
         if (user) {
-            authScreen.style.display = 'none';
-            appScreen.style.display = 'flex';
-            authStatus.textContent = "";
-            
+            authScreen.style.display = 'none'; appScreen.style.display = 'flex';
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
                 currentUserData = doc.data();
@@ -563,163 +432,248 @@
                 profileEmail.textContent = currentUserData.email;
                 friendsCount.textContent = currentUserData.friendsCount || 0;
                 viewsCount.textContent = currentUserData.viewsCount || 0;
+                const letter = currentUserData.name.charAt(0).toUpperCase();
+                barAvatar.textContent = letter; profileAvatar.textContent = letter;
             }
             listenToFeed();
+            listenToChat();
         } else {
-            authScreen.style.display = 'block';
-            appScreen.style.display = 'none';
-            currentUserData = null;
+            authScreen.style.display = 'block'; appScreen.style.display = 'none';
             if (feedUnsubscribe) feedUnsubscribe();
+            if (chatUnsubscribe) chatUnsubscribe();
         }
     });
 
-    // 4. End Session Logout
-    logoutBtn.onclick = () => {
-        auth.signOut().then(() => {
-            loginIdentifier.value = '';
-            loginPassword.value = '';
-        });
+    logoutBtn.onclick = () => auth.signOut();
+
+    deleteAccountBtn.onclick = async () => {
+        if (confirm("⚠️ CRITICAL ACCESSIBILITY ALERT: Are you absolutely sure you want to permanently erase this node? This action is completely irreversible.")) {
+            try {
+                const user = auth.currentUser;
+                await db.collection('users').doc(user.uid).delete();
+                await user.delete();
+                alert("Profile and data paths cleared.");
+            } catch (err) { alert("Re-authenticate session to perform database deletions: " + err.message); }
+        }
     };
 
     // =============================================
-    // 📰 FIRESTORE PUBLISHING & DISTRIBUTED FEED
+    // REAL-TIME DISTRIBUTED POST ENGINE WITH COMMENTS
     // =============================================
-
-    // 1. Send Post to Firestore Stream Collection
     publishBtn.onclick = async () => {
         const text = postContent.value.trim();
-        if (!text && !isPollMode && !selectedImageBase64) {
-            alert("Empty posts cannot be dispatched.");
-            return;
-        }
+        if (!text && !isPollMode) return;
 
         const postData = {
             authorId: auth.currentUser.uid,
-            authorName: profileName.textContent || "Active Participant",
+            authorName: currentUserData ? currentUserData.name : "Verified Creator",
             content: text,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             likes: [],
-            comments: []
+            voters: {},
+            comments: [],
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
-
-        if (selectedImageBase64) {
-            postData.image = selectedImageBase64;
-        }
-
+        
         if (isPollMode) {
-            if (!pollOption1.value.trim() || !pollOption2.value.trim()) {
-                alert("Poll structures require a minimum of two primary choices.");
-                return;
-            }
+            if (!pollOption1.value.trim() || !pollOption2.value.trim()) { alert("Poll structures require at least two values."); return; }
             postData.poll = {
                 options: [
                     { text: pollOption1.value.trim(), votes: 0 },
                     { text: pollOption2.value.trim(), votes: 0 }
                 ]
             };
-            if (pollOption3.value.trim()) {
-                postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
-            }
+            if (pollOption3.value.trim()) postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
         }
 
         try {
-            publishBtn.disabled = true;
-            publishBtn.textContent = "Sending...";
             await db.collection('posts').add(postData);
-            
-            // Clean Form States
             postContent.value = '';
-            selectedImageBase64 = null;
-            imagePreview.style.display = 'none';
             if (isPollMode) pollToggleBtn.click();
-        } catch (error) {
-            alert("Stream publishing halted: " + error.message);
-        } finally {
-            publishBtn.disabled = false;
-            publishBtn.textContent = "Post";
-        }
+        } catch (err) { alert(err.message); }
     };
 
-    // 2. Capture Real-Time Collection Snapshot Array Changes
     function listenToFeed() {
-        feedContainer.innerHTML = '<div class="empty-state">Syncing operational data stream...</div>';
-        
-        feedUnsubscribe = db.collection('posts')
-            .orderBy('timestamp', 'desc')
-            .onSnapshot(snapshot => {
-                feedContainer.innerHTML = '';
-                myPostsContainer.innerHTML = '';
-                
-                if (snapshot.empty) {
-                    feedContainer.innerHTML = '<div class="empty-state">The timeline matrix is currently empty.</div>';
-                    myPostsContainer.innerHTML = '<div class="empty-state">No personal items published.</div>';
-                    return;
+        feedUnsubscribe = db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snap => {
+            feedContainer.innerHTML = ''; myPostsContainer.innerHTML = '';
+            if (snap.empty) { feedContainer.innerHTML = '<div class="empty-state">No real-time trends on feed.</div>'; return; }
+            
+            snap.forEach(doc => {
+                const post = doc.data();
+                const id = doc.id;
+                const postEl = document.createElement('div');
+                postEl.className = 'feed-item';
+
+                let hasLiked = post.likes && post.likes.includes(auth.currentUser.uid);
+
+                // Build Interactive Poll Engine Elements
+                let pollRender = '';
+                if (post.poll && post.poll.options) {
+                    let totalVotes = 0;
+                    post.poll.options.forEach(o => totalVotes += (o.votes || 0));
+                    
+                    pollRender = `<div class="poll-box-render">`;
+                    post.poll.options.forEach((opt, idx) => {
+                        let pct = totalVotes > 0 ? Math.round((opt.votes || 0) / totalVotes * 100) : 0;
+                        pollRender += `
+                            <div class="poll-option-render" onclick="votePoll('${id}', ${idx})">
+                                <div class="poll-progress-bar" style="width: ${pct}%"></div>
+                                <span class="poll-opt-text">${opt.text}</span>
+                                <span class="poll-opt-val">${pct}% (${opt.votes || 0})</span>
+                            </div>
+                        `;
+                    });
+                    pollRender += `</div>`;
                 }
 
-                snapshot.forEach(doc => {
-                    const post = doc.data();
-                    const postEl = document.createElement('div');
-                    postEl.className = 'feed-item';
-                    
-                    let imageHTML = post.image ? `<img src="${post.image}" class="feed-image"/>` : '';
-                    
-                    let pollHTML = '';
-                    if (post.poll && post.poll.options) {
-                        pollHTML = '<div style="margin-top:10px; display:flex; flex-direction:column; gap:5px;">';
-                        post.poll.options.forEach((opt) => {
-                            pollHTML += `
-                                <div class="poll-option">
-                                    <span>${opt.text}</span>
-                                    <span style="font-weight:bold;">${opt.votes || 0} votes</span>
-                                </div>
-                            `;
-                        });
-                        pollHTML += '</div>';
-                    }
+                // Render Active Real-time Comments Stream Inline
+                let commentBlobs = '';
+                if (post.comments && post.comments.length > 0) {
+                    post.comments.forEach(c => {
+                        commentBlobs += `
+                            <div class="comment-blob">
+                                <div class="comment-user">👤 ${c.userName}</div>
+                                <div>${c.text}</div>
+                            </div>
+                        `;
+                    });
+                }
 
-                    postEl.innerHTML = `
-                        <div class="feed-header">
-                            <div class="feed-author">👑 ${post.authorName}</div>
+                postEl.innerHTML = `
+                    <div class="feed-header">
+                        <div class="feed-author">👑 ${post.authorName} <span class="feed-time">Dynamic Stream Node</span></div>
+                    </div>
+                    <div class="feed-content">${post.content}</div>
+                    ${pollRender}
+                    <div class="feed-actions">
+                        <button class="${hasLiked ? 'liked' : ''}" onclick="toggleLike('${id}')">❤️ Like (${post.likes ? post.likes.length : 0})</button>
+                        <button onclick="bookmarkPost('${id}')">🔖 Save</button>
+                    </div>
+                    <div class="comment-section">
+                        ${commentBlobs}
+                        <div class="comment-input-row">
+                            <input id="cmt-${id}" placeholder="Write a public dynamic comment..." />
+                            <button onclick="addComment('${id}')">Reply</button>
                         </div>
-                        <div class="feed-content">${post.content}</div>
-                        ${imageHTML}
-                        ${pollHTML}
-                        <div class="feed-actions">
-                            <button>❤️ Like (${post.likes ? post.likes.length : 0})</button>
-                            <button>💬 Comment (${post.comments ? post.comments.length : 0})</button>
-                        </div>
-                    `;
-                    
-                    // Route to dynamic containers based on original creator
-                    if (post.authorId === auth.currentUser.uid) {
-                        myPostsContainer.appendChild(postEl.cloneNode(true));
-                    }
-                    feedContainer.appendChild(postEl);
-                });
-            }, error => {
-                console.error("Live subscription dropped: ", error);
-                feedContainer.innerHTML = '<div class="empty-state" style="color:var(--danger);">⚠️ Pipeline connection failed.</div>';
+                    </div>
+                `;
+
+                if(post.authorId === auth.currentUser.uid) {
+                    myPostsContainer.appendChild(postEl.cloneNode(true));
+                }
+                feedContainer.appendChild(postEl);
             });
+        });
     }
 
     // =============================================
-    // 🎛️ SIDEBAR ROUTING TAB ENGINE
+    // REAL-TIME MESSENGER CHATSTREAM ENGINE
+    // =============================================
+    async function sendChatMessage() {
+        const txt = chatMsgInput.value.trim();
+        if(!txt) return;
+        
+        chatMsgInput.value = '';
+        try {
+            await db.collection('messages').add({
+                senderId: auth.currentUser.uid,
+                senderName: currentUserData ? currentUserData.name : "Active User",
+                text: txt,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch(e) { console.error("Chat dispatch error: ", e); }
+    }
+
+    chatSendBtn.onclick = sendChatMessage;
+    chatMsgInput.onkeydown = (e) => { if(e.key === 'Enter') sendChatMessage(); };
+
+    function listenToChat() {
+        chatUnsubscribe = db.collection('messages').orderBy('timestamp', 'asc').limitToLast(40).onSnapshot(snap => {
+            chatMessagesContainer.innerHTML = '';
+            if(snap.empty) {
+                chatMessagesContainer.innerHTML = '<div class="empty-state">👋 Channel empty. Initiate communication!</div>';
+                return;
+            }
+            snap.forEach(doc => {
+                const msg = doc.data();
+                const isMe = msg.senderId === auth.currentUser.uid;
+                const bubble = document.createElement('div');
+                bubble.className = `chat-bubble ${isMe ? 'me' : 'other'}`;
+                bubble.innerHTML = `
+                    <span class="c-user">${isMe ? 'You' : msg.senderName}</span>
+                    <span>${msg.text}</span>
+                `;
+                chatMessagesContainer.appendChild(bubble);
+            });
+            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
+        });
+    }
+
+    // =============================================
+    // TRANSACTIONS HANDLERS
+    // =============================================
+    window.toggleLike = async (id) => {
+        const ref = db.collection('posts').doc(id);
+        const uid = auth.currentUser.uid;
+        const d = await ref.get();
+        if (!d.exists) return;
+        let l = d.data().likes || [];
+        if (l.includes(uid)) l = l.filter(i => i !== uid); else l.push(uid);
+        await ref.update({ likes: l });
+    };
+
+    window.votePoll = async (postId, index) => {
+        const ref = db.collection('posts').doc(postId);
+        const uid = auth.currentUser.uid;
+        const d = await ref.get();
+        if (!d.exists) return;
+        const data = d.data();
+        
+        let voters = data.voters || {};
+        if (voters[uid] !== undefined) { alert("Network security parameters allow one execution per poll profile."); return; }
+        
+        voters[uid] = index;
+        let opts = data.poll.options;
+        opts[index].votes = (opts[index].votes || 0) + 1;
+        
+        await ref.update({ voters: voters, 'poll.options': opts });
+    };
+
+    window.addComment = async (id) => {
+        const inp = $('cmt-' + id);
+        const txt = inp.value.trim();
+        if (!txt) return;
+        const ref = db.collection('posts').doc(id);
+        const newComment = {
+            userId: auth.currentUser.uid,
+            userName: currentUserData ? currentUserData.name : "Anonymous User",
+            text: txt,
+            created: Date.now()
+        };
+        await ref.update({ comments: firebase.firestore.FieldValue.arrayUnion(newComment) });
+        inp.value = '';
+    };
+
+    window.bookmarkPost = async (id) => {
+        const d = await db.collection('posts').doc(id).get();
+        if (!d.exists) return;
+        const bEl = document.createElement('div');
+        bEl.className = 'feed-item';
+        bEl.innerHTML = `<h4>🔖 ${d.data().authorName}</h4><p>${d.data().content}</p>`;
+        bookmarksContainer.appendChild(bEl);
+        alert("Publication safely vaulted to Saved space.");
+    };
+
+    // =============================================
+    // ROUTING ENGINES
     // =============================================
     document.querySelectorAll('.sidebar .nav-item[data-tab]').forEach(item => {
         item.onclick = () => {
             document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
             document.querySelectorAll('.content-area .page').forEach(p => p.classList.remove('active'));
-            
             item.classList.add('active');
-            const targetTab = item.getAttribute('data-tab');
-            const targetPage = $('page-' + targetTab);
-            if (targetPage) targetPage.classList.add('active');
-            
-            if (targetTab === 'feed') {
-                $('postBar').style.display = 'block';
-            } else {
-                $('postBar').style.display = 'none';
-            }
+            const tab = item.getAttribute('data-tab');
+            $('page-' + tab).classList.add('active');
+            $('postBar').style.display = (tab === 'feed') ? 'block' : 'none';
         };
     });
 </script>
