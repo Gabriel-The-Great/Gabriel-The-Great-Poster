@@ -98,11 +98,13 @@
         .content-area .page.active { display: block; animation: fadeIn 0.3s ease; }
 
         /* Feed Item Layout */
-        .feed-item { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); }
+        .feed-item { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 20px; border: 1px solid var(--border); position: relative; }
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .feed-author { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 8px; }
         .feed-time { font-size: 0.8rem; opacity: 0.5; font-weight: 400; }
         .feed-content { font-size: 1.05rem; margin: 8px 0 12px; line-height: 1.5; }
+        .delete-post-btn { background: none; border: none; color: var(--danger); font-size: 0.9rem; font-weight: bold; cursor: pointer; opacity: 0.7; transition: opacity var(--transition); }
+        .delete-post-btn:hover { opacity: 1; }
         
         /* Interactive Poll Engine */
         .poll-box-render { background: var(--bg); padding: 14px; border-radius: 12px; margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
@@ -136,6 +138,18 @@
         .user-search-card .s-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
         .user-search-card .info h4 { font-size: 1rem; font-weight: 700; }
         .user-search-card .info p { font-size: 0.82rem; opacity: 0.6; }
+
+        /* --- DMs STRUCTURE PANEL --- */
+        .dm-container { display: flex; height: 500px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+        .dm-users-list { width: 200px; border-right: 1px solid var(--border); overflow-y: auto; display: flex; flex-direction: column; background: var(--bg); }
+        .dm-user-item { padding: 12px; font-weight: 600; font-size: 0.9rem; cursor: pointer; border-bottom: 1px solid var(--border); transition: background var(--transition); }
+        .dm-user-item:hover, .dm-user-item.active { background: var(--card); color: var(--primary); }
+        .dm-window { flex: 1; display: flex; flex-direction: column; height: 100%; background: var(--card); }
+        .dm-header { padding: 12px; font-weight: bold; border-bottom: 1px solid var(--border); }
+        .dm-messages { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .dm-input-row { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+        .dm-input-row input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg); color: var(--text); outline: none; }
+        .dm-input-row button { background: var(--primary); color: white; border: none; padding: 0 16px; border-radius: 20px; font-weight: bold; cursor: pointer; }
 
         /* --- LIVE CHAT BAR (RIGHT HAND PANEL) --- */
         .chat-sidebar {
@@ -225,6 +239,7 @@
             <div class="brand">🩺 Dr. Ngong Mawien <span>Social</span></div>
             <div class="nav-item active" data-tab="feed"><span class="icon">📰</span> <span>Feed</span></div>
             <div class="nav-item" data-tab="search"><span class="icon">🔍</span> <span>Find People</span></div>
+            <div class="nav-item" data-tab="dms" id="dmsTab"><span class="icon">✉️</span> <span>Direct Messages</span></div>
             <div class="nav-item" data-tab="bookmarks"><span class="icon">🔖</span> <span>Saved</span></div>
             <div class="nav-item" data-tab="profile"><span class="icon">👤</span> <span>Profile</span></div>
             <div class="nav-item" id="mobileChatToggle" style="display:none;"><span class="icon">💬</span> <span>Open Chat</span></div>
@@ -280,6 +295,26 @@
                     </div>
                 </div>
 
+                <!-- ✉️ Direct Messages Page -->
+                <div class="page" id="page-dms">
+                    <h3>✉️ Private Dedicated Channels</h3>
+                    <div class="dm-container" style="margin-top:16px;">
+                        <div class="dm-users-list" id="dmUsersList">
+                            <!-- Populated dynamically via users collection lookup -->
+                        </div>
+                        <div class="dm-window">
+                            <div class="dm-header" id="dmTargetHeader">Select a creator to open secure channel</div>
+                            <div class="dm-messages" id="dmMessagesContainer">
+                                <div class="empty-state">No chat active.</div>
+                            </div>
+                            <div class="dm-input-row">
+                                <input type="text" id="dmMsgInput" placeholder="Write a private message..." disabled />
+                                <button id="dmSendBtn" disabled>Send</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 🔖 Bookmarks Page -->
                 <div class="page" id="page-bookmarks">
                     <h3>🔖 Saved Publications</h3>
@@ -317,8 +352,8 @@
                                 <tr><td><strong>Voice Notes</strong></td><td>Not implemented – binary media parsing layers completely omitted. <span class="complexity-badge badge-medium">Medium</span></td></tr>
                                 <tr><td><strong>Video Calls</strong></td><td>Not implemented – webRTC or media streaming bridges decoupled. <span class="complexity-badge badge-hard">Hard</span></td></tr>
                                 <tr><td><strong>Edit Posts</strong></td><td>Not implemented – publication history reads sequentially. <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                                <tr><td><strong>Delete Posts</strong></td><td>Not implemented yet. <span class="complexity-badge badge-easy">Easy</span></td></tr>
-                                <tr><td><strong>Private Direct Messages (DMs)</strong></td><td>Only central global chatroom space active to eliminate pipeline lookups. <span class="complexity-badge badge-medium">Medium</span></td></tr>
+                                <tr><td><strong>Delete Posts</strong></td><td><strong style="color:var(--success)">Implemented</strong> – Real-time runtime removal tracking directly targeting references. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Private Direct Messages (DMs)</strong></td><td><strong style="color:var(--success)">Implemented</strong> – Secure structural targeting channel arrays mapped over combined UID routes. <span class="complexity-badge badge-medium">Medium</span></td></tr>
                                 <tr><td><strong>Notifications</strong></td><td>Not implemented – stream updates run on direct pull snapshots. <span class="complexity-badge badge-medium">Medium</span></td></tr>
                                 <tr><td><strong>Post Sharing</strong></td><td>Not implemented – deep internal duplication links skipped. <span class="complexity-badge badge-easy">Easy</span></td></tr>
                             </tbody>
@@ -387,11 +422,13 @@
     const profileName = $('profileName'), profileEmail = $('profileEmail'), friendsCount = $('friendsCount'), viewsCount = $('viewsCount');
     const themeToggle = $('themeToggle'), barAvatar = $('barAvatar'), profileAvatar = $('profileAvatar'), deleteAccountBtn = $('deleteAccountBtn');
     
-    // Search and Chat DOM refs
+    // Search, Chat and DM DOM refs
     const searchUserInput = $('searchUserInput'), searchUserBtn = $('searchUserBtn'), searchResultsContainer = $('searchResultsContainer');
     const chatMessagesContainer = $('chatMessagesContainer'), chatMsgInput = $('chatMsgInput'), chatSendBtn = $('chatSendBtn'), chatSidebar = $('chatSidebar');
+    const dmUsersList = $('dmUsersList'), dmTargetHeader = $('dmTargetHeader'), dmMessagesContainer = $('dmMessagesContainer'), dmMsgInput = $('dmMsgInput'), dmSendBtn = $('dmSendBtn'), dmsTab = $('dmsTab');
 
-    let currentUserData = null, isPollMode = false, feedUnsubscribe = null, chatUnsubscribe = null;
+    let currentUserData = null, isPollMode = false, feedUnsubscribe = null, chatUnsubscribe = null, dmUnsubscribe = null;
+    let selectedDMUserId = null, selectedDMChannelId = null;
 
     // =============================================
     // THEME CONTROLLERS
@@ -433,6 +470,9 @@
         try {
             authStatus.textContent = "Deploying secure cryptographic profile data...";
             const cred = await auth.createUserWithEmailAndPassword(email, password);
+            
+            await cred.user.updateProfile({ displayName: name });
+
             await db.collection('users').doc(cred.user.uid).set({
                 name: name, email: email, uid: cred.user.uid, friendsCount: 0, viewsCount: 1, createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -458,6 +498,13 @@
     auth.onAuthStateChanged(async (user) => {
         if (user) {
             authScreen.style.display = 'none'; appScreen.style.display = 'flex';
+            
+            const initialName = user.displayName || user.email.split('@')[0];
+            profileName.textContent = initialName;
+            profileEmail.textContent = user.email;
+            barAvatar.textContent = initialName.charAt(0).toUpperCase(); 
+            profileAvatar.textContent = initialName.charAt(0).toUpperCase();
+
             const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
                 currentUserData = doc.data();
@@ -470,10 +517,13 @@
             }
             listenToFeed();
             listenToChat();
+            loadDMUsers();
         } else {
             authScreen.style.display = 'block'; appScreen.style.display = 'none';
+            currentUserData = null;
             if (feedUnsubscribe) feedUnsubscribe();
             if (chatUnsubscribe) chatUnsubscribe();
+            if (dmUnsubscribe) dmUnsubscribe();
         }
     });
 
@@ -500,7 +550,6 @@
         searchResultsContainer.innerHTML = '<div class="empty-state">Searching Firestore global directory...</div>';
 
         try {
-            // Case insensitive/partial match approach using standard start/end limits
             const snap = await db.collection('users')
                 .where('name', '>=', queryText)
                 .where('name', '<=', queryText + '\uf8ff')
@@ -514,28 +563,24 @@
 
             snap.forEach(doc => {
                 const uData = doc.data();
-                if(uData.uid === auth.currentUser.uid) return; // skip self
+                if(uData.uid === auth.currentUser.uid) return; 
                 
                 const card = document.createElement('div');
                 card.className = 'user-search-card';
                 card.innerHTML = `
                     <div class="left">
-                        <div class="s-avatar">${uData.name.charAt(0).toUpperCase()}</div>
+                        <div class="s-avatar">${(uData.name || 'U').charAt(0).toUpperCase()}</div>
                         <div class="info">
-                            <h4>${uData.name}</h4>
-                            <p>${uData.email}</p>
+                            <h4>${uData.name || 'Anonymous User'}</h4>
+                            <p>${uData.email || ''}</p>
                         </div>
                     </div>
                     <div class="right">
-                        <button style="background:var(--success); color:white; border:none; padding:6px 14px; border-radius:20px; font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="alert('Connected with ${uData.name}!')">Connect</button>
+                        <button style="background:var(--success); color:white; border:none; padding:6px 14px; border-radius:20px; font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="openDirectMessage('${uData.uid}', '${uData.name}')">Message</button>
                     </div>
                 `;
                 searchResultsContainer.appendChild(card);
             });
-
-            if(searchResultsContainer.children.length === 0) {
-                searchResultsContainer.innerHTML = '<div class="empty-state">No other users found matching that name.</div>';
-            }
 
         } catch(err) {
             searchResultsContainer.innerHTML = `<div class="empty-state" style="color:var(--danger)">Error: ${err.message}</div>`;
@@ -549,9 +594,16 @@
         const text = postContent.value.trim();
         if (!text && !isPollMode) return;
 
+        let activeAuthorName = "Verified Creator";
+        if (currentUserData && currentUserData.name) {
+            activeAuthorName = currentUserData.name;
+        } else if (auth.currentUser && auth.currentUser.displayName) {
+            activeAuthorName = auth.currentUser.displayName;
+        }
+
         const postData = {
             authorId: auth.currentUser.uid,
-            authorName: currentUserData ? currentUserData.name : "Verified Creator",
+            authorName: activeAuthorName,
             content: text,
             likes: [],
             voters: {},
@@ -589,8 +641,8 @@
                 postEl.className = 'feed-item';
 
                 let hasLiked = post.likes && post.likes.includes(auth.currentUser.uid);
+                let isMyPost = post.authorId === auth.currentUser.uid;
 
-                // Build Interactive Poll Engine Elements
                 let pollRender = '';
                 if (post.poll && post.poll.options) {
                     let totalVotes = 0;
@@ -610,13 +662,12 @@
                     pollRender += `</div>`;
                 }
 
-                // Render Active Real-time Comments Stream Inline
                 let commentBlobs = '';
                 if (post.comments && post.comments.length > 0) {
                     post.comments.forEach(c => {
                         commentBlobs += `
-                            <div class="comment-blob">
-                                <div class="comment-user">👤 ${c.userName}</div>
+                            <div class="comment-blob" style="margin-bottom:4px;">
+                                <div class="comment-user">👤 ${c.userName || 'User'}</div>
                                 <div>${c.text}</div>
                             </div>
                         `;
@@ -625,7 +676,8 @@
 
                 postEl.innerHTML = `
                     <div class="feed-header">
-                        <div class="feed-author">👑 ${post.authorName} <span class="feed-time">Dynamic Stream Node</span></div>
+                        <div class="feed-author">👑 ${post.authorName || 'Verified Creator'} <span class="feed-time">Dynamic Stream Node</span></div>
+                        ${isMyPost ? `<button class="delete-post-btn" onclick="deletePost('${id}')">🗑️ Delete</button>` : ''}
                     </div>
                     <div class="feed-content">${post.content}</div>
                     ${pollRender}
@@ -642,13 +694,108 @@
                     </div>
                 `;
 
-                if(post.authorId === auth.currentUser.uid) {
+                if(isMyPost) {
                     myPostsContainer.appendChild(postEl.cloneNode(true));
                 }
                 feedContainer.appendChild(postEl);
             });
         });
     }
+
+    window.deletePost = async (id) => {
+        if(confirm("Are you sure you want to delete this publication?")) {
+            try {
+                await db.collection('posts').doc(id).delete();
+            } catch(e) { alert("Error removing post: " + e.message); }
+        }
+    };
+
+    // =============================================
+    // DEDICATED DIRECT PRIVATE MESSAGING SYSTEM (DMs)
+    // =============================================
+    async function loadDMUsers() {
+        try {
+            const snap = await db.collection('users').limit(20).get();
+            dmUsersList.innerHTML = '';
+            snap.forEach(doc => {
+                const u = doc.data();
+                if(u.uid === auth.currentUser.uid) return;
+                const div = document.createElement('div');
+                div.className = 'dm-user-item';
+                div.id = `dm-user-${u.uid}`;
+                div.textContent = u.name || 'Anonymous Creator';
+                div.onclick = () => selectDMChannel(u.uid, u.name);
+                dmUsersList.appendChild(div);
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    function window_routing_tab(targetTabName) {
+        document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.content-area .page').forEach(p => p.classList.remove('active'));
+        const targetNavNode = document.querySelector(`.sidebar .nav-item[data-tab="${targetTabName}"]`);
+        if(targetNavNode) targetNavNode.classList.add('active');
+        $('page-' + targetTabName).classList.add('active');
+        $('postBar').style.display = (targetTabName === 'feed') ? 'block' : 'none';
+    }
+
+    window.openDirectMessage = (targetUid, targetName) => {
+        window_routing_tab('dms');
+        selectDMChannel(targetUid, targetName);
+    };
+
+    function selectDMChannel(targetUid, targetName) {
+        selectedDMUserId = targetUid;
+        dmTargetHeader.textContent = `💬 Channel: ${targetName}`;
+        dmMsgInput.disabled = false;
+        dmSendBtn.disabled = false;
+
+        document.querySelectorAll('.dm-user-item').forEach(el => el.classList.remove('active'));
+        const activeItem = $(`dm-user-${targetUid}`);
+        if(activeItem) activeItem.classList.add('active');
+
+        const myUid = auth.currentUser.uid;
+        selectedDMChannelId = myUid < targetUid ? `${myUid}_${targetUid}` : `${targetUid}_${myUid}`;
+
+        if(dmUnsubscribe) dmUnsubscribe();
+
+        dmMessagesContainer.innerHTML = '<div class="empty-state">Loading secure channel stream...</div>';
+        dmUnsubscribe = db.collection('dms').doc(selectedDMChannelId).collection('messages')
+            .orderBy('timestamp', 'asc').onSnapshot(snap => {
+                dmMessagesContainer.innerHTML = '';
+                if(snap.empty) {
+                    dmMessagesContainer.innerHTML = '<div class="empty-state">Secure array opened. Say hello!</div>';
+                    return;
+                }
+                snap.forEach(doc => {
+                    const m = doc.data();
+                    const isMe = m.senderId === myUid;
+                    const b = document.createElement('div');
+                    b.className = `chat-bubble ${isMe ? 'me' : 'other'}`;
+                    b.style.margin = '4px 0';
+                    b.innerHTML = `<span class="c-user">${isMe ? 'You' : targetName}</span><span>${m.text}</span>`;
+                    dmMessagesContainer.appendChild(b);
+                });
+                dmMessagesContainer.scrollTop = dmMessagesContainer.scrollHeight;
+            });
+    }
+
+    async function sendDM() {
+        const text = dmMsgInput.value.trim();
+        if(!text || !selectedDMChannelId) return;
+        dmMsgInput.value = '';
+
+        try {
+            await db.collection('dms').doc(selectedDMChannelId).collection('messages').add({
+                senderId: auth.currentUser.uid,
+                text: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    dmSendBtn.onclick = sendDM;
+    dmMsgInput.onkeydown = (e) => { if(e.key === 'Enter') sendDM(); };
 
     // =============================================
     // REAL-TIME MESSENGER CHATSTREAM ENGINE
@@ -657,11 +804,18 @@
         const txt = chatMsgInput.value.trim();
         if(!txt) return;
         
+        let activeSenderName = "Active User";
+        if (currentUserData && currentUserData.name) {
+            activeSenderName = currentUserData.name;
+        } else if (auth.currentUser && auth.currentUser.displayName) {
+            activeSenderName = auth.currentUser.displayName;
+        }
+
         chatMsgInput.value = '';
         try {
             await db.collection('messages').add({
                 senderId: auth.currentUser.uid,
-                senderName: currentUserData ? currentUserData.name : "Active User",
+                senderName: activeSenderName,
                 text: txt,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
@@ -684,7 +838,7 @@
                 const bubble = document.createElement('div');
                 bubble.className = `chat-bubble ${isMe ? 'me' : 'other'}`;
                 bubble.innerHTML = `
-                    <span class="c-user">${isMe ? 'You' : msg.senderName}</span>
+                    <span class="c-user">${isMe ? 'You' : (msg.senderName || 'User')}</span>
                     <span>${msg.text}</span>
                 `;
                 chatMessagesContainer.appendChild(bubble);
@@ -727,10 +881,18 @@
         const inp = $('cmt-' + id);
         const txt = inp.value.trim();
         if (!txt) return;
+
+        let activeCommenterName = "Anonymous User";
+        if (currentUserData && currentUserData.name) {
+            activeCommenterName = currentUserData.name;
+        } else if (auth.currentUser && auth.currentUser.displayName) {
+            activeCommenterName = auth.currentUser.displayName;
+        }
+
         const ref = db.collection('posts').doc(id);
         const newComment = {
             userId: auth.currentUser.uid,
-            userName: currentUserData ? currentUserData.name : "Anonymous User",
+            userName: activeCommenterName,
             text: txt,
             created: Date.now()
         };
@@ -743,7 +905,7 @@
         if (!d.exists) return;
         const bEl = document.createElement('div');
         bEl.className = 'feed-item';
-        bEl.innerHTML = `<h4>🔖 ${d.data().authorName}</h4><p>${d.data().content}</p>`;
+        bEl.innerHTML = `<h4>🔖 ${d.data().authorName || 'Verified Creator'}</h4><p>${d.data().content}</p>`;
         bookmarksContainer.appendChild(bEl);
         alert("Publication safely vaulted to Saved space.");
     };
@@ -753,12 +915,8 @@
     // =============================================
     document.querySelectorAll('.sidebar .nav-item[data-tab]').forEach(item => {
         item.onclick = () => {
-            document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.content-area .page').forEach(p => p.classList.remove('active'));
-            item.classList.add('active');
             const tab = item.getAttribute('data-tab');
-            $('page-' + tab).classList.add('active');
-            $('postBar').style.display = (tab === 'feed') ? 'block' : 'none';
+            window_routing_tab(tab);
         };
     });
 
