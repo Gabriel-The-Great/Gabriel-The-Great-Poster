@@ -346,831 +346,378 @@
                         <hr style="margin:16px 0; border:none; border-top:1px solid var(--border);" />
                         <h4>My Posts</h4>
                         <div id="myPostsContainer"><div class="empty-state">No posts yet.</div></div>
-                        <div class="danger-zone"><h4 style="color:var(--danger);">⚠️ Danger Zone</h4><button id="deleteAccountBtn">🗑️ Delete Account</button></div>
+                        <div class="danger-zone">
+                            <h4 style="color:var(--danger);">⚠️ Danger Zone</h4>
+                            <p style="font-size:0.85rem; margin-top:4px; opacity:0.8;">Irreversibly wipe your timeline or account data records.</p>
+                            <button id="deleteAccountBtn">Purge Account</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- CHAT SIDEBAR -->
-        <div class="chat-sidebar" id="chatSidebar">
-            <div class="chat-header"><h3>💬 Live Chat <span class="live-pulse"></span></h3><button id="closeChatSidebar" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text);display:none;">✕</button></div>
-            <div class="chat-friend-list" id="chatFriendList"><div class="empty-state">No friends online.</div></div>
-            <div class="chat-messages-container" id="chatMessagesContainer" style="display:none;"></div>
-            <div class="chat-input-bar" id="chatInputBar" style="display:none;">
-                <input type="text" id="chatMsgInput" placeholder="Type a message..." />
-                <button id="chatVoiceBtn" class="voice-chat-btn">🎤</button>
-                <button id="chatSendBtn">⚡</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- VIDEO CALL MODAL -->
-    <div class="call-modal" id="callModal">
-        <div class="call-box">
-            <h3 id="callStatus">📞 Incoming Call...</h3>
-            <video id="localVideo" autoplay muted playsinline></video>
-            <video id="remoteVideo" autoplay playsinline></video>
-            <div class="call-actions"><button class="hangup" id="hangupBtn">📴 Hang Up</button><button class="answer" id="answerBtn" style="display:none;">📞 Answer</button></div>
-        </div>
     </div>
 </div>
 
+<!-- JAVASCRIPT INITIALIZATION & APP LOGIC -->
 <script>
-    // =============================================
-    // FIREBASE CONFIG
-    // =============================================
+    // --- FIREBASE INITIALIZATION CONFIGURATION ---
     const firebaseConfig = {
-        apiKey: "AIzaSyAksWz12FkFPTQZsvz6pWYwJbOFh03T6VI",
-        authDomain: "ngong-mawien.firebaseapp.com",
-        projectId: "ngong-mawien",
-        storageBucket: "ngong-mawien.firebasestorage.app",
-        messagingSenderId: "699594052339",
-        appId: "1:699594052339:web:d1f6d7abee35b66bcfdd86",
-        measurementId: "G-96YWRXTN1W"
+        apiKey: "YOUR_API_KEY_HERE",
+        authDomain: "YOUR_AUTH_DOMAIN_HERE",
+        projectId: "YOUR_PROJECT_ID_HERE",
+        storageBucket: "YOUR_STORAGE_BUCKET_HERE",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID_HERE",
+        appId: "YOUR_APP_ID_HERE"
     };
-    firebase.initializeApp(firebaseConfig);
+
+    // Instantiate compat instances
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    // =============================================
-    // DOM REFS
-    // =============================================
-    const $ = id => document.getElementById(id);
-    const authScreen = $('authScreen'), appScreen = $('appScreen');
-    const loginIdentifier = $('loginIdentifier'), loginPassword = $('loginPassword'), loginBtn = $('loginBtn');
-    const regName = $('regDisplayName'), regIdentifier = $('regIdentifier'), regPass = $('regPassword'), registerBtn = $('registerBtn');
-    const forgotPasswordBtn = $('forgotPasswordBtn'), authStatus = $('authStatus'), logoutBtn = $('logoutBtn');
-    const postContent = $('postContent'), publishBtn = $('publishBtn');
-    const imageInput = $('imageInput'), imagePreview = $('imagePreview'), attachImageBtn = $('attachImageBtn');
-    const voiceInput = $('voiceInput'), voicePreviewArea = $('voicePreviewArea'), voicePreviewAudio = $('voicePreviewAudio'), cancelVoiceBtn = $('cancelVoiceBtn'), attachVoiceBtn = $('attachVoiceBtn');
-    const pollToggleBtn = $('pollToggleBtn'), pollInputArea = $('pollInputArea'), pollOption1 = $('pollOption1'), pollOption2 = $('pollOption2'), pollOption3 = $('pollOption3');
-    const feedContainer = $('feedContainer'), myPostsContainer = $('myPostsContainer'), bookmarksContainer = $('bookmarksContainer');
-    const storiesContainer = $('storiesContainer'), requestsContainer = $('requestsContainer'), friendsContainer = $('friendsContainer');
-    const profileName = $('profileName'), profileEmail = $('profileEmail'), friendsCount = $('friendsCount'), viewsCount = $('viewsCount');
-    const profileAvatar = $('profileAvatar'), profilePicInput = $('profilePicInput'), barAvatar = $('barAvatar');
-    const themeToggle = $('themeToggle'), deleteAccountBtn = $('deleteAccountBtn'), reqBadge = $('reqBadge');
-    const searchUserInput = $('searchUserInput'), searchUserBtn = $('searchUserBtn'), searchResultsContainer = $('searchResultsContainer');
-    const dmUsersList = $('dmUsersList'), dmTargetHeader = $('dmTargetHeader'), dmMessagesContainer = $('dmMessagesContainer');
-    const dmMsgInput = $('dmMsgInput'), dmSendBtn = $('dmSendBtn');
-    const chatFriendList = $('chatFriendList'), chatMessagesContainer = $('chatMessagesContainer'), chatInputBar = $('chatInputBar');
-    const chatMsgInput = $('chatMsgInput'), chatSendBtn = $('chatSendBtn'), chatVoiceBtn = $('chatVoiceBtn'), chatSidebar = $('chatSidebar');
-    const callModal = $('callModal'), localVideo = $('localVideo'), remoteVideo = $('remoteVideo');
-    const hangupBtn = $('hangupBtn'), answerBtn = $('answerBtn'), callStatus = $('callStatus');
+    // --- APPLICATION VARIABLES ---
+    let currentUserData = null;
+    let isPollMode = false;
+    let selectedActiveDMUser = null;
 
-    let currentUserData = null, isPollMode = false, feedUnsubscribe = null, chatUnsubscribe = null, dmUnsubscribe = null;
-    let selectedImageBase64 = null, selectedVoiceBase64 = null;
-    let selectedDMUserId = null, selectedDMChannelId = null;
-    let storiesUnsub = null, notifUnsub = null, requestsUnsub = null;
-    let dark = localStorage.getItem('theme') === 'dark';
-    if (dark) document.documentElement.setAttribute('data-theme', 'dark');
+    // --- DOM ELEMENT REFERENCES ---
+    const authScreen = document.getElementById('authScreen');
+    const appScreen = document.getElementById('appScreen');
+    const loginIdentifier = document.getElementById('loginIdentifier');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const regDisplayName = document.getElementById('regDisplayName');
+    const regIdentifier = document.getElementById('regIdentifier');
+    const regPassword = document.getElementById('regPassword');
+    const registerBtn = document.getElementById('registerBtn');
+    const authStatus = document.getElementById('authStatus');
+    const logoutBtn = document.getElementById('logoutBtn');
+    
+    const postBar = document.getElementById('postBar');
+    const postContent = document.getElementById('postContent');
+    const publishBtn = document.getElementById('publishBtn');
+    const pollToggleBtn = document.getElementById('pollToggleBtn');
+    const pollInputArea = document.getElementById('pollInputArea');
+    const pollOption1 = document.getElementById('pollOption1');
+    const pollOption2 = document.getElementById('pollOption2');
+    const pollOption3 = document.getElementById('pollOption3');
+    const barAvatar = document.getElementById('barAvatar');
 
-    // =============================================
-    // THEME
-    // =============================================
+    const feedContainer = document.getElementById('feedContainer');
+    const myPostsContainer = document.getElementById('myPostsContainer');
+    const themeToggle = document.getElementById('themeToggle');
+
+    // --- LIGHT/DARK THEME IMPLEMENTATION ---
     themeToggle.onclick = () => {
-        dark = !dark;
-        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
-        localStorage.setItem('theme', dark ? 'dark' : 'light');
-    };
-
-    // =============================================
-    // RESPONSIVE CHAT
-    // =============================================
-    if(window.innerWidth <= 992) {
-        $('mobileChatToggle').style.display = 'flex';
-        $('mobileChatToggle').onclick = () => chatSidebar.classList.toggle('open');
-        $('closeChatSidebar').style.display = 'block';
-        $('closeChatSidebar').onclick = () => chatSidebar.classList.remove('open');
-    }
-
-    // =============================================
-    // IMAGE & VOICE HANDLERS
-    // =============================================
-    attachImageBtn.onclick = () => imageInput.click();
-    imageInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => { selectedImageBase64 = ev.target.result; imagePreview.src = selectedImageBase64; imagePreview.style.display = 'block'; };
-            reader.readAsDataURL(file);
+        const currentTheme = document.body.getAttribute('data-theme');
+        if (currentTheme === 'dark') {
+            document.body.removeAttribute('data-theme');
+        } else {
+            document.body.setAttribute('data-theme', 'dark');
         }
     };
-    attachVoiceBtn.onclick = () => voiceInput.click();
-    voiceInput.onchange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (ev) => { selectedVoiceBase64 = ev.target.result; voicePreviewAudio.src = selectedVoiceBase64; voicePreviewArea.style.display = 'flex'; };
-            reader.readAsDataURL(file);
-        }
-    };
-    cancelVoiceBtn.onclick = () => { voicePreviewArea.style.display = 'none'; voicePreviewAudio.src = ''; selectedVoiceBase64 = null; };
 
-    // =============================================
-    // POLL TOGGLE
-    // =============================================
+    // --- POLL TOGGLE HANDLER ---
     pollToggleBtn.onclick = () => {
         isPollMode = !isPollMode;
         pollInputArea.style.display = isPollMode ? 'flex' : 'none';
-        pollToggleBtn.style.background = isPollMode ? 'var(--primary)' : 'var(--bg)';
-        pollToggleBtn.style.color = isPollMode ? 'white' : 'var(--text)';
+        pollToggleBtn.style.color = isPollMode ? 'var(--primary)' : 'var(--text)';
     };
 
-    // =============================================
-    // AUTH
-    // =============================================
+    // --- TAB INTERACTION NAVIGATION ---
+    document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
+        item.onclick = () => {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            
+            item.classList.add('active');
+            const targetedTab = item.getAttribute('data-tab');
+            document.getElementById(`page-${targetedTab}`).classList.add('active');
+
+            // Toggle posting bar visibility adaptively
+            if (targetedTab === 'feed' || targetedTab === 'profile') {
+                postBar.style.display = 'flex';
+            } else {
+                postBar.style.display = 'none';
+            }
+        };
+    });
+
+    // --- AUTHENTICATION ACTION LISTENERS ---
     registerBtn.onclick = async () => {
-        const name = regName.value.trim(), email = regIdentifier.value.trim(), pass = regPass.value;
-        if (!name || !email || pass.length < 6) { authStatus.textContent = "❌ Check fields. Password 6+ chars."; authStatus.style.color = "var(--danger)"; return; }
+        const name = regDisplayName.value.trim();
+        const email = regIdentifier.value.trim();
+        const pass = regPassword.value.trim();
+
+        if (!name || !email || pass.length < 6) {
+            authStatus.innerText = "Please complete fields. Password must be ≥ 6 chars.";
+            return;
+        }
         try {
-            authStatus.textContent = "Creating account...";
-            const cred = await auth.createUserWithEmailAndPassword(email, pass);
-            await db.collection('users').doc(cred.user.uid).set({
-                name, email, uid: cred.user.uid, friends: [], friendRequests: [], friendsCount: 0, viewsCount: 0, photoURL: '',
+            authStatus.innerText = "Processing profile creation...";
+            const credential = await auth.createUserWithEmailAndPassword(email, pass);
+            await credential.user.updateProfile({ displayName: name });
+            
+            // Build base synchronization schema document inside Firestore
+            await db.collection('users').doc(credential.user.uid).set({
+                uid: credential.user.uid,
+                name: name,
+                email: email,
+                avatarUrl: "",
+                friends: [],
+                views: 0,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
-            authStatus.textContent = "✅ Account created!"; authStatus.style.color = "var(--success)";
-        } catch (err) { authStatus.textContent = "❌ " + err.message; authStatus.style.color = "var(--danger)"; }
+            authStatus.innerText = "";
+        } catch(err) {
+            authStatus.innerText = err.message;
+        }
     };
+
     loginBtn.onclick = async () => {
-        const email = loginIdentifier.value.trim(), pass = loginPassword.value;
-        if (!email || !pass) { alert("Enter credentials."); return; }
-        try { await auth.signInWithEmailAndPassword(email, pass); } catch (err) { authStatus.textContent = "❌ " + err.message; authStatus.style.color = "var(--danger)"; }
-    };
-    forgotPasswordBtn.onclick = async () => {
         const email = loginIdentifier.value.trim();
-        if(!email) { alert("Enter your email."); return; }
-        try { await auth.sendPasswordResetEmail(email); alert("✅ Password reset email sent!"); } catch(err) { alert(err.message); }
+        const pass = loginPassword.value.trim();
+        if (!email || !pass) return;
+        try {
+            authStatus.innerText = "Authenticating identity...";
+            await auth.signInWithEmailAndPassword(email, pass);
+            authStatus.innerText = "";
+        } catch(err) {
+            authStatus.innerText = err.message;
+        }
     };
-    logoutBtn.onclick = () => auth.signOut();
 
-    auth.onAuthStateChanged(async (user) => {
+    logoutBtn.onclick = () => {
+        auth.signOut();
+    };
+
+    // --- SECURITY MONITORING STATE STATE-CHANGES ---
+    auth.onAuthStateChanged(user => {
         if (user) {
-            authScreen.style.display = 'none'; appScreen.style.display = 'flex';
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (doc.exists) {
-                currentUserData = { id: user.uid, ...doc.data() };
-                profileName.textContent = currentUserData.name;
-                profileEmail.textContent = currentUserData.email;
-                friendsCount.textContent = currentUserData.friends?.length || 0;
-                viewsCount.textContent = currentUserData.viewsCount || 0;
-                if (currentUserData.photoURL) {
-                    profileAvatar.innerHTML = `<img src="${currentUserData.photoURL}" />`;
-                    barAvatar.innerHTML = `<img src="${currentUserData.photoURL}" />`;
-                } else {
-                    const letter = currentUserData.name.charAt(0).toUpperCase();
-                    profileAvatar.textContent = letter; barAvatar.textContent = letter;
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            
+            // Initialize user data listener
+            db.collection('users').doc(user.uid).onSnapshot(doc => {
+                if (doc.exists) {
+                    currentUserData = doc.data();
+                    const derivedName = currentUserData.name || user.displayName || "Verified Creator";
+                    
+                    document.getElementById('profileName').innerText = derivedName;
+                    document.getElementById('profileEmail').innerText = currentUserData.email;
+                    document.getElementById('friendsCount').innerText = currentUserData.friends ? currentUserData.friends.length : 0;
+                    document.getElementById('viewsCount').innerText = currentUserData.views || 0;
+                    barAvatar.innerText = derivedName.charAt(0).toUpperCase();
+                    document.getElementById('profileAvatar').innerText = derivedName.charAt(0).toUpperCase();
                 }
-            }
-            listenToFeed(); listenToStories(); listenToRequests(); listenToFriends(); listenToNotifications(); loadDMUsers(); loadChatFriends();
+            });
+
+            // Initialize global live stream feeds
+            hookLiveTimelineFeeds();
         } else {
-            authScreen.style.display = 'block'; appScreen.style.display = 'none';
-            if (feedUnsubscribe) feedUnsubscribe();
-            if (chatUnsubscribe) chatUnsubscribe();
-            if (storiesUnsub) storiesUnsub();
-            if (notifUnsub) notifUnsub();
-            if (requestsUnsub) requestsUnsub();
-            if (dmUnsubscribe) dmUnsubscribe();
+            authScreen.style.display = 'block';
+            appScreen.style.display = 'none';
+            currentUserData = null;
         }
     });
 
-    deleteAccountBtn.onclick = async () => {
-        if (confirm("⚠️ Permanently delete your account? This cannot be undone.")) {
-            try {
-                const user = auth.currentUser;
-                await db.collection('users').doc(user.uid).delete();
-                await user.delete();
-                alert("Account deleted.");
-            } catch (err) { alert("Error: " + err.message); }
-        }
-    };
-
-    // =============================================
-    // PROFILE PICTURE UPLOAD
-    // =============================================
-    profilePicInput.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file || !currentUserData) return;
-        const reader = new FileReader();
-        reader.onload = async (ev) => {
-            const base64 = ev.target.result;
-            await db.collection('users').doc(currentUserData.id).update({ photoURL: base64 });
-            currentUserData.photoURL = base64;
-            profileAvatar.innerHTML = `<img src="${base64}" />`;
-            barAvatar.innerHTML = `<img src="${base64}" />`;
-        };
-        reader.readAsDataURL(file);
-    };
-
-    // =============================================
-    // PUBLISH POST
-    // =============================================
+    // --- COMPREHENSIVE TIMELINE AND PUBLISHING ENGINE ---
     publishBtn.onclick = async () => {
-    const text = postContent.value.trim();
-    if (!text && !selectedImageBase64 && !selectedVoiceBase64 && !isPollMode) return;
+        const text = postContent.value.trim();
+        if (!text && !isPollMode) return;
 
-    // ✅ FIX: Get author name from multiple fallback sources
-    const authorName = 
-        currentUserData?.name || 
-        auth.currentUser?.displayName || 
-        auth.currentUser?.email || 
-        'User';
-
-    const postData = {
-        authorId: auth.currentUser.uid,
-        authorName: authorName,
-        content: text || '',
-        image: selectedImageBase64 || '',
-        voice: selectedVoiceBase64 || '',
-        likes: [],
-        comments: [],
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    };
-    // ... rest of the function
-};
-    // =============================================
-    // FEED (Edit, Delete, Share, Notifications)
-    // =============================================
-    function listenToFeed() {
-        feedUnsubscribe = db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snap => {
-            feedContainer.innerHTML = ''; myPostsContainer.innerHTML = '';
-            if (snap.empty) { feedContainer.innerHTML = '<div class="empty-state">No posts yet.</div>'; return; }
-            snap.forEach(doc => {
-                const post = doc.data(), id = doc.id, isMine = post.authorId === auth.currentUser.uid;
-                const hasLiked = post.likes && post.likes.includes(auth.currentUser.uid);
-                let pollRender = '';
-                if (post.poll && post.poll.options) {
-                    let total = post.poll.options.reduce((s,o) => s + (o.votes||0), 0);
-                    pollRender = `<div class="poll-box-render">`;
-                    post.poll.options.forEach((opt, idx) => {
-                        let pct = total > 0 ? Math.round((opt.votes||0)/total*100) : 0;
-                        pollRender += `<div class="poll-option-render" onclick="votePoll('${id}',${idx})">
-                            <div class="poll-progress-bar" style="width:${pct}%"></div>
-                            <span class="poll-opt-text">${opt.text}</span>
-                            <span class="poll-opt-val">${pct}% (${opt.votes||0})</span>
-                        </div>`;
-                    });
-                    pollRender += `</div>`;
-                }
-                let commentsHtml = '';
-                if (post.comments) {
-                    post.comments.forEach(c => {
-                        commentsHtml += `<div class="comment-blob"><div class="comment-user">👤 ${c.userName}</div><div>${c.text}</div></div>`;
-                    });
-                }
-                const imgHtml = post.image ? `<img src="${post.image}" class="feed-image" />` : '';
-                const voiceHtml = post.voice ? `<audio controls src="${post.voice}" class="audio-player"></audio>` : '';
-
-                const el = document.createElement('div');
-                el.className = 'feed-item';
-                el.innerHTML = `
-                    <div class="feed-header">
-                        <div class="feed-author">${post.authorName}</div>
-                        <span style="font-size:0.7rem;opacity:0.5;">${new Date(post.timestamp?.seconds*1000).toLocaleString()}</span>
-                    </div>
-                    <div class="feed-content">${post.content}</div>
-                    ${imgHtml}${voiceHtml}${pollRender}
-                    <div class="feed-actions">
-                        <button class="${hasLiked?'liked':''}" onclick="toggleLike('${id}')">❤️ ${post.likes?.length||0}</button>
-                        <button onclick="toggleCommentInput('${id}')">💬 ${post.comments?.length||0}</button>
-                        <button onclick="sharePost('${id}','${post.content.replace(/'/g,"\\'")}')">📤 Share</button>
-                        ${isMine ? `<button onclick="editPost('${id}','${post.content.replace(/'/g,"\\'")}')">✏️</button><button onclick="deletePost('${id}')">🗑️</button>` : ''}
-                    </div>
-                    <div class="comment-section">
-                        ${commentsHtml}
-                        <div class="comment-input-row" id="comment-row-${id}" style="display:none;">
-                            <input id="cmt-${id}" placeholder="Write a comment..." />
-                            <button onclick="addComment('${id}')">Reply</button>
-                        </div>
-                    </div>
-                `;
-                feedContainer.appendChild(el);
-                if (isMine) myPostsContainer.appendChild(el.cloneNode(true));
-            });
-        });
-    }
-
-    window.toggleLike = async (id) => {
-        const ref = db.collection('posts').doc(id), uid = auth.currentUser.uid;
-        const d = await ref.get(); if (!d.exists) return;
-        let likes = d.data().likes || [];
-        if (likes.includes(uid)) likes = likes.filter(i => i !== uid);
-        else { likes.push(uid); await createNotif(d.data().authorId, 'like', uid, id); }
-        await ref.update({ likes });
-    };
-
-    window.toggleCommentInput = (id) => {
-        const row = document.getElementById('comment-row-'+id);
-        if (row) row.style.display = row.style.display === 'none' ? 'flex' : 'none';
-    };
-
-    window.addComment = async (id) => {
-        const inp = document.getElementById('cmt-'+id);
-        const txt = inp.value.trim(); if (!txt) return;
-        const ref = db.collection('posts').doc(id);
-        const d = await ref.get(); if (!d.exists) return;
-        const comment = { userId: auth.currentUser.uid, userName: currentUserData.name, text: txt, created: Date.now() };
-        await ref.update({ comments: firebase.firestore.FieldValue.arrayUnion(comment) });
-        await createNotif(d.data().authorId, 'comment', auth.currentUser.uid, id);
-        inp.value = '';
-        const row = document.getElementById('comment-row-'+id);
-        if (row) row.style.display = 'none';
-    };
-
-    window.votePoll = async (postId, index) => {
-        const ref = db.collection('posts').doc(postId), uid = auth.currentUser.uid;
-        const d = await ref.get(); if (!d.exists) return;
-        const data = d.data();
-        let voters = data.voters || {};
-        if (voters[uid] !== undefined) { alert("You already voted."); return; }
-        voters[uid] = index;
-        let opts = data.poll.options;
-        opts[index].votes = (opts[index].votes || 0) + 1;
-        await ref.update({ voters, 'poll.options': opts });
-    };
-
-    window.editPost = async (id, oldText) => {
-        const newText = prompt("Edit your post:", oldText);
-        if (newText !== null && newText.trim()) {
-            await db.collection('posts').doc(id).update({ content: newText.trim() });
+        // Fallback chain that guarantees a string literal is never 'undefined'
+        let activeAuthorName = "Verified Creator";
+        if (currentUserData && currentUserData.name) {
+            activeAuthorName = currentUserData.name;
+        } else if (auth.currentUser && auth.currentUser.displayName) {
+            activeAuthorName = auth.currentUser.displayName;
+        } else if (auth.currentUser && auth.currentUser.email) {
+            activeAuthorName = auth.currentUser.email.split('@')[0];
         }
-    };
 
-    window.deletePost = async (id) => {
-        if (confirm("Delete this post?")) {
-            await db.collection('posts').doc(id).delete();
-        }
-    };
-
-    window.sharePost = async (id, text) => {
-        const friendName = prompt("Enter friend's name to share with:");
-        if (!friendName) return;
-        const snap = await db.collection('users').where('name', '==', friendName).get();
-        if (snap.empty) { alert("Friend not found."); return; }
-        const friend = snap.docs[0];
-        const chatId = [auth.currentUser.uid, friend.id].sort().join('_');
-        const ref = db.collection('chats').doc(chatId);
-        if (!(await ref.get()).exists) {
-            await ref.set({ participants: [auth.currentUser.uid, friend.id], participantNames: { [auth.currentUser.uid]: currentUserData.name, [friend.id]: friend.data().name }, lastMessage: '', lastMessageTime: firebase.firestore.FieldValue.serverTimestamp() });
-        }
-        await db.collection('chats').doc(chatId).collection('messages').add({
-            senderId: auth.currentUser.uid,
-            text: `📤 Shared: "${text}"`,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        await ref.update({ lastMessage: `📤 Shared a post`, lastMessageTime: firebase.firestore.FieldValue.serverTimestamp() });
-        alert("Post shared!");
-    };
-
-    // =============================================
-    // STORIES
-    // =============================================
-    function listenToStories() {
-        if (storiesUnsub) storiesUnsub();
-        const cutoff = new Date(Date.now() - 24*60*60*1000);
-        storiesUnsub = db.collection('stories').where('timestamp', '>', cutoff).orderBy('timestamp', 'desc').onSnapshot(snap => {
-            if (snap.empty) { storiesContainer.innerHTML = '<div class="empty-state">No stories. Add one!</div>'; return; }
-            let html = `<div class="story-item" style="border-color:var(--danger);" onclick="addStory()">➕ Add Story</div>`;
-            snap.forEach(d => {
-                const data = d.data();
-                const isMine = data.authorId === auth.currentUser.uid;
-                html += `<div class="story-item">${isMine ? '📌' : '👤'} ${data.authorName || 'User'}: ${data.text || '📷'}</div>`;
-            });
-            storiesContainer.innerHTML = html;
-        });
-    }
-    window.addStory = async () => {
-        const text = prompt("What's your story?");
-        if (text && currentUserData) {
-            await db.collection('stories').add({
-                text, authorId: currentUserData.id, authorName: currentUserData.name,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        }
-    };
-
-    // =============================================
-    // FRIEND SYSTEM
-    // =============================================
-    window.sendFriendRequest = async (targetId) => {
-        if (targetId === auth.currentUser.uid) return;
-        await db.collection('users').doc(targetId).update({
-            friendRequests: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid)
-        });
-        alert("Request sent!");
-    };
-    window.acceptRequest = async (requesterId) => {
-        const myRef = db.collection('users').doc(auth.currentUser.uid);
-        const theirRef = db.collection('users').doc(requesterId);
-        await myRef.update({ friends: firebase.firestore.FieldValue.arrayUnion(requesterId), friendRequests: firebase.firestore.FieldValue.arrayRemove(requesterId) });
-        await theirRef.update({ friends: firebase.firestore.FieldValue.arrayUnion(auth.currentUser.uid) });
-        loadRequests(); loadChatFriends(); listenToFriends();
-    };
-    window.declineRequest = async (requesterId) => {
-        await db.collection('users').doc(auth.currentUser.uid).update({
-            friendRequests: firebase.firestore.FieldValue.arrayRemove(requesterId)
-        });
-        loadRequests();
-    };
-    function listenToRequests() {
-        if (!currentUserData) return;
-        const reqs = currentUserData.friendRequests || [];
-        reqBadge.style.display = reqs.length ? 'inline' : 'none';
-        reqBadge.textContent = reqs.length;
-        if (reqs.length === 0) { requestsContainer.innerHTML = '<div class="empty-state">No pending requests.</div>'; return; }
-        let html = '';
-        reqs.forEach(id => {
-            db.collection('users').doc(id).get().then(d => {
-                if (d.exists) {
-                    const data = d.data();
-                    html += `<div class="request-item"><span><b>${data.name}</b></span>
-                        <div><button class="req-accept" onclick="acceptRequest('${id}')">Accept</button>
-                        <button class="req-decline" onclick="declineRequest('${id}')">Decline</button></div></div>`;
-                    requestsContainer.innerHTML = html;
-                }
-            });
-        });
-    }
-
-    function listenToFriends() {
-        if (!currentUserData) return;
-        const friends = currentUserData.friends || [];
-        if (friends.length === 0) { friendsContainer.innerHTML = '<div class="empty-state">No friends yet. Find people!</div>'; return; }
-        let html = '';
-        friends.forEach(id => {
-            db.collection('users').doc(id).get().then(d => {
-                if (d.exists) {
-                    const data = d.data();
-                    html += `<div class="request-item"><span><b>${data.name}</b></span>
-                        <button style="background:var(--primary);color:white;border:none;padding:4px 14px;border-radius:20px;cursor:pointer;" onclick="openChat('${id}','${data.name}')">💬</button></div>`;
-                    friendsContainer.innerHTML = html;
-                }
-            });
-        });
-    }
-
-    // =============================================
-    // SEARCH USERS
-    // =============================================
-    searchUserBtn.onclick = async () => {
-        const q = searchUserInput.value.trim();
-        if (!q) { alert("Enter a name."); return; }
-        searchResultsContainer.innerHTML = '<div class="empty-state">Searching...</div>';
-        try {
-            const snap = await db.collection('users').where('name', '>=', q).where('name', '<=', q+'\uf8ff').get();
-            searchResultsContainer.innerHTML = '';
-            if (snap.empty) { searchResultsContainer.innerHTML = '<div class="empty-state">No users found.</div>'; return; }
-            snap.forEach(d => {
-                const data = d.data();
-                if (d.id === auth.currentUser.uid) return;
-                const isFriend = (currentUserData.friends || []).includes(d.id);
-                const card = document.createElement('div');
-                card.className = 'user-search-card';
-                card.innerHTML = `
-                    <div class="left"><div class="s-avatar">${data.name.charAt(0)}</div>
-                    <div class="info"><h4>${data.name}</h4><p>${data.email||''}</p></div></div>
-                    <div><button style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:20px;cursor:pointer;"
-                        onclick="${isFriend ? 'alert("Already friends")' : `sendFriendRequest('${d.id}')`}">${isFriend ? '✅ Friend' : '➕ Add'}</button></div>
-                `;
-                searchResultsContainer.appendChild(card);
-            });
-        } catch(e) { searchResultsContainer.innerHTML = `<div class="empty-state" style="color:var(--danger);">${e.message}</div>`; }
-    };
-
-    // =============================================
-    // PRIVATE DMs
-    // =============================================
-    async function loadDMUsers() {
-        try {
-            const snap = await db.collection('users').limit(30).get();
-            dmUsersList.innerHTML = '';
-            snap.forEach(d => {
-                const data = d.data();
-                if (d.id === auth.currentUser.uid) return;
-                const div = document.createElement('div');
-                div.className = 'dm-user-item';
-                div.id = 'dm-user-'+d.id;
-                div.textContent = data.name || 'User';
-                div.onclick = () => selectDMChannel(d.id, data.name);
-                dmUsersList.appendChild(div);
-            });
-        } catch(e) { console.error(e); }
-    }
-
-    function selectDMChannel(targetId, targetName) {
-        selectedDMUserId = targetId;
-        dmTargetHeader.textContent = `💬 ${targetName}`;
-        dmMsgInput.disabled = false; dmSendBtn.disabled = false;
-        document.querySelectorAll('.dm-user-item').forEach(el => el.classList.remove('active'));
-        const activeEl = document.getElementById('dm-user-'+targetId);
-        if (activeEl) activeEl.classList.add('active');
-        const ids = [auth.currentUser.uid, targetId].sort();
-        selectedDMChannelId = ids.join('_');
-        if (dmUnsubscribe) dmUnsubscribe();
-        dmMessagesContainer.innerHTML = '<div class="empty-state">Loading...</div>';
-        dmUnsubscribe = db.collection('dms').doc(selectedDMChannelId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snap => {
-            dmMessagesContainer.innerHTML = '';
-            if (snap.empty) { dmMessagesContainer.innerHTML = '<div class="empty-state">Start chatting!</div>'; return; }
-            snap.forEach(d => {
-                const msg = d.data();
-                const isMe = msg.senderId === auth.currentUser.uid;
-                const b = document.createElement('div');
-                b.className = `chat-bubble ${isMe ? 'me' : 'other'}`;
-                b.innerHTML = `<span class="c-user">${isMe ? 'You' : targetName}</span><span>${msg.text}</span>`;
-                dmMessagesContainer.appendChild(b);
-            });
-            dmMessagesContainer.scrollTop = dmMessagesContainer.scrollHeight;
-        });
-    }
-
-    async function sendDM() {
-        const text = dmMsgInput.value.trim();
-        if (!text || !selectedDMChannelId) return;
-        dmMsgInput.value = '';
-        try {
-            await db.collection('dms').doc(selectedDMChannelId).collection('messages').add({
-                senderId: auth.currentUser.uid,
-                text: text,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-        } catch(e) { console.error(e); }
-    }
-    dmSendBtn.onclick = sendDM;
-    dmMsgInput.onkeydown = (e) => { if (e.key === 'Enter') sendDM(); };
-
-    // =============================================
-    // GLOBAL CHAT
-    // =============================================
-    function loadChatFriends() {
-        if (!currentUserData) return;
-        const friends = currentUserData.friends || [];
-        if (friends.length === 0) { chatFriendList.innerHTML = '<div class="empty-state">No friends to chat.</div>'; return; }
-        let html = '';
-        friends.forEach(id => {
-            db.collection('users').doc(id).get().then(d => {
-                if (d.exists) {
-                    const data = d.data();
-                    html += `<div class="chat-friend-item" onclick="openChat('${id}','${data.name}')">
-                        <div style="width:32px;height:32px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;overflow:hidden;">${data.photoURL ? `<img src="${data.photoURL}" />` : data.name.charAt(0)}</div>
-                        <div><div class="cf-name">${data.name}</div></div>
-                    </div>`;
-                    chatFriendList.innerHTML = html;
-                }
-            });
-        });
-    }
-
-    window.openChat = async (partnerId, partnerName) => {
-        chatMessagesContainer.style.display = 'flex';
-        chatInputBar.style.display = 'flex';
-        chatFriendList.style.display = 'none';
-        const ids = [auth.currentUser.uid, partnerId].sort();
-        const chatId = ids.join('_');
-        const ref = db.collection('chats').doc(chatId);
-        if (!(await ref.get()).exists) {
-            await ref.set({ participants: [auth.currentUser.uid, partnerId], participantNames: { [auth.currentUser.uid]: currentUserData.name, [partnerId]: partnerName }, lastMessage: '', lastMessageTime: firebase.firestore.FieldValue.serverTimestamp() });
-        }
-        if (chatUnsubscribe) chatUnsubscribe();
-        chatUnsubscribe = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc').onSnapshot(snap => {
-            chatMessagesContainer.innerHTML = '';
-            if (snap.empty) { chatMessagesContainer.innerHTML = '<div class="empty-state">Start chatting!</div>'; return; }
-            snap.forEach(d => {
-                const msg = d.data();
-                const isMe = msg.senderId === auth.currentUser.uid;
-                const b = document.createElement('div');
-                b.className = `chat-bubble ${isMe ? 'me' : 'other'}`;
-                let content = msg.text || '';
-                if (msg.voice) content = `🎵 Voice <audio controls src="${msg.voice}" style="max-width:100px;"></audio>`;
-                b.innerHTML = `<span class="c-user">${isMe ? 'You' : partnerName}</span><span>${content}</span>`;
-                chatMessagesContainer.appendChild(b);
-            });
-            chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight;
-        });
-        chatMsgInput.value = '';
-        chatSidebar.classList.add('open');
-    };
-
-    async function sendChatMessage() {
-        const txt = chatMsgInput.value.trim();
-        if (!txt && !selectedVoiceBase64) return;
-        const msgData = {
-            senderId: auth.currentUser.uid,
-            text: txt || '',
-            voice: selectedVoiceBase64 || '',
+        const postData = {
+            authorId: auth.currentUser.uid,
+            authorName: activeAuthorName || "Anonymous Creator", // Ultimate safety valve
+            content: text,
+            likes: [],
+            voters: {},
+            comments: [],
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         };
-        await db.collection('chats').doc(currentChatId).collection('messages').add(msgData);
-        await db.collection('chats').doc(currentChatId).update({
-            lastMessage: txt || '🎵 Voice',
-            lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        chatMsgInput.value = ''; selectedVoiceBase64 = null;
-    }
-    chatSendBtn.onclick = sendChatMessage;
-    chatMsgInput.onkeydown = (e) => { if (e.key === 'Enter') sendChatMessage(); };
-
-    // Chat Voice Recording
-    chatVoiceBtn.onclick = () => {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            const recorder = new MediaRecorder(stream);
-            const chunks = [];
-            recorder.ondataavailable = e => chunks.push(e.data);
-            recorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'audio/webm' });
-                const reader = new FileReader();
-                reader.onload = () => {
-                    selectedVoiceBase64 = reader.result;
-                    chatMsgInput.value = '🎵 Voice attached.';
-                };
-                reader.readAsDataURL(blob);
-                stream.getTracks().forEach(t => t.stop());
+        
+        if (isPollMode) {
+            if (!pollOption1.value.trim() || !pollOption2.value.trim()) { 
+                alert("Poll structures require at least two values."); 
+                return; 
+            }
+            postData.poll = {
+                options: [
+                    { text: pollOption1.value.trim(), votes: 0 },
+                    { text: pollOption2.value.trim(), votes: 0 }
+                ]
             };
-            recorder.start();
-            setTimeout(() => recorder.stop(), 5000);
-            chatVoiceBtn.textContent = '⏹️';
-            setTimeout(() => chatVoiceBtn.textContent = '🎤', 5000);
-        }).catch(() => alert("Microphone access needed."));
-    };
-
-    // =============================================
-    // VIDEO CALL (WebRTC)
-    // =============================================
-    const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-    let pc = null, callDocRef = null;
-
-    window.startVideoCall = async (partnerId) => {
-        if (!currentChatId) return alert("Open a chat first.");
-        if (pc) return alert("Call in progress.");
-        const callRef = db.collection('calls').doc(currentChatId);
-        callDocRef = callRef;
-        const doc = await callRef.get();
-        if (doc.exists && doc.data().status === 'ringing') { alert("Call already in progress."); return; }
-        pc = new RTCPeerConnection(servers);
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        stream.getTracks().forEach(t => pc.addTrack(t, stream));
-        localVideo.srcObject = stream;
-        callModal.classList.add('open');
-        callStatus.textContent = '🔔 Calling...';
-        answerBtn.style.display = 'none';
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        await callRef.set({
-            offer: { type: offer.type, sdp: offer.sdp },
-            status: 'ringing',
-            caller: auth.currentUser.uid,
-            callee: partnerId,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        callRef.onSnapshot(async (snap) => {
-            const data = snap.data();
-            if (!data) return;
-            if (data.status === 'connected' && data.answer && !pc.currentRemoteDescription) {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-                callStatus.textContent = '📞 Connected!';
+            if (pollOption3.value.trim()) {
+                postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
             }
-            if (data.status === 'ended') hangupCall();
-        });
-        pc.onicecandidate = (e) => { if (e.candidate) callRef.collection('candidates').add(e.candidate.toJSON()); };
-        callRef.collection('candidates').onSnapshot((snap) => { snap.forEach(d => pc.addIceCandidate(new RTCIceCandidate(d.data()))); });
-        pc.ontrack = (e) => { remoteVideo.srcObject = e.streams[0]; };
-        pc.onconnectionstatechange = () => { if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') hangupCall(); };
-        const unsub = callRef.onSnapshot((snap) => {
-            const data = snap.data();
-            if (data && data.answer && pc.signalingState !== 'stable') {
-                pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-                callStatus.textContent = '📞 Connected!';
-                unsub();
-            }
-        });
-    };
-
-    db.collection('calls').where('status', '==', 'ringing').onSnapshot((snap) => {
-        snap.forEach(async (doc) => {
-            const data = doc.data();
-            if (data.callee === auth.currentUser?.uid && !pc) {
-                callModal.classList.add('open');
-                callStatus.textContent = `📞 Incoming call from ${data.callerName || 'someone'}`;
-                answerBtn.style.display = 'inline-block';
-                window.incomingCallDoc = doc.ref;
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localVideo.srcObject = stream;
-                window.localStream = stream;
-            }
-        });
-    });
-
-    answerBtn.onclick = async () => {
-        if (!window.incomingCallDoc || !window.localStream) return;
-        const callRef = window.incomingCallDoc;
-        pc = new RTCPeerConnection(servers);
-        window.localStream.getTracks().forEach(t => pc.addTrack(t, window.localStream));
-        remoteVideo.srcObject = null;
-        const doc = await callRef.get();
-        const data = doc.data();
-        if (data.offer) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            await callRef.update({ answer: { type: answer.type, sdp: answer.sdp }, status: 'connected' });
-            callStatus.textContent = '📞 Connected!';
-            answerBtn.style.display = 'none';
         }
-        pc.ontrack = (e) => { remoteVideo.srcObject = e.streams[0]; };
-        pc.onicecandidate = (e) => { if (e.candidate) callRef.collection('candidates').add(e.candidate.toJSON()); };
-        callRef.collection('candidates').onSnapshot((snap) => { snap.forEach(d => pc.addIceCandidate(new RTCIceCandidate(d.data()))); });
-        pc.onconnectionstatechange = () => { if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') hangupCall(); };
-        window.incomingCallDoc = null; window.localStream = null;
+
+        try {
+            await db.collection('posts').add(postData);
+            postContent.value = '';
+            pollOption1.value = '';
+            pollOption2.value = '';
+            pollOption3.value = '';
+            if (isPollMode) pollToggleBtn.click();
+        } catch (err) { 
+            alert(err.message); 
+        }
     };
 
-    hangupBtn.onclick = hangupCall;
-    function hangupCall() {
-        if (pc) { pc.close(); pc = null; }
-        if (callDocRef) { callDocRef.update({ status: 'ended' }).catch(()=>{}); callDocRef = null; }
-        callModal.classList.remove('open');
-        localVideo.srcObject = null; remoteVideo.srcObject = null;
-        answerBtn.style.display = 'none';
-    }
+    function hookLiveTimelineFeeds() {
+        db.collection('posts').orderBy('timestamp', 'desc').onSnapshot(snapshot => {
+            feedContainer.innerHTML = '';
+            myPostsContainer.innerHTML = '';
+            
+            if (snapshot.empty) {
+                const emptyHTML = '<div class="empty-state">No dynamic records on the stream.</div>';
+                feedContainer.innerHTML = emptyHTML;
+                myPostsContainer.innerHTML = emptyHTML;
+                return;
+            }
 
-    // Add video call button to chat header dynamically
-    const chatHeader = document.querySelector('.chat-header');
-    if (chatHeader) {
-        const vidBtn = document.createElement('button');
-        vidBtn.textContent = '📹';
-        vidBtn.style.cssText = 'background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text);margin-left:auto;';
-        vidBtn.onclick = () => { if (window.currentChatPartnerId) startVideoCall(window.currentChatPartnerId); else alert('Open a chat first.'); };
-        chatHeader.appendChild(vidBtn);
-    }
+            snapshot.forEach(doc => {
+                const post = doc.data();
+                const postId = doc.id;
+                const elementCard = renderPostCardMarkup(postId, post);
+                
+                // Append directly to global public stream
+                feedContainer.appendChild(elementCard);
 
-    // =============================================
-    // NOTIFICATIONS
-    // =============================================
-    async function createNotif(targetUserId, type, fromUserId, postId) {
-        if (targetUserId === auth.currentUser.uid) return;
-        const fromUser = await db.collection('users').doc(fromUserId).get();
-        const fromName = fromUser.exists ? fromUser.data().name : 'Someone';
-        await db.collection('notifications').add({
-            userId: targetUserId,
-            type, fromUserId, fromName, postId: postId || '',
-            read: false,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                // If user owned card, inject match cloned variant inside custom matrix section
+                if (post.authorId === auth.currentUser.uid) {
+                    const profileClonedView = renderPostCardMarkup(postId, post, true);
+                    myPostsContainer.appendChild(profileClonedView);
+                }
+            });
+        }, error => {
+            console.error("Timeline read operation rejected:", error);
         });
     }
 
-    function listenToNotifications() {
-        if (!currentUserData) return;
-        notifUnsub = db.collection('notifications')
-            .where('userId', '==', currentUserData.id)
-            .where('read', '==', false)
-            .onSnapshot(snap => {
-                const count = snap.size;
-                const badge = document.querySelector('.nav-item[data-tab="requests"] .badge');
-                if (badge && count > 0) { badge.style.display = 'inline'; badge.textContent = count; }
-                else if (badge) { badge.style.display = 'none'; }
+    function renderPostCardMarkup(id, data, isProfileMirror = false) {
+        const item = document.createElement('div');
+        item.className = 'feed-item';
+        
+        const safeLikes = Array.isArray(data.likes) ? data.likes : [];
+        const isLikedByMe = safeLikes.includes(auth.currentUser?.uid);
+        const relativeFormattedTime = data.timestamp ? new Date(data.timestamp.seconds * 1000).toLocaleString([], {hour: '2-digit', minute:'2-digit'}) : 'Just now';
+
+        let innerCodeHTML = `
+            <div class="feed-header">
+                <div class="feed-author">
+                    <div style="width:24px;height:24px;border-radius:50%;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:bold;">
+                        ${(data.authorName || 'U').charAt(0).toUpperCase()}
+                    </div>
+                    <span>${data.authorName || 'Anonymous User'}</span>
+                </div>
+                <div class="feed-time">${relativeFormattedTime}</div>
+            </div>
+            <div class="feed-content">${data.content || ''}</div>
+        `;
+
+        // Interactive Poll Builder Segment
+        if (data.poll && Array.isArray(data.poll.options)) {
+            innerCodeHTML += `<div class="poll-box-render">`;
+            const totalVotes = data.poll.options.reduce((acc, obj) => acc + (obj.votes || 0), 0);
+            
+            data.poll.options.forEach((opt, idx) => {
+                const percentage = totalVotes > 0 ? Math.round((opt.votes / totalVotes) * 100) : 0;
+                innerCodeHTML += `
+                    <div class="poll-option-render" onclick="castPollVote('${id}', ${idx})">
+                        <div class="poll-progress-bar" style="width: ${percentage}%"></div>
+                        <div class="poll-opt-text">${opt.text}</div>
+                        <div class="poll-opt-val">${opt.votes || 0} (${percentage}%)</div>
+                    </div>
+                `;
             });
+            innerCodeHTML += `</div>`;
+        }
+
+        // Action Trigger Row
+        innerCodeHTML += `
+            <div class="feed-actions">
+                <button class="${isLikedByMe ? 'liked' : ''}" onclick="togglePostLike('${id}')">👍 ${safeLikes.length} Likes</button>
+                ${data.authorId === auth.currentUser?.uid ? `<button style="color:var(--danger);" onclick="purgePostRecord('${id}')">🗑️ Delete</button>` : ''}
+            </div>
+        `;
+
+        item.innerHTML = innerCodeHTML;
+        return item;
     }
 
-    // =============================================
-    // BOOKMARKS
-    // =============================================
-    window.bookmarkPost = async (id) => {
-        const d = await db.collection('posts').doc(id).get();
-        if (!d.exists) return;
-        const data = d.data();
-        const el = document.createElement('div');
-        el.className = 'feed-item';
-        el.innerHTML = `<div class="feed-author">🔖 ${data.authorName}</div><div class="feed-content">${data.content}</div>`;
-        bookmarksContainer.appendChild(el);
-        alert("Post saved!");
+    // --- DATA INTERACTION OPERATIONS ---
+    window.togglePostLike = async (id) => {
+        const reference = db.collection('posts').doc(id);
+        const uid = auth.currentUser.uid;
+        try {
+            await db.runTransaction(async (transaction) => {
+                const sfDoc = await transaction.get(reference);
+                if (!sfDoc.exists) return;
+                
+                let currentLikesArray = sfDoc.data().likes || [];
+                if (currentLikesArray.includes(uid)) {
+                    currentLikesArray = currentLikesArray.filter(itemUid => itemUid !== uid);
+                } else {
+                    currentLikesArray.push(uid);
+                }
+                transaction.update(reference, { likes: currentLikesArray });
+            });
+        } catch (e) {
+            console.error("Like toggle transaction rejected: ", e);
+        }
     };
 
-    // =============================================
-    // ROUTING ENGINE
-    // =============================================
-    document.querySelectorAll('.sidebar .nav-item[data-tab]').forEach(item => {
-        item.onclick = () => {
-            document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
-            document.querySelectorAll('.content-area .page').forEach(p => p.classList.remove('active'));
-            item.classList.add('active');
-            const tab = item.getAttribute('data-tab');
-            const target = document.getElementById('page-' + tab);
-            if (target) target.classList.add('active');
-            document.getElementById('postBar').style.display = (tab === 'feed' || tab === 'stories') ? 'block' : 'none';
-            if (tab === 'requests') listenToRequests();
-            if (tab === 'friends') listenToFriends();
-            if (tab === 'stories') listenToStories();
-            if (tab === 'dms') loadDMUsers();
-        };
-    });
+    window.castPollVote = async (id, choiceIdx) => {
+        const reference = db.collection('posts').doc(id);
+        const uid = auth.currentUser.uid;
+        try {
+            await db.runTransaction(async (transaction) => {
+                const sfDoc = await transaction.get(reference);
+                if (!sfDoc.exists) return;
 
-    // =============================================
-    // SERVICE WORKER (PWA)
-    // =============================================
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/Gabriel-The-Great-Poster/sw.js')
-            .then(() => console.log('✅ Service Worker registered'))
-            .catch(() => console.log('⚠️ SW registration failed'));
-    }
+                const postData = sfDoc.data();
+                let votersMap = postData.voters || {};
+                
+                if (votersMap[uid] !== undefined) {
+                    alert("Your selection coordinate has already been written to this poll template schema.");
+                    return;
+                }
+
+                let currentOptions = [...postData.poll.options];
+                currentOptions[choiceIdx].votes = (currentOptions[choiceIdx].votes || 0) + 1;
+                votersMap[uid] = choiceIdx;
+
+                transaction.update(reference, {
+                    voters: votersMap,
+                    'poll.options': currentOptions
+                });
+            });
+        } catch (e) {
+            console.error("Poll transaction processing failure:", e);
+        }
+    };
+
+    window.purgePostRecord = async (id) => {
+        if (!confirm("Are you sure you want to drop this document string from Firestore?")) return;
+        try {
+            await db.collection('posts').doc(id).delete();
+        } catch(err) {
+            alert("Deletion failure: " + err.message);
+        }
+    };
 </script>
 </body>
 </html>
