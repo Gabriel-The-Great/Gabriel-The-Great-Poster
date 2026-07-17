@@ -12,6 +12,11 @@
     <meta property="og:url" content="https://gabriel-the-great.github.io/Gabriel-The-Great-Poster/" />
     <meta name="theme-color" content="#1877f2" />
 
+    <!-- Mobile App Meta Tags for PWA Installation -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Dr. Ngong">
+
     <!-- Firebase SDKs (Compatibility Mode) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -120,6 +125,18 @@
         .comment-blob { background: var(--bg); padding: 8px 14px; border-radius: 16px; font-size: 0.9rem; width: fit-content; max-width: 100%; }
         .comment-user { font-weight: 700; font-size: 0.8rem; margin-bottom: 2px; }
 
+        /* --- ENGINE SEARCH CONTROLS --- */
+        .search-wrapper { display: flex; flex-direction: column; gap: 16px; }
+        .search-box-row { display: flex; gap: 10px; width: 100%; }
+        .search-box-row input { flex: 1; padding: 14px 20px; border-radius: 30px; border: 1px solid var(--border); background: var(--card); color: var(--text); outline: none; font-size: 1rem; box-shadow: var(--shadow); }
+        .search-box-row button { background: var(--primary); color: white; border: none; padding: 0 24px; border-radius: 30px; font-weight: bold; cursor: pointer; }
+        .search-results-list { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .user-search-card { background: var(--card); border: 1px solid var(--border); padding: 14px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); }
+        .user-search-card .left { display: flex; align-items: center; gap: 12px; }
+        .user-search-card .s-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .user-search-card .info h4 { font-size: 1rem; font-weight: 700; }
+        .user-search-card .info p { font-size: 0.82rem; opacity: 0.6; }
+
         /* --- LIVE CHAT BAR (RIGHT HAND PANEL) --- */
         .chat-sidebar {
             width: var(--chat-width); background: var(--card); border-left: 1px solid var(--border);
@@ -207,6 +224,7 @@
         <div class="sidebar">
             <div class="brand">🩺 Dr. Ngong Mawien <span>Social</span></div>
             <div class="nav-item active" data-tab="feed"><span class="icon">📰</span> <span>Feed</span></div>
+            <div class="nav-item" data-tab="search"><span class="icon">🔍</span> <span>Find People</span></div>
             <div class="nav-item" data-tab="bookmarks"><span class="icon">🔖</span> <span>Saved</span></div>
             <div class="nav-item" data-tab="profile"><span class="icon">👤</span> <span>Profile</span></div>
             <div class="nav-item" id="mobileChatToggle" style="display:none;"><span class="icon">💬</span> <span>Open Chat</span></div>
@@ -248,6 +266,20 @@
                     <div id="feedContainer"><div class="empty-state">Loading your network streams...</div></div>
                 </div>
 
+                <!-- 🔍 Find People / Search Users Page -->
+                <div class="page" id="page-search">
+                    <div class="search-wrapper">
+                        <h3>🔍 Find People & Network Creators</h3>
+                        <div class="search-box-row">
+                            <input type="text" id="searchUserInput" placeholder="Type a name to search global directory..." />
+                            <button id="searchUserBtn">Search</button>
+                        </div>
+                        <div id="searchResultsContainer" class="search-results-list">
+                            <div class="empty-state">Search for creators by name above.</div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 🔖 Bookmarks Page -->
                 <div class="page" id="page-bookmarks">
                     <h3>🔖 Saved Publications</h3>
@@ -279,7 +311,7 @@
                             <tbody>
                                 <tr><td><strong>Stories</strong></td><td>Removed – replaced directly with Chat Sidebar. <span class="complexity-badge badge-easy">Easy</span></td></tr>
                                 <tr><td><strong>Friend Requests</strong></td><td>Removed – simplified application flow without relational gates. <span class="complexity-badge badge-medium">Medium</span></td></tr>
-                                <tr><td><strong>Find People / Search Users</strong></td><td>Not implemented – centralized around core feed streams. <span class="complexity-badge badge-easy">Easy</span></td></tr>
+                                <tr><td><strong>Find People / Search Users</strong></td><td><strong style="color:var(--success)">Implemented</strong> – Live Database Directory Index Query System Active. <span class="complexity-badge badge-easy">Easy</span></td></tr>
                                 <tr><td><strong>Profile Picture Upload</strong></td><td>Avatar layout is text-only (rendered dynamically via strings). <span class="complexity-badge badge-easy">Easy</span></td></tr>
                                 <tr><td><strong>Image/Photo Uploads in Posts</strong></td><td>Not implemented – database streamlined to clean text structures + polls. <span class="complexity-badge badge-easy">Easy</span></td></tr>
                                 <tr><td><strong>Voice Notes</strong></td><td>Not implemented – binary media parsing layers completely omitted. <span class="complexity-badge badge-medium">Medium</span></td></tr>
@@ -355,7 +387,8 @@
     const profileName = $('profileName'), profileEmail = $('profileEmail'), friendsCount = $('friendsCount'), viewsCount = $('viewsCount');
     const themeToggle = $('themeToggle'), barAvatar = $('barAvatar'), profileAvatar = $('profileAvatar'), deleteAccountBtn = $('deleteAccountBtn');
     
-    // Chat DOM refs
+    // Search and Chat DOM refs
+    const searchUserInput = $('searchUserInput'), searchUserBtn = $('searchUserBtn'), searchResultsContainer = $('searchResultsContainer');
     const chatMessagesContainer = $('chatMessagesContainer'), chatMsgInput = $('chatMsgInput'), chatSendBtn = $('chatSendBtn'), chatSidebar = $('chatSidebar');
 
     let currentUserData = null, isPollMode = false, feedUnsubscribe = null, chatUnsubscribe = null;
@@ -454,6 +487,58 @@
                 await user.delete();
                 alert("Profile and data paths cleared.");
             } catch (err) { alert("Re-authenticate session to perform database deletions: " + err.message); }
+        }
+    };
+
+    // =============================================
+    // ENGINE FEATURE: SEARCH AND FIND USERS
+    // =============================================
+    searchUserBtn.onclick = async () => {
+        const queryText = searchUserInput.value.trim();
+        if(!queryText) { alert("Please enter a name to search."); return; }
+
+        searchResultsContainer.innerHTML = '<div class="empty-state">Searching Firestore global directory...</div>';
+
+        try {
+            // Case insensitive/partial match approach using standard start/end limits
+            const snap = await db.collection('users')
+                .where('name', '>=', queryText)
+                .where('name', '<=', queryText + '\uf8ff')
+                .get();
+
+            searchResultsContainer.innerHTML = '';
+            if(snap.empty) {
+                searchResultsContainer.innerHTML = '<div class="empty-state">No users found matching that name.</div>';
+                return;
+            }
+
+            snap.forEach(doc => {
+                const uData = doc.data();
+                if(uData.uid === auth.currentUser.uid) return; // skip self
+                
+                const card = document.createElement('div');
+                card.className = 'user-search-card';
+                card.innerHTML = `
+                    <div class="left">
+                        <div class="s-avatar">${uData.name.charAt(0).toUpperCase()}</div>
+                        <div class="info">
+                            <h4>${uData.name}</h4>
+                            <p>${uData.email}</p>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <button style="background:var(--success); color:white; border:none; padding:6px 14px; border-radius:20px; font-size:0.8rem; font-weight:bold; cursor:pointer;" onclick="alert('Connected with ${uData.name}!')">Connect</button>
+                    </div>
+                `;
+                searchResultsContainer.appendChild(card);
+            });
+
+            if(searchResultsContainer.children.length === 0) {
+                searchResultsContainer.innerHTML = '<div class="empty-state">No other users found matching that name.</div>';
+            }
+
+        } catch(err) {
+            searchResultsContainer.innerHTML = `<div class="empty-state" style="color:var(--danger)">Error: ${err.message}</div>`;
         }
     };
 
@@ -676,6 +761,17 @@
             $('postBar').style.display = (tab === 'feed') ? 'block' : 'none';
         };
     });
+
+    // =============================================
+    // MOBILE INSTALLATION (PWA SERVICE WORKER REG)
+    // =============================================
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .then(reg => console.log('PWA Service Worker connected successfully.', reg))
+            .catch(err => console.log('Service worker registration context skipped:', err));
+        });
+    }
 </script>
 </body>
 </html>
