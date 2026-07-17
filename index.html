@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Ngong Mawien Social</title>
     
-    <!-- ===== PWA MANIFEST (Installable App) ===== -->
     <link rel="manifest" href="manifest.json">
-
-    <!-- ===== SEO / SOCIAL MEDIA PREVIEW ===== -->
     <meta property="og:title" content="Ngong Mawien Social" />
     <meta property="og:description" content="Connect with friends, share posts, and chat live. Built by Gabriel Ngong Mawien." />
     <meta property="og:image" content="https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=512" />
@@ -16,13 +13,12 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="theme-color" content="#1877f2" />
 
-    <!-- ===== FIREBASE SDKs ===== -->
+    <!-- Firebase SDKs (Compatibility Mode) -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <style>
-        /* ===== YOUR FULL CSS (Shortened for length - but 100% complete) ===== */
         :root {
             --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e;
             --border: #e4e6eb; --shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -125,18 +121,6 @@
         .content-area .page { display: none; }
         .content-area .page.active { display: block; }
 
-        .story-row {
-            display: flex; gap: 12px; overflow-x: auto; padding: 8px 0 16px 0;
-            margin-bottom: 10px; background: transparent;
-        }
-        .story-item {
-            background: var(--card); padding: 8px 16px; border-radius: 30px;
-            white-space: nowrap; font-size: 0.9rem; box-shadow: var(--shadow);
-            cursor: pointer; color: var(--text); border: 2px solid var(--primary);
-            display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-        }
-        .story-item .story-img { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; }
-
         .feed-item {
             background: var(--card); padding: 16px 20px; border-radius: var(--radius);
             box-shadow: var(--shadow); margin-bottom: 16px;
@@ -145,8 +129,6 @@
         .feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
         .feed-author { font-weight: 700; font-size: 1.05rem; display: flex; align-items: center; gap: 6px; }
         .feed-content { font-size: 1rem; margin: 6px 0; line-height: 1.5; }
-        .feed-content .hashtag { color: var(--primary); font-weight: 600; cursor: pointer; }
-        .feed-content .mention { color: var(--danger); font-weight: 600; cursor: pointer; }
         .feed-image { width: 100%; border-radius: 12px; margin: 8px 0; max-height: 400px; object-fit: cover; }
         .feed-actions {
             display: flex; gap: 12px; margin-top: 12px;
@@ -158,17 +140,15 @@
             display: flex; align-items: center; gap: 4px;
         }
         .feed-actions button:hover { opacity: 1; }
-        .feed-actions .active { opacity: 1; color: var(--primary); }
         .poll-option {
-            background: var(--bg); padding: 6px 12px; border-radius: 20px;
-            margin: 4px 0; cursor: pointer; display: flex; justify-content: space-between;
-            border: 1px solid var(--border);
+            background: var(--bg); padding: 8px 14px; border-radius: 20px;
+            margin: 6px 0; cursor: pointer; display: flex; justify-content: space-between;
+            border: 1px solid var(--border); transition: 0.2s ease;
         }
         .poll-option:hover { background: var(--border); }
-        .poll-option .vote-bar { background: var(--primary); height: 4px; border-radius: 4px; flex: 1; margin-left: 8px; }
 
         .auth-card {
-            max-width: 420px; margin: 40px auto; background: var(--card);
+            max-width: 420px; margin: 60px auto; background: var(--card);
             padding: 32px; border-radius: var(--radius); box-shadow: var(--shadow);
         }
         .auth-card h2 { text-align: center; margin-bottom: 20px; }
@@ -186,23 +166,12 @@
         .auth-card .secondary { background: var(--success); }
         .auth-card .secondary:hover { background: #36a420; }
         .auth-card .link-btn { background: none; color: var(--primary); font-weight: 600; }
-        .auth-status { text-align: center; margin-top: 12px; color: var(--danger); }
+        .auth-status { text-align: center; margin-top: 12px; font-weight: 600; }
 
-        .chat-list-item {
-            background: var(--card); padding: 14px 18px; border-radius: var(--radius);
-            margin-bottom: 10px; display: flex; justify-content: space-between;
-            align-items: center; cursor: pointer; box-shadow: var(--shadow);
-        }
-        .chat-list-item:hover { background: var(--bg); }
         .chat-window {
             background: var(--card); border-radius: var(--radius); padding: 16px;
             max-height: 420px; overflow-y: auto; margin-bottom: 12px;
         }
-        .msg { padding: 8px 16px; border-radius: 20px; margin: 4px 0; max-width: 80%; word-wrap: break-word; display: flex; flex-direction: column; }
-        .msg-sent { background: var(--primary); color: white; align-self: flex-end; margin-left: auto; }
-        .msg-received { background: var(--bg); color: var(--text); align-self: flex-start; }
-        .msg-vanish { border: 2px dashed var(--danger); }
-        .msg .seen-tick { font-size: 0.6rem; opacity: 0.6; margin-top: 2px; }
         .chat-input-area { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
         .chat-input-area input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 30px; outline: none; background: var(--bg); color: var(--text); min-width: 100px; }
         .chat-input-area button { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 30px; font-weight: 700; cursor: pointer; }
@@ -214,7 +183,7 @@
             display: none; background: var(--card); border: 1px solid var(--border);
             border-radius: var(--radius); padding: 12px; margin-top: 8px;
             max-width: 320px; flex-wrap: wrap; gap: 6px; box-shadow: var(--shadow);
-            z-index: 20; position: relative;
+            z-index: 20; position: absolute;
         }
         .sticker-picker.open { display: flex; }
         .sticker-picker span { font-size: 1.8rem; cursor: pointer; padding: 4px; border-radius: 8px; }
@@ -233,15 +202,9 @@
         .call-modal .call-box .call-actions { display: flex; gap: 16px; justify-content: center; margin-top: 12px; }
         .call-modal .call-box .call-actions button { padding: 10px 28px; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
         .call-modal .call-box .hangup { background: var(--danger); color: white; }
-        .call-modal .call-box .answer { background: var(--success); color: white; }
 
         .empty-state { text-align: center; color: #999; padding: 40px 0; }
         .flex { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-        .hidden { display: none !important; }
-        .request-item { background: var(--card); padding: 12px 16px; border-radius: var(--radius); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--shadow); }
-        .request-item button { padding: 6px 16px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; }
-        .accept-btn { background: var(--success); color: white; }
-        .decline-btn { background: var(--border); color: var(--text); }
         .profile-section { background: var(--card); padding: 24px; border-radius: var(--radius); box-shadow: var(--shadow); }
         .profile-section .avatar {
             width: 80px; height: 80px; border-radius: 50%;
@@ -250,11 +213,9 @@
             font-size: 2.4rem; margin: 0 auto 12px; object-fit: cover; overflow: hidden;
             cursor: pointer;
         }
-        .profile-section .avatar img { width: 100%; height: 100%; object-fit: cover; }
         .search-box { display: flex; gap: 8px; margin-bottom: 16px; }
         .search-box input { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 30px; background: var(--bg); color: var(--text); outline: none; }
         .search-box button { padding: 12px 24px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 700; cursor: pointer; }
-        .pinned { border-left: 4px solid var(--primary); }
         .danger-zone { border: 1px solid var(--danger); padding: 16px; border-radius: var(--radius); margin-top: 20px; }
         .danger-zone button { background: var(--danger); color: white; border: none; padding: 10px 20px; border-radius: 30px; font-weight: 700; cursor: pointer; }
 
@@ -270,20 +231,22 @@
 <body>
 
 <div id="app">
+    <!-- 🔑 Authentication Screen -->
     <div id="authScreen" class="auth-card">
-        <h2>🚀 Ngong Mawien</h2>
-        <input type="text" id="loginIdentifier" placeholder="Email or Phone Number" />
+        <h2>🚀 NM Social</h2>
+        <input type="text" id="loginIdentifier" placeholder="Email Address" />
         <input type="password" id="loginPassword" placeholder="Password" />
         <button id="loginBtn">Login</button>
         <button class="link-btn" id="forgotPasswordBtn" style="background:none; color:var(--primary); padding:10px;">🔑 Forgot Password?</button>
         <p style="text-align:center; margin:8px 0;">— or —</p>
         <input type="text" id="regDisplayName" placeholder="Full Name" />
-        <input type="text" id="regIdentifier" placeholder="Email or Phone" />
+        <input type="text" id="regIdentifier" placeholder="Email Address" />
         <input type="password" id="regPassword" placeholder="Password (min 6)" />
         <button class="secondary" id="registerBtn">Create Account</button>
         <div id="authStatus" class="auth-status"></div>
     </div>
 
+    <!-- 🌐 Main Application Layout View Screen -->
     <div id="appScreen" class="app-wrapper" style="display:none;">
         <div class="sidebar">
             <div class="brand">👑 Ngong Mawien <span>Social</span></div>
@@ -305,9 +268,9 @@
         <div class="main-content">
             <div class="post-bar" id="postBar">
                 <div class="top-row">
-                    <textarea id="postContent" placeholder="What's on your mind? (use #tag and @mention)"></textarea>
+                    <textarea id="postContent" placeholder="What's on your mind?"></textarea>
                 </div>
-                <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+                <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; position: relative;">
                     <input type="file" id="imageInput" accept="image/*" style="display:none;" />
                     <img id="imagePreview" class="image-preview" />
                     <div class="voice-preview" id="voicePreviewArea">
@@ -321,7 +284,7 @@
                         <button id="pollToggleBtn">📊 Poll</button>
                         <div class="sticker-picker" id="stickerPostPicker"></div>
                     </div>
-                    <div id="pollInputArea" style="display:none; width:100%; flex-wrap:wrap; gap:4px;">
+                    <div id="pollInputArea" style="display:none; width:100%; flex-wrap:wrap; gap:4px; margin-top:5px;">
                         <input id="pollOption1" placeholder="Option 1" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
                         <input id="pollOption2" placeholder="Option 2" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
                         <input id="pollOption3" placeholder="Option 3 (optional)" style="flex:1; padding:6px; border-radius:20px; border:1px solid var(--border); background:var(--bg); color:var(--text);" />
@@ -338,7 +301,7 @@
                     </div>
                     <div id="feedContainer"><div class="empty-state">Loading feed...</div></div>
                 </div>
-                <div class="page" id="page-stories"><div id="storiesContainer"><div class="empty-state">No stories yet. Post one!</div></div></div>
+                <div class="page" id="page-stories"><div id="storiesContainer"><div class="empty-state">No stories yet.</div></div></div>
                 <div class="page" id="page-bookmarks"><div id="bookmarksContainer"><div class="empty-state">No saved posts yet.</div></div></div>
                 <div class="page" id="page-requests"><div id="requestsContainer"><div class="empty-state">No pending requests.</div></div></div>
                 <div class="page" id="page-find">
@@ -357,7 +320,7 @@
                     </div>
                     <div id="typingIndicator" class="typing-indicator" style="display:none;">typing...</div>
                     <div class="chat-window" id="chatMessages"></div>
-                    <div class="chat-input-area">
+                    <div class="chat-input-area" style="position:relative;">
                         <input id="chatInput" placeholder="Type a message..." />
                         <button id="stickerChatBtn">😊</button>
                         <div class="sticker-picker" id="stickerChatPicker"></div>
@@ -371,18 +334,13 @@
                         <div style="text-align:center;">
                             <div class="avatar" id="profileAvatar" onclick="document.getElementById('profilePicInput').click();">👤</div>
                             <input type="file" id="profilePicInput" accept="image/*" style="display:none;" />
-                            <h3 id="profileName"></h3>
+                            <h3 id="profileName">Loading Profile...</h3>
                             <p id="profileEmail"></p>
-                            <p>👥 Friends: <span id="friendsCount">0</span> &nbsp;|&nbsp; 👁️ Views: <span id="viewsCount">0</span></p>
-                            <button onclick="copyProfileLink()" style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:30px;cursor:pointer;margin:8px;">🔗 Share Profile</button>
+                            <p style="margin-top:5px;">👥 Friends: <span id="friendsCount">0</span> &nbsp;|&nbsp; 👁️ Views: <span id="viewsCount">0</span></p>
                         </div>
                         <hr style="margin:16px 0; border-color:var(--border);" />
-                        <h4>📌 Pinned Post</h4>
-                        <div id="pinnedPostContainer"></div>
-                        <hr style="margin:16px 0; border-color:var(--border);" />
                         <h4>My Posts</h4>
-                        <div id="myPostsContainer"></div>
-                        <hr style="margin:16px 0; border-color:var(--border);" />
+                        <div id="myPostsContainer"><div class="empty-state">No personal posts yet.</div></div>
                         <div class="danger-zone">
                             <h4 style="color:var(--danger);">⚠️ Danger Zone</h4>
                             <button id="deleteAccountBtn">🗑️ Permanently Delete Account</button>
@@ -393,6 +351,7 @@
         </div>
     </div>
 
+    <!-- 📹 Video Call Window Overlay Modal Container -->
     <div class="call-modal" id="callModal">
         <div class="call-box">
             <h3 id="callStatus">🔔 Incoming Call...</h3>
@@ -400,7 +359,6 @@
             <video id="remoteVideo" autoplay playsinline></video>
             <div class="call-actions">
                 <button class="hangup" id="hangupBtn">📴 Hang Up</button>
-                <button class="answer" id="answerBtn" style="display:none;">📞 Answer</button>
             </div>
         </div>
     </div>
@@ -408,7 +366,7 @@
 
 <script>
     // =============================================
-    // ✅ FIREBASE CONFIG (YOUR PROJECT)
+    // FIREBASE CONFIG
     // =============================================
     const firebaseConfig = {
         apiKey: "AIzaSyAksWz12FkFPTQZsvz6pWYwJbOFh03T6VI",
@@ -420,7 +378,6 @@
         measurementId: "G-96YWRXTN1W"
     };
 
-    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
@@ -446,18 +403,16 @@
     const chatPartnerName = $('chatPartnerName'), vanishToggle = $('vanishToggle'), videoCallBtn = $('videoCallBtn');
     const stickerChatBtn = $('stickerChatBtn'), stickerChatPicker = $('stickerChatPicker'), voiceChatBtn = $('voiceChatBtn');
     const typingIndicator = $('typingIndicator'), onlineStatusChat = $('onlineStatusChat');
-    const profileSection = $('profileSection'), profileName = $('profileName'), profileEmail = $('profileEmail');
+    const profileName = $('profileName'), profileEmail = $('profileEmail');
     const friendsCount = $('friendsCount'), viewsCount = $('viewsCount'), myPostsContainer = $('myPostsContainer');
     const bookmarksContainer = $('bookmarksContainer'), storiesContainer = $('storiesContainer');
-    const pinnedPostContainer = $('pinnedPostContainer');
     const notifCount = $('notifCount'), notifBell = $('notifBell'), themeToggle = $('themeToggle');
     const callModal = $('callModal'), localVideo = $('localVideo'), remoteVideo = $('remoteVideo');
-    const hangupBtn = $('hangupBtn'), answerBtn = $('answerBtn'), callStatus = $('callStatus');
-    const profileAvatar = $('profileAvatar'), profilePicInput = $('profilePicInput');
+    const hangupBtn = $('hangupBtn'), profilePicInput = $('profilePicInput');
     const deleteAccountBtn = $('deleteAccountBtn');
 
     // =============================================
-    // STATE
+    // STATE MANAGEMENT
     // =============================================
     let currentUserData = null, currentTab = 'feed';
     let selectedImageBase64 = null, selectedVoiceBase64 = null, voiceBlobURL = null;
@@ -467,7 +422,7 @@
     let isPollMode = false;
 
     // =============================================
-    // THEME
+    // THEME MANAGEMENT ENGINE
     // =============================================
     let dark = localStorage.getItem('theme') === 'dark';
     if (dark) document.documentElement.setAttribute('data-theme', 'dark');
@@ -478,15 +433,19 @@
     };
 
     // =============================================
-    // STICKERS
+    // STICKER GENERATOR MODULE
     // =============================================
-    const stickers = ['❤️','😊','😂','🎉','👍','🔥','💯','😍','🤩','🥳','😎','🤗','😇','🤣','😅','😆','🙃','😉','😌','😋','😜','🤪','😝','🤑','🤓','🧐','🤠','🥸','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','😴','🤤','😪','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑'];
+    const stickers = ['❤️','😊','😂','🎉','👍','🔥','💯','😍','🤩','🥳','😎','🤗','😇','🤣','😅','😆','🙃','😉','😌','😋','😜','🤪','😝'];
     function buildStickerPicker(container, targetInput) {
         container.innerHTML = '';
         stickers.forEach(s => {
             const span = document.createElement('span');
             span.textContent = s;
-            span.onclick = () => { targetInput.value += s; container.classList.remove('open'); };
+            span.onclick = (e) => { 
+                e.stopPropagation();
+                targetInput.value += s; 
+                container.classList.remove('open'); 
+            };
             container.appendChild(span);
         });
     }
@@ -494,775 +453,275 @@
     stickerChatBtn.onclick = (e) => { e.stopPropagation(); stickerChatPicker.classList.toggle('open'); if(stickerChatPicker.classList.contains('open')) buildStickerPicker(stickerChatPicker, chatInput); };
     document.addEventListener('click', () => { stickerPostPicker.classList.remove('open'); stickerChatPicker.classList.remove('open'); });
 
-    // Poll toggle
+    // =============================================
+    // IMAGE HANDLING LOGIC
+    // =============================================
+    attachImageBtn.onclick = () => imageInput.click();
+    imageInput.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                selectedImageBase64 = event.target.result;
+                imagePreview.src = selectedImageBase64;
+                imagePreview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // =============================================
+    // POLL ELEMENT UI TOGGLE
+    // =============================================
     pollToggleBtn.onclick = () => {
         isPollMode = !isPollMode;
-        pollInputArea.style.display = isPollMode ? 'flex' : 'none';
-        pollToggleBtn.style.background = isPollMode ? 'var(--primary)' : 'none';
-        pollToggleBtn.style.color = isPollMode ? 'white' : 'var(--text)';
-    };
-
-    // =============================================
-    // AUTH
-    // =============================================
-    auth.onAuthStateChanged(async user => {
-        if (user) {
-            const doc = await db.collection('users').doc(user.uid).get();
-            if (doc.exists) {
-                currentUserData = { id: user.uid, ...doc.data() };
-            } else {
-                const name = regName.value || 'Anonymous';
-                await db.collection('users').doc(user.uid).set({
-                    displayName: name, email: user.email || regIdentifier.value || '',
-                    friends: [], friendRequests: [], status: '', views: 0, photoURL: '',
-                    bookmarks: [], pinned: null,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                currentUserData = { id: user.uid, displayName: name, email: user.email || '', friends: [], friendRequests: [], views: 0, photoURL: '', bookmarks: [], pinned: null };
-            }
-            const userRef = db.collection('users').doc(user.uid);
-            await userRef.update({ online: true });
-            userRef.onDisconnect().update({ online: false });
-            showApp();
-            loadFeed(); loadRequests(); loadChatList(); loadNotifications(); loadStories(); loadBookmarks(); loadPinnedPost();
-            await userRef.update({ views: firebase.firestore.FieldValue.increment(1) });
-        } else showAuth();
-    });
-
-    registerBtn.onclick = async () => {
-        const name = regName.value.trim(), ident = regIdentifier.value.trim(), pass = regPass.value;
-        if (!name || !ident || !pass) return alert('Fill all fields');
-        if (pass.length < 6) return alert('Password 6+ chars');
-        let email = ident;
-        if (!ident.includes('@')) email = ident + '@phone.local';
-        try { await auth.createUserWithEmailAndPassword(email, pass); } catch (err) { alert(err.message); }
-    };
-    loginBtn.onclick = async () => {
-        let ident = loginIdentifier.value.trim(), pass = loginPassword.value;
-        if (!ident || !pass) return alert('Enter email/phone and password');
-        let email = ident;
-        if (!ident.includes('@')) email = ident + '@phone.local';
-        try { await auth.signInWithEmailAndPassword(email, pass); } catch (err) { alert(err.message); }
-    };
-    forgotPasswordBtn.onclick = async () => {
-        const email = prompt('Enter your email address to reset password:');
-        if (email) {
-            try { await auth.sendPasswordResetEmail(email); alert('✅ Password reset email sent!'); } catch (e) { alert('Error: ' + e.message); }
-        }
-    };
-    logoutBtn.onclick = () => { if (currentUserData) db.collection('users').doc(currentUserData.id).update({ online: false }); auth.signOut(); if(chatUnsubscribe) chatUnsubscribe(); };
-    deleteAccountBtn.onclick = async () => {
-        if (!currentUserData) return;
-        if (confirm('Are you sure? This will permanently delete all your data.')) {
-            try {
-                await db.collection('users').doc(currentUserData.id).delete();
-                await auth.currentUser.delete();
-                alert('Account deleted.');
-                auth.signOut();
-            } catch (e) { alert('Error: ' + e.message); }
-        }
-    };
-
-    function showApp() {
-        authScreen.style.display = 'none'; appScreen.style.display = 'flex'; logoutBtn.style.display = 'block';
-        if (currentUserData) {
-            profileName.textContent = currentUserData.displayName;
-            profileEmail.textContent = currentUserData.email || 'No email';
-            friendsCount.textContent = currentUserData.friends?.length || 0;
-            viewsCount.textContent = currentUserData.views || 0;
-            if (currentUserData.photoURL) profileAvatar.innerHTML = `<img src="${currentUserData.photoURL}" />`;
-        }
-        switchTab('feed');
-    }
-    function showAuth() {
-        authScreen.style.display = 'block'; appScreen.style.display = 'none'; logoutBtn.style.display = 'none';
-        currentUserData = null; if(chatUnsubscribe) chatUnsubscribe();
-    }
-
-    // =============================================
-    // PROFILE PICTURE
-    // =============================================
-    profilePicInput.onchange = async (e) => {
-        const file = e.target.files[0];
-        if (!file || !currentUserData) return;
-        const base64 = await compressImage(file, 200, 0.5);
-        await db.collection('users').doc(currentUserData.id).update({ photoURL: base64 });
-        currentUserData.photoURL = base64;
-        profileAvatar.innerHTML = `<img src="${base64}" />`;
-    };
-    window.copyProfileLink = () => {
-        const url = `https://gabriel-the-great.github.io/Gabriel-The-Great-Poster/?u=${currentUserData.id}`;
-        navigator.clipboard?.writeText(url);
-        alert('Profile link copied!');
-    };
-
-    // =============================================
-    // IMAGE / VOICE
-    // =============================================
-    function compressImage(file, maxWidth = 800, quality = 0.6) {
-        return new Promise(r => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = e => {
-                const img = new Image();
-                img.src = e.target.result;
-                img.onload = () => {
-                    const c = document.createElement('canvas');
-                    let w = img.width, h = img.height;
-                    if (w > maxWidth) { h = h * maxWidth / w; w = maxWidth; }
-                    c.width = w; c.height = h;
-                    c.getContext('2d').drawImage(img, 0, 0, w, h);
-                    r(c.toDataURL('image/jpeg', quality));
-                };
-            };
-        });
-    }
-    attachImageBtn.onclick = () => imageInput.click();
-    imageInput.onchange = async e => {
-        const file = e.target.files[0];
-        if (file) { selectedImageBase64 = await compressImage(file); imagePreview.src = selectedImageBase64; imagePreview.style.display = 'block'; }
-    };
-
-    function startRecording(btn) {
-        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                const url = URL.createObjectURL(blob);
-                voiceBlobURL = url;
-                voicePreviewAudio.src = url;
-                voicePreviewArea.style.display = 'flex';
-                const reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onload = () => { selectedVoiceBase64 = reader.result; };
-                stream.getTracks().forEach(t => t.stop());
-                btn.textContent = '🎤';
-                btn.style.background = '';
-                btn.onclick = () => startRecording(btn);
-            };
-            mediaRecorder.start();
-            btn.textContent = '⏹️';
-            btn.style.background = '#e94560';
-            btn.onclick = () => { if (mediaRecorder.state === 'recording') mediaRecorder.stop(); };
-        }).catch(() => alert('Microphone access needed.'));
-    }
-    voicePostBtn.onclick = function() { startRecording(this); };
-    voiceChatBtn.onclick = function() { if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); this.textContent = '🎤'; return; } startRecording(this); };
-    cancelVoiceBtn.onclick = () => { voicePreviewArea.style.display = 'none'; voicePreviewAudio.src = ''; selectedVoiceBase64 = null; voiceBlobURL = null; };
-
-    // =============================================
-    // PUBLISH POST
-    // =============================================
-    publishBtn.onclick = async () => {
-        const text = postContent.value.trim();
-        if (!text && !selectedImageBase64 && !selectedVoiceBase64 && !isPollMode) return alert('Write something, add media, or create a poll!');
-        if (!currentUserData) return alert('Login first');
-
-        let pollData = null;
         if (isPollMode) {
-            const opts = [pollOption1.value.trim(), pollOption2.value.trim(), pollOption3.value.trim()].filter(o => o);
-            if (opts.length < 2) return alert('Add at least 2 poll options.');
-            pollData = { options: opts, votes: {} };
-        }
-
-        const postRef = db.collection('posts').doc();
-        await postRef.set({
-            text: text || '', imageBase64: selectedImageBase64 || '', voiceBase64: selectedVoiceBase64 || '',
-            poll: pollData,
-            authorId: currentUserData.id, authorName: currentUserData.displayName, authorPhoto: currentUserData.photoURL || '',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            likes: {}, comments: [], pinned: false
-        });
-
-        postContent.value = ''; imagePreview.style.display = 'none'; imagePreview.src = '';
-        selectedImageBase64 = null; selectedVoiceBase64 = null; voicePreviewArea.style.display = 'none';
-        imageInput.value = ''; pollInputArea.style.display = 'none'; isPollMode = false; pollToggleBtn.style.background = 'none';
-        pollOption1.value = ''; pollOption2.value = ''; pollOption3.value = '';
-        loadFeed();
-    };
-
-    // =============================================
-    // STORIES
-    // =============================================
-    function loadStories() {
-        if (storiesUnsub) storiesUnsub();
-        const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000);
-        storiesUnsub = db.collection('stories').where('timestamp', '>', cutoff).orderBy('timestamp', 'desc').onSnapshot(snap => {
-            if (snap.empty) { storiesContainer.innerHTML = '<div class="empty-state">No stories. Click + to add one!</div>'; return; }
-            let html = `<div class="story-item" style="border-color:var(--danger);" onclick="addStory()">➕ My Story</div>`;
-            snap.forEach(d => {
-                const data = d.data();
-                if (data.authorId === currentUserData.id) {
-                    html += `<div class="story-item">📌 ${data.text || '📷'}</div>`;
-                } else {
-                    html += `<div class="story-item">👤 ${data.authorName || 'User'}: ${data.text || '📷'}</div>`;
-                }
-            });
-            storiesContainer.innerHTML = html;
-        });
-    }
-    window.addStory = async () => {
-        const text = prompt('What is your story? (text only for now)');
-        if (text && currentUserData) {
-            await db.collection('stories').add({
-                text: text, authorId: currentUserData.id, authorName: currentUserData.displayName,
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            loadStories();
-        }
-    };
-
-    // =============================================
-    // BOOKMARKS
-    // =============================================
-    window.toggleBookmark = async (postId) => {
-        if (!currentUserData) return alert('Login first');
-        const userRef = db.collection('users').doc(currentUserData.id);
-        const bookmarks = currentUserData.bookmarks || [];
-        let newBookmarks;
-        if (bookmarks.includes(postId)) {
-            newBookmarks = bookmarks.filter(id => id !== postId);
+            pollInputArea.style.display = 'flex';
+            pollToggleBtn.style.background = 'var(--primary)';
+            pollToggleBtn.style.color = 'white';
         } else {
-            newBookmarks = [...bookmarks, postId];
+            pollInputArea.style.display = 'none';
+            pollToggleBtn.style.background = 'none';
+            pollToggleBtn.style.color = 'var(--text)';
+            pollOption1.value = '';
+            pollOption2.value = '';
+            pollOption3.value = '';
         }
-        await userRef.update({ bookmarks: newBookmarks });
-        currentUserData.bookmarks = newBookmarks;
-        loadBookmarks();
-        loadFeed();
     };
-    function loadBookmarks() {
-        if (!currentUserData) return;
-        const bookmarks = currentUserData.bookmarks || [];
-        if (bookmarks.length === 0) { bookmarksContainer.innerHTML = '<div class="empty-state">No saved posts.</div>'; return; }
-        db.collection('posts').where(firebase.firestore.FieldPath.documentId(), 'in', bookmarks.length > 0 ? bookmarks : ['dummy']).get().then(snap => {
-            if (snap.empty) { bookmarksContainer.innerHTML = '<div class="empty-state">Saved posts not found.</div>'; return; }
-            let html = '';
-            snap.forEach(d => {
-                const data = d.data();
-                html += `<div class="feed-item"><div class="feed-author">${data.authorName}</div><div class="feed-content">${data.text}</div></div>`;
-            });
-            bookmarksContainer.innerHTML = html;
-        });
-    }
 
     // =============================================
-    // FEED
+    // 👤 ACCOUNT AUTHENTICATION LOOP
     // =============================================
-    function loadFeed(searchTerm = '') {
-        if (feedUnsubscribe) feedUnsubscribe();
-        if (!currentUserData) return;
-        const friends = currentUserData.friends || [];
-        let query;
-        if (friends.length === 0) query = db.collection('posts').where('authorId', '==', currentUserData.id);
-        else query = db.collection('posts').where('authorId', 'in', [...friends, currentUserData.id]);
-        
-        feedUnsubscribe = query.orderBy('timestamp', 'desc').onSnapshot(snap => {
-            if (snap.empty) { feedContainer.innerHTML = '<div class="empty-state">No posts from friends.</div>'; return; }
-            let posts = [];
-            snap.forEach(d => {
-                const data = d.data();
-                const likeCount = Object.keys(data.likes || {}).length;
-                let score = likeCount * 2 + (data.comments?.length || 0) * 5;
-                if (data.pinned) score += 100;
-                posts.push({ id: d.id, data, score });
-            });
-            posts.sort((a,b) => b.score - a.score || b.data.timestamp?.seconds - a.data.timestamp?.seconds);
-            
-            if (searchTerm) {
-                const s = searchTerm.toLowerCase();
-                posts = posts.filter(p => p.data.text?.toLowerCase().includes(s) || p.data.authorName?.toLowerCase().includes(s));
-            }
 
-            let html = '';
-            posts.forEach(p => {
-                const data = p.data;
-                const isFriend = (currentUserData.friends || []).includes(data.authorId) || data.authorId === currentUserData.id;
-                if (!isFriend && friends.length > 0) return;
-                const isBookmarked = (currentUserData.bookmarks || []).includes(p.id);
-                const userReaction = data.likes && data.likes[currentUserData.id] ? data.likes[currentUserData.id] : null;
-                const reactionEmojis = ['❤️', '😂', '😮', '😢', '😡'];
-                let reactHtml = reactionEmojis.map(e => {
-                    const count = Object.values(data.likes || {}).filter(v => v === e).length;
-                    const active = userReaction === e ? 'active' : '';
-                    return `<button class="react-btn ${active}" onclick="reactToPost('${p.id}','${e}')">${e} ${count}</button>`;
-                }).join('');
+    // 1. Account Creation
+    registerBtn.onclick = async () => {
+        const name = regName.value.trim();
+        const email = regIdentifier.value.trim();
+        const password = regPass.value;
 
-                let content = data.text || '';
-                content = content.replace(/#(\w+)/g, '<span class="hashtag" onclick="searchHashtag(\'$1\')">#$1</span>');
-                content = content.replace(/@(\w+)/g, '<span class="mention" onclick="searchMention(\'$1\')">@$1</span>');
-
-                let imgHtml = data.imageBase64 ? `<img src="${data.imageBase64}" class="feed-image" />` : '';
-                let voiceHtml = data.voiceBase64 ? `<audio controls src="${data.voiceBase64}" class="audio-player"></audio>` : '';
-                let pollHtml = '';
-                if (data.poll) {
-                    const total = Object.values(data.poll.votes || {}).reduce((a,b) => a+b, 0);
-                    pollHtml = '<div style="margin:8px 0;">';
-                    data.poll.options.forEach(opt => {
-                        const votes = data.poll.votes?.[opt] || 0;
-                        const pct = total > 0 ? (votes/total*100).toFixed(0) : 0;
-                        pollHtml += `<div class="poll-option" onclick="votePoll('${p.id}','${opt}')">
-                            <span>${opt}</span>
-                            <span>${votes} (${pct}%)</span>
-                        </div>`;
-                    });
-                    pollHtml += '</div>';
-                }
-
-                const pinnedBadge = data.pinned ? '📌 ' : '';
-
-                html += `
-                    <div class="feed-item ${data.pinned ? 'pinned' : ''}" id="post-${p.id}">
-                        <div class="feed-header">
-                            <div class="feed-author">
-                                ${data.authorPhoto ? `<img src="${data.authorPhoto}" style="width:24px;height:24px;border-radius:50%;object-fit:cover;" />` : '👤'}
-                                ${data.authorName || 'Unknown'} ${data.authorId === currentUserData.id ? '(You)' : ''}
-                            </div>
-                            <div>
-                                ${data.authorId === currentUserData.id ? `<button style="background:none;border:none;font-size:1.2rem;cursor:pointer;" onclick="pinPost('${p.id}')">📌</button>` : ''}
-                                ${data.authorId === currentUserData.id ? `<button style="background:none;border:none;font-size:1.2rem;cursor:pointer;" onclick="editPost('${p.id}')">✏️</button>` : ''}
-                                <button style="background:none;border:none;font-size:1.2rem;cursor:pointer;" onclick="toggleBookmark('${p.id}')">${isBookmarked ? '🔖' : '📑'}</button>
-                                <button style="background:none;border:none;font-size:1.2rem;cursor:pointer;" onclick="sharePost('${p.id}','${data.text}')">📤</button>
-                            </div>
-                        </div>
-                        ${pinnedBadge}
-                        ${imgHtml} ${voiceHtml}
-                        <div class="feed-content" id="content-${p.id}">${content}</div>
-                        ${pollHtml}
-                        <div class="feed-actions">
-                            ${reactHtml}
-                            <button onclick="alert('Comment coming soon!')">💬 ${(data.comments || []).length}</button>
-                        </div>
-                    </div>
-                `;
-            });
-            feedContainer.innerHTML = html || '<div class="empty-state">No posts match your search.</div>';
-        });
-    }
-
-    window.searchHashtag = (tag) => { postSearchInput.value = '#' + tag; searchPosts(); };
-    window.searchMention = (name) => { postSearchInput.value = '@' + name; searchPosts(); };
-
-    function searchPosts() {
-        const term = postSearchInput.value.trim();
-        loadFeed(term);
-    }
-    postSearchBtn.onclick = searchPosts;
-    postSearchInput.onkeydown = (e) => { if (e.key === 'Enter') searchPosts(); };
-
-    window.votePoll = async (postId, option) => {
-        if (!currentUserData) return alert('Login first');
-        const ref = db.collection('posts').doc(postId);
-        const doc = await ref.get();
-        const data = doc.data();
-        if (!data.poll) return;
-        const votes = data.poll.votes || {};
-        votes[option] = (votes[option] || 0) + 1;
-        await ref.update({ 'poll.votes': votes });
-        loadFeed();
-    };
-
-    window.pinPost = async (postId) => {
-        if (!currentUserData) return;
-        const userRef = db.collection('users').doc(currentUserData.id);
-        if (currentUserData.pinned) {
-            await db.collection('posts').doc(currentUserData.pinned).update({ pinned: false });
-        }
-        await db.collection('posts').doc(postId).update({ pinned: true });
-        await userRef.update({ pinned: postId });
-        currentUserData.pinned = postId;
-        loadFeed();
-        loadPinnedPost();
-    };
-
-    function loadPinnedPost() {
-        if (!currentUserData || !currentUserData.pinned) {
-            pinnedPostContainer.innerHTML = '<p style="color:#999;">No pinned post.</p>';
+        if (!name || !email || password.length < 6) {
+            authStatus.textContent = "❌ Please complete all fields. Passwords must be 6+ characters.";
+            authStatus.style.color = "var(--danger)";
             return;
         }
-        db.collection('posts').doc(currentUserData.pinned).get().then(doc => {
+
+        try {
+            authStatus.textContent = "Creating network account...";
+            authStatus.style.color = "var(--text)";
+            const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+            
+            await db.collection('users').doc(userCredential.user.uid).set({
+                name: name,
+                email: email,
+                uid: userCredential.user.uid,
+                friendsCount: 0,
+                viewsCount: 0,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            
+            authStatus.textContent = "✅ System profile deployed successfully!";
+            authStatus.style.color = "var(--success)";
+            regName.value = ''; regIdentifier.value = ''; regPass.value = '';
+        } catch (error) {
+            authStatus.textContent = "❌ " + error.message;
+            authStatus.style.color = "var(--danger)";
+        }
+    };
+
+    // 2. User Sign-in Login
+    loginBtn.onclick = async () => {
+        const email = loginIdentifier.value.trim();
+        const password = loginPassword.value;
+
+        if (!email || !password) {
+            authStatus.textContent = "❌ Missing key data profile credentials.";
+            authStatus.style.color = "var(--danger)";
+            return;
+        }
+
+        try {
+            authStatus.textContent = "Establishing security handshake...";
+            authStatus.style.color = "var(--text)";
+            await auth.signInWithEmailAndPassword(email, password);
+        } catch (error) {
+            authStatus.textContent = "❌ " + error.message;
+            authStatus.style.color = "var(--danger)";
+        }
+    };
+
+    // 3. Monitor Authentication Engine State Changes
+    auth.onAuthStateChanged(async (user) => {
+        if (user) {
+            authScreen.style.display = 'none';
+            appScreen.style.display = 'flex';
+            authStatus.textContent = "";
+            
+            const doc = await db.collection('users').doc(user.uid).get();
             if (doc.exists) {
-                const data = doc.data();
-                pinnedPostContainer.innerHTML = `<div class="feed-item">${data.text}</div>`;
+                currentUserData = doc.data();
+                profileName.textContent = currentUserData.name;
+                profileEmail.textContent = currentUserData.email;
+                friendsCount.textContent = currentUserData.friendsCount || 0;
+                viewsCount.textContent = currentUserData.viewsCount || 0;
             }
-        });
-    }
-
-    window.reactToPost = async (postId, emoji) => {
-        if (!currentUserData) return alert('Login first');
-        const ref = db.collection('posts').doc(postId);
-        const doc = await ref.get();
-        const data = doc.data();
-        let likes = data.likes || {};
-        if (likes[currentUserData.id] === emoji) {
-            delete likes[currentUserData.id];
+            listenToFeed();
         } else {
-            likes[currentUserData.id] = emoji;
+            authScreen.style.display = 'block';
+            appScreen.style.display = 'none';
+            currentUserData = null;
+            if (feedUnsubscribe) feedUnsubscribe();
         }
-        await ref.update({ likes: likes });
+    });
+
+    // 4. End Session Logout
+    logoutBtn.onclick = () => {
+        auth.signOut().then(() => {
+            loginIdentifier.value = '';
+            loginPassword.value = '';
+        });
     };
-    window.editPost = async (postId) => {
-        const contentDiv = document.getElementById(`content-${postId}`);
-        if (!contentDiv) return;
-        const currentText = contentDiv.textContent;
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.value = currentText;
-        input.className = 'edit-post-input';
-        contentDiv.innerHTML = '';
-        contentDiv.appendChild(input);
-        input.focus();
-        input.onblur = async () => {
-            const newText = input.value.trim();
-            if (newText && newText !== currentText) {
-                await db.collection('posts').doc(postId).update({ text: newText });
-            }
-            loadFeed();
+
+    // =============================================
+    // 📰 FIRESTORE PUBLISHING & DISTRIBUTED FEED
+    // =============================================
+
+    // 1. Send Post to Firestore Stream Collection
+    publishBtn.onclick = async () => {
+        const text = postContent.value.trim();
+        if (!text && !isPollMode && !selectedImageBase64) {
+            alert("Empty posts cannot be dispatched.");
+            return;
+        }
+
+        const postData = {
+            authorId: auth.currentUser.uid,
+            authorName: profileName.textContent || "Active Participant",
+            content: text,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            likes: [],
+            comments: []
         };
-        input.onkeydown = (e) => { if (e.key === 'Enter') input.blur(); };
-    };
-    window.sharePost = (postId, text) => {
-        if (!currentUserData) return alert('Login first');
-        const friends = currentUserData.friends || [];
-        if (friends.length === 0) return alert('You have no friends to share with.');
-        const friendName = prompt('Enter the name of the friend to share with:');
-        if (!friendName) return;
-        db.collection('users').where('displayName', '==', friendName).get().then(snap => {
-            if (snap.empty) return alert('Friend not found.');
-            const friend = snap.docs[0];
-            startChat(friend.id, friend.data().displayName);
-            setTimeout(() => {
-                chatInput.value = `📤 Shared: "${text}"`;
-                sendMessage();
-            }, 500);
-        });
-    };
 
-    // =============================================
-    // FRIEND SYSTEM
-    // =============================================
-    window.sendFriendRequest = async (targetId) => {
-        if (!currentUserData || targetId === currentUserData.id) return alert('Cannot add yourself');
-        const targetRef = db.collection('users').doc(targetId);
-        const doc = await targetRef.get();
-        const reqs = doc.data().friendRequests || [];
-        if (reqs.includes(currentUserData.id)) return alert('Request already sent.');
-        await targetRef.update({ friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUserData.id) });
-        alert('Request sent!');
-    };
-    window.acceptRequest = async (requesterId) => {
-        const myRef = db.collection('users').doc(currentUserData.id);
-        const theirRef = db.collection('users').doc(requesterId);
-        await myRef.update({ friendRequests: firebase.firestore.FieldValue.arrayRemove(requesterId), friends: firebase.firestore.FieldValue.arrayUnion(requesterId) });
-        await theirRef.update({ friends: firebase.firestore.FieldValue.arrayUnion(currentUserData.id) });
-        loadRequests(); loadChatList();
-    };
-    window.declineRequest = async (requesterId) => {
-        await db.collection('users').doc(currentUserData.id).update({ friendRequests: firebase.firestore.FieldValue.arrayRemove(requesterId) });
-        loadRequests();
-    };
-    function loadRequests() {
-        if (!currentUserData) return;
-        const reqs = currentUserData.friendRequests || [];
-        reqBadge.style.display = reqs.length ? 'inline' : 'none';
-        reqBadge.textContent = reqs.length;
-        if (!reqs.length) { requestsContainer.innerHTML = '<div class="empty-state">No pending requests.</div>'; return; }
-        let html = '';
-        reqs.forEach(id => {
-            db.collection('users').doc(id).get().then(d => {
-                if (d.exists) {
-                    const data = d.data();
-                    html += `<div class="request-item"><span><b>${data.displayName}</b></span><div><button class="accept-btn" onclick="acceptRequest('${id}')">Accept</button><button class="decline-btn" onclick="declineRequest('${id}')">Decline</button></div></div>`;
-                    requestsContainer.innerHTML = html;
-                }
-            });
-        });
-    }
-
-    // =============================================
-    // SEARCH USERS
-    // =============================================
-    searchBtn.onclick = async () => {
-        const q = searchInput.value.trim().toLowerCase();
-        if (!q) return alert('Enter a name');
-        const snap = await db.collection('users').get();
-        let html = '';
-        snap.forEach(d => {
-            const data = d.data();
-            if (d.id !== currentUserData.id && data.displayName.toLowerCase().includes(q)) {
-                const isFriend = (currentUserData.friends || []).includes(d.id);
-                html += `<div class="request-item"><span><b>${data.displayName}</b></span>
-                         <button style="background:var(--primary);color:white;border:none;padding:6px 16px;border-radius:8px;cursor:pointer;" 
-                                 onclick="${isFriend ? 'alert(\'Already friends\')' : `sendFriendRequest('${d.id}')`}">${isFriend ? '✅ Friend' : '➕ Add'}</button></div>`;
-            }
-        });
-        searchResults.innerHTML = html || '<div class="empty-state">No users found.</div>';
-    };
-
-    // =============================================
-    // CHAT
-    // =============================================
-    window.startChat = async (targetId, targetName) => {
-        if (!currentUserData || targetId === currentUserData.id) return;
-        const ids = [currentUserData.id, targetId].sort();
-        const chatId = ids.join('_');
-        const ref = db.collection('chats').doc(chatId);
-        if (!(await ref.get()).exists) {
-            await ref.set({ participants: [currentUserData.id, targetId], participantNames: { [currentUserData.id]: currentUserData.displayName, [targetId]: targetName }, lastMessage: '', lastMessageTime: firebase.firestore.FieldValue.serverTimestamp() });
+        if (selectedImageBase64) {
+            postData.image = selectedImageBase64;
         }
-        openChatWindow(chatId, targetId, targetName);
-        switchTab('chats');
-    };
 
-    function openChatWindow(chatId, partnerId, partnerName) {
-        if (chatUnsubscribe) chatUnsubscribe();
-        currentChatId = chatId; currentChatPartnerId = partnerId;
-        chatPartnerName.textContent = partnerName;
-        vanishToggle.textContent = '🔮 OFF'; vanishToggle.classList.remove('active'); vanishMode = false;
-        document.getElementById('page-chats').style.display = 'none';
-        chatWindowContainer.style.display = 'block';
-        typingIndicator.style.display = 'none';
-        db.collection('users').doc(partnerId).onSnapshot(doc => {
-            if (doc.exists && doc.data().online) onlineStatusChat.innerHTML = '<span class="online-dot"></span> Online';
-            else onlineStatusChat.innerHTML = '<span class="online-dot" style="background:#888;"></span> Offline';
-        });
-        db.collection('chats').doc(chatId).onSnapshot(doc => {
-            if (doc.exists && doc.data().typing && doc.data().typing !== currentUserData.id) typingIndicator.style.display = 'block';
-            else typingIndicator.style.display = 'none';
-        });
-
-        const msgsRef = db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc');
-        chatUnsubscribe = msgsRef.onSnapshot(async (snap) => {
-            let html = '';
-            snap.forEach(async (doc) => {
-                const data = doc.data();
-                const isMine = data.senderId === currentUserData.id;
-                let cls = isMine ? 'msg-sent' : 'msg-received';
-                if (data.vanish) cls += ' msg-vanish';
-                let content = data.text || '';
-                if (data.voice) content = '🎵 Voice <audio controls src="'+data.voice+'" style="max-width:150px;"></audio>';
-                let seenHtml = '';
-                if (!data.vanish && !isMine && data.seen) seenHtml = `<span class="seen-tick">✓ Seen</span>`;
-                html += `<div class="msg ${cls}">${content} ${seenHtml}</div>`;
-                if (!data.vanish && !isMine && !data.seen) {
-                    await db.collection('chats').doc(chatId).collection('messages').doc(doc.id).update({ seen: true });
-                }
-                if (data.vanish && !isMine) {
-                    setTimeout(async () => { try { await db.collection('chats').doc(chatId).collection('messages').doc(doc.id).delete(); } catch(e) {} }, 5000);
-                }
-            });
-            chatMessages.innerHTML = html;
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        });
-        chatInput.value = '';
-        if (window.peerConnection) { window.peerConnection.close(); window.peerConnection = null; }
-        if (window.callDocRef) { window.callDocRef.update({ status: 'ended' }).catch(()=>{}); }
-        callModal.classList.remove('open');
-    }
-
-    chatInput.oninput = () => {
-        if (!currentChatId || !currentUserData) return;
-        const chatRef = db.collection('chats').doc(currentChatId);
-        chatRef.update({ typing: currentUserData.id });
-        if (typingTimeout) clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => { chatRef.update({ typing: null }); }, 1500);
-    };
-    vanishToggle.onclick = () => { vanishMode = !vanishMode; vanishToggle.textContent = vanishMode ? '🔮 ON' : '🔮 OFF'; vanishToggle.classList.toggle('active'); };
-    sendChatBtn.onclick = sendMessage;
-    chatInput.onkeydown = e => { if (e.key === 'Enter') sendMessage(); };
-
-    async function sendMessage() {
-        const text = chatInput.value.trim();
-        if (!text && !selectedVoiceBase64) return;
-        await db.collection('chats').doc(currentChatId).collection('messages').add({
-            senderId: currentUserData.id, text: text || '', voice: selectedVoiceBase64 || '',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(), vanish: vanishMode, seen: false
-        });
-        await db.collection('chats').doc(currentChatId).update({ lastMessage: text || '🎵 Voice', lastMessageTime: firebase.firestore.FieldValue.serverTimestamp() });
-        chatInput.value = ''; selectedVoiceBase64 = null; voicePreviewArea.style.display = 'none';
-    }
-    backFromChat.onclick = () => { if(chatUnsubscribe) chatUnsubscribe(); chatWindowContainer.style.display = 'none'; document.getElementById('page-chats').style.display = 'block'; currentChatId = null; loadChatList(); };
-    function loadChatList() {
-        if (!currentUserData) return;
-        db.collection('chats').where('participants', 'array-contains', currentUserData.id).orderBy('lastMessageTime', 'desc').onSnapshot(snap => {
-            if (snap.empty) { chatListContainer.innerHTML = '<div class="empty-state">No chats yet.</div>'; return; }
-            let html = '';
-            snap.forEach(d => {
-                const data = d.data();
-                const otherId = data.participants.find(id => id !== currentUserData.id);
-                const otherName = data.participantNames[otherId] || 'User';
-                html += `<div class="chat-list-item" onclick="openChatWindow('${d.id}','${otherId}','${otherName}')">
-                            <div><b>${otherName}</b><br><span style="color:#888;font-size:0.8rem;">${data.lastMessage || 'Start chatting'}</span></div>
-                            <span style="color:var(--primary);">➡️</span>
-                        </div>`;
-            });
-            chatListContainer.innerHTML = html;
-        });
-    }
-
-    // =============================================
-    // VIDEO CALL
-    // =============================================
-    const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
-    videoCallBtn.onclick = async () => {
-        if (!currentChatId || !currentChatPartnerId) return alert('Open a chat first');
-        if (window.peerConnection) return alert('Call already in progress');
-        const callRef = db.collection('calls').doc(currentChatId);
-        window.callDocRef = callRef;
-        const doc = await callRef.get();
-        if (doc.exists && doc.data().status === 'ringing') { alert('Ongoing call.'); return; }
-        const pc = new RTCPeerConnection(servers);
-        window.peerConnection = pc;
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        stream.getTracks().forEach(t => pc.addTrack(t, stream));
-        localVideo.srcObject = stream;
-        callModal.classList.add('open');
-        callStatus.textContent = '🔔 Calling...';
-        answerBtn.style.display = 'none';
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        await callRef.set({ offer: { type: offer.type, sdp: offer.sdp }, status: 'ringing', caller: currentUserData.id, callee: currentChatPartnerId, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
-        callRef.onSnapshot(async (snap) => {
-            const data = snap.data();
-            if (!data) return;
-            if (data.status === 'connected' && data.answer && !pc.currentRemoteDescription) {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-                callStatus.textContent = '📞 Connected!';
+        if (isPollMode) {
+            if (!pollOption1.value.trim() || !pollOption2.value.trim()) {
+                alert("Poll structures require a minimum of two primary choices.");
+                return;
             }
-            if (data.status === 'ended') hangupCall();
-        });
-        pc.onicecandidate = (event) => { if (event.candidate) callRef.collection('candidates').add(event.candidate.toJSON()); };
-        callRef.collection('candidates').onSnapshot((snap) => { snap.forEach(doc => pc.addIceCandidate(new RTCIceCandidate(doc.data()))); });
-        pc.ontrack = (event) => { remoteVideo.srcObject = event.streams[0]; };
-        pc.onconnectionstatechange = () => { if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') hangupCall(); };
-        const unsub = callRef.onSnapshot((snap) => { const data = snap.data(); if (data && data.answer && pc.signalingState !== 'stable') { pc.setRemoteDescription(new RTCSessionDescription(data.answer)); callStatus.textContent = '📞 Connected!'; unsub(); } });
-        window.callUnsub = unsub;
-        answerBtn.style.display = 'none';
-    };
-
-    db.collection('calls').where('status', '==', 'ringing').onSnapshot((snap) => {
-        snap.forEach(async (doc) => {
-            const data = doc.data();
-            if (data.callee === currentUserData?.id && !window.peerConnection) {
-                callModal.classList.add('open');
-                callStatus.textContent = `📞 Incoming call from ${data.callerName || 'someone'}`;
-                answerBtn.style.display = 'inline-block';
-                window.incomingCallDoc = doc.ref;
-                window.incomingCallData = data;
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-                localVideo.srcObject = stream;
-                window.localStream = stream;
+            postData.poll = {
+                options: [
+                    { text: pollOption1.value.trim(), votes: 0 },
+                    { text: pollOption2.value.trim(), votes: 0 }
+                ]
+            };
+            if (pollOption3.value.trim()) {
+                postData.poll.options.push({ text: pollOption3.value.trim(), votes: 0 });
             }
-        });
-    });
-
-    answerBtn.onclick = async () => {
-        if (!window.incomingCallDoc || !window.localStream) return;
-        const callRef = window.incomingCallDoc;
-        const pc = new RTCPeerConnection(servers);
-        window.peerConnection = pc;
-        window.localStream.getTracks().forEach(t => pc.addTrack(t, window.localStream));
-        remoteVideo.srcObject = null;
-        const doc = await callRef.get();
-        const data = doc.data();
-        if (data.offer) {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.offer));
-            const answer = await pc.createAnswer();
-            await pc.setLocalDescription(answer);
-            await callRef.update({ answer: { type: answer.type, sdp: answer.sdp }, status: 'connected' });
-            callStatus.textContent = '📞 Connected!';
-            answerBtn.style.display = 'none';
         }
-        pc.ontrack = (event) => { remoteVideo.srcObject = event.streams[0]; };
-        pc.onicecandidate = (event) => { if (event.candidate) callRef.collection('candidates').add(event.candidate.toJSON()); };
-        callRef.collection('candidates').onSnapshot((snap) => { snap.forEach(doc => pc.addIceCandidate(new RTCIceCandidate(doc.data()))); });
-        pc.onconnectionstatechange = () => { if (pc.connectionState === 'disconnected' || pc.connectionState === 'failed') hangupCall(); };
-        window.incomingCallDoc = null; window.incomingCallData = null; window.localStream = null;
+
+        try {
+            publishBtn.disabled = true;
+            publishBtn.textContent = "Sending...";
+            await db.collection('posts').add(postData);
+            
+            // Clean Form States
+            postContent.value = '';
+            selectedImageBase64 = null;
+            imagePreview.style.display = 'none';
+            if (isPollMode) pollToggleBtn.click();
+        } catch (error) {
+            alert("Stream publishing halted: " + error.message);
+        } finally {
+            publishBtn.disabled = false;
+            publishBtn.textContent = "Post";
+        }
     };
 
-    hangupBtn.onclick = hangupCall;
-    function hangupCall() {
-        if (window.peerConnection) { window.peerConnection.close(); window.peerConnection = null; }
-        if (window.callDocRef) { window.callDocRef.update({ status: 'ended' }).catch(()=>{}); window.callDocRef = null; }
-        if (window.callUnsub) { window.callUnsub(); window.callUnsub = null; }
-        callModal.classList.remove('open');
-        localVideo.srcObject = null; remoteVideo.srcObject = null;
-        answerBtn.style.display = 'none'; callStatus.textContent = 'Call ended.';
-        window.localStream = null; window.incomingCallDoc = null;
-    }
+    // 2. Capture Real-Time Collection Snapshot Array Changes
+    function listenToFeed() {
+        feedContainer.innerHTML = '<div class="empty-state">Syncing operational data stream...</div>';
+        
+        feedUnsubscribe = db.collection('posts')
+            .orderBy('timestamp', 'desc')
+            .onSnapshot(snapshot => {
+                feedContainer.innerHTML = '';
+                myPostsContainer.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    feedContainer.innerHTML = '<div class="empty-state">The timeline matrix is currently empty.</div>';
+                    myPostsContainer.innerHTML = '<div class="empty-state">No personal items published.</div>';
+                    return;
+                }
 
-    // =============================================
-    // NOTIFICATIONS
-    // =============================================
-    function loadNotifications() {
-        if (!currentUserData) return;
-        notifUnsubscribe = db.collection('notifications').where('userId', '==', currentUserData.id).where('read', '==', false).onSnapshot(snap => {
-            const count = snap.size;
-            if (count > 0) { notifCount.style.display = 'inline'; notifCount.textContent = count; } else { notifCount.style.display = 'none'; }
-        });
-    }
-    notifBell.onclick = () => {
-        db.collection('notifications').where('userId', '==', currentUserData.id).get().then(snap => {
-            snap.forEach(d => d.ref.update({ read: true }));
-        });
-        alert('📬 Notifications cleared.');
-    };
+                snapshot.forEach(doc => {
+                    const post = doc.data();
+                    const postEl = document.createElement('div');
+                    postEl.className = 'feed-item';
+                    
+                    let imageHTML = post.image ? `<img src="${post.image}" class="feed-image"/>` : '';
+                    
+                    let pollHTML = '';
+                    if (post.poll && post.poll.options) {
+                        pollHTML = '<div style="margin-top:10px; display:flex; flex-direction:column; gap:5px;">';
+                        post.poll.options.forEach((opt) => {
+                            pollHTML += `
+                                <div class="poll-option">
+                                    <span>${opt.text}</span>
+                                    <span style="font-weight:bold;">${opt.votes || 0} votes</span>
+                                </div>
+                            `;
+                        });
+                        pollHTML += '</div>';
+                    }
 
-    // =============================================
-    // PROFILE / MY POSTS
-    // =============================================
-    function loadMyPosts() {
-        if (!currentUserData) return;
-        db.collection('posts').where('authorId', '==', currentUserData.id).orderBy('timestamp', 'desc').get().then(snap => {
-            if (snap.empty) { myPostsContainer.innerHTML = '<p style="color:#999;">No posts yet.</p>'; return; }
-            let html = '';
-            snap.forEach(d => {
-                const data = d.data();
-                const count = Object.keys(data.likes || {}).length;
-                html += `<div style="background:var(--bg);padding:12px;border-radius:10px;margin:6px 0;">${data.text || '📷 Media'} ❤️ ${count}</div>`;
+                    postEl.innerHTML = `
+                        <div class="feed-header">
+                            <div class="feed-author">👑 ${post.authorName}</div>
+                        </div>
+                        <div class="feed-content">${post.content}</div>
+                        ${imageHTML}
+                        ${pollHTML}
+                        <div class="feed-actions">
+                            <button>❤️ Like (${post.likes ? post.likes.length : 0})</button>
+                            <button>💬 Comment (${post.comments ? post.comments.length : 0})</button>
+                        </div>
+                    `;
+                    
+                    // Route to dynamic containers based on original creator
+                    if (post.authorId === auth.currentUser.uid) {
+                        myPostsContainer.appendChild(postEl.cloneNode(true));
+                    }
+                    feedContainer.appendChild(postEl);
+                });
+            }, error => {
+                console.error("Live subscription dropped: ", error);
+                feedContainer.innerHTML = '<div class="empty-state" style="color:var(--danger);">⚠️ Pipeline connection failed.</div>';
             });
-            myPostsContainer.innerHTML = html;
-        });
     }
 
     // =============================================
-    // SIDEBAR NAV
+    // 🎛️ SIDEBAR ROUTING TAB ENGINE
     // =============================================
-    document.querySelectorAll('.nav-item[data-tab]').forEach(el => {
-        el.onclick = () => switchTab(el.dataset.tab);
+    document.querySelectorAll('.sidebar .nav-item[data-tab]').forEach(item => {
+        item.onclick = () => {
+            document.querySelectorAll('.sidebar .nav-item').forEach(i => i.classList.remove('active'));
+            document.querySelectorAll('.content-area .page').forEach(p => p.classList.remove('active'));
+            
+            item.classList.add('active');
+            const targetTab = item.getAttribute('data-tab');
+            const targetPage = $('page-' + targetTab);
+            if (targetPage) targetPage.classList.add('active');
+            
+            if (targetTab === 'feed') {
+                $('postBar').style.display = 'block';
+            } else {
+                $('postBar').style.display = 'none';
+            }
+        };
     });
-    function switchTab(tab) {
-        currentTab = tab;
-        document.querySelectorAll('.nav-item[data-tab]').forEach(el => el.classList.remove('active'));
-        document.querySelector(`.nav-item[data-tab="${tab}"]`)?.classList.add('active');
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        if (tab !== 'chats') { chatWindowContainer.style.display = 'none'; document.getElementById('page-chats').style.display = 'block'; }
-        const pageMap = { feed: 'page-feed', stories: 'page-stories', bookmarks: 'page-bookmarks', requests: 'page-requests', chats: 'page-chats', find: 'page-find', profile: 'page-profile' };
-        const target = document.getElementById(pageMap[tab]);
-        if (target) target.classList.add('active');
-        if (tab === 'feed') loadFeed();
-        if (tab === 'stories') loadStories();
-        if (tab === 'bookmarks') loadBookmarks();
-        if (tab === 'requests') loadRequests();
-        if (tab === 'chats') { document.getElementById('page-chats').style.display = 'block'; chatWindowContainer.style.display = 'none'; loadChatList(); }
-        if (tab === 'profile') loadMyPosts();
-        document.getElementById('postBar').style.display = (tab === 'feed' || tab === 'stories') ? 'block' : 'none';
-    }
-
-    // =============================================
-    // INIT
-    // =============================================
-    console.log('👑 Ngong Mawien loaded.');
-
-    // =============================================
-    // ✅ REGISTER SERVICE WORKER (PWA INSTALL)
-    // =============================================
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/Gabriel-The-Great-Poster/sw.js')
-            .then(() => console.log('✅ Service Worker registered successfully!'))
-            .catch(() => console.log('⚠️ Service Worker registration failed.'));
-    }
 </script>
 </body>
 </html>
