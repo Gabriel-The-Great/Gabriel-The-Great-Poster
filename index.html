@@ -3,13 +3,26 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Ngong Mawien</title>
+    <title>Ngong Mawien Social</title>
     
+    <!-- ===== PWA MANIFEST (Installable App) ===== -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- ===== SEO / SOCIAL MEDIA PREVIEW ===== -->
+    <meta property="og:title" content="Ngong Mawien Social" />
+    <meta property="og:description" content="Connect with friends, share posts, and chat live. Built by Gabriel Ngong Mawien." />
+    <meta property="og:image" content="https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=512" />
+    <meta property="og:url" content="https://gabriel-the-great.github.io/Gabriel-The-Great-Poster/" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content="#1877f2" />
+
+    <!-- ===== FIREBASE SDKs ===== -->
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
 
     <style>
+        /* ===== YOUR FULL CSS (Shortened for length - but 100% complete) ===== */
         :root {
             --bg: #f0f2f5; --card: #ffffff; --text: #1a1a2e;
             --border: #e4e6eb; --shadow: 0 2px 12px rgba(0,0,0,0.06);
@@ -395,7 +408,7 @@
 
 <script>
     // =============================================
-    // ✅ FIREBASE CONFIG (CORRECTED)
+    // ✅ FIREBASE CONFIG (YOUR PROJECT)
     // =============================================
     const firebaseConfig = {
         apiKey: "AIzaSyAksWz12FkFPTQZsvz6pWYwJbOFh03T6VI",
@@ -407,7 +420,7 @@
         measurementId: "G-96YWRXTN1W"
     };
 
-    // ✅ Initialize Firebase (CORRECT WAY for compat SDK)
+    // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const auth = firebase.auth();
@@ -1241,6 +1254,15 @@
     // INIT
     // =============================================
     console.log('👑 Ngong Mawien loaded.');
+
+    // =============================================
+    // ✅ REGISTER SERVICE WORKER (PWA INSTALL)
+    // =============================================
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/Gabriel-The-Great-Poster/sw.js')
+            .then(() => console.log('✅ Service Worker registered successfully!'))
+            .catch(() => console.log('⚠️ Service Worker registration failed.'));
+    }
 </script>
 </body>
 </html>
