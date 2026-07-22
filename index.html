@@ -1,0 +1,1688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#1877f2" />
+  <title>Dr. Ngong Mawien Social</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="https://ui-avatars.com/api/?name=NM&background=1877f2&color=fff&size=512" />
+  <style>
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface-alt: #e8ebf0;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #d1d5db;
+      --primary: #1877f2;
+      --primary-soft: rgba(24, 119, 242, 0.12);
+      --danger: #e11d48;
+      --success: #16a34a;
+      --shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --radius: 22px;
+      --max-width: 1240px;
+      --input-bg: #f8fafc;
+    }
+    .dark {
+      --bg: #0f172a;
+      --surface: #111827;
+      --surface-alt: #1f2937;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --border: #334155;
+      --shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      --input-bg: #111827;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+    }
+    button, input, textarea, select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+    }
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 16px;
+      max-width: var(--max-width);
+      margin: 0 auto;
+    }
+    .hidden { display: none !important; }
+    .auth-panel, .app-panel {
+      width: 100%;
+      background: var(--surface);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .auth-panel {
+      max-width: 520px;
+      margin: 40px auto;
+    }
+    .auth-panel header {
+      padding: 32px 24px 16px;
+    }
+    .auth-panel h1 {
+      margin: 0 0 12px;
+      font-size: 2rem;
+    }
+    .auth-panel p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .auth-card {
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .auth-card label {
+      display: grid;
+      gap: 8px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    .auth-card input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    .auth-card button {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 14px;
+      color: #fff;
+      background: var(--primary);
+      font-weight: 600;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .auth-card button:hover { transform: translateY(-1px); }
+    .auth-switch {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .auth-switch button {
+      flex: 1 1 48%;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 18px 0;
+    }
+    .topbar h2 { margin: 0; font-size: 1.2rem; }
+    .topbar .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .nav-grid {
+      display: grid;
+      grid-template-columns: 260px 1fr 320px;
+      gap: 16px;
+    }
+    .sidebar, .chat-sidebar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: sticky;
+      top: 16px;
+      max-height: calc(100vh - 32px);
+      overflow-y: auto;
+      box-shadow: var(--shadow);
+    }
+    .chat-sidebar { display: none; }
+    .main-content {
+      display: grid;
+      gap: 16px;
+    }
+    .nav-section {
+      display: grid;
+      gap: 10px;
+    }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      color: var(--text);
+      background: var(--surface-alt);
+      transition: background 0.2s ease;
+    }
+    .nav-link.active, .nav-link:hover {
+      background: var(--primary-soft);
+    }
+    .nav-link span:first-child {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .badge {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.8rem;
+    }
+    .card {
+      padding: 18px;
+      border-radius: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .section-title {
+      margin: 0 0 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-title h3 { margin: 0; font-size: 1rem; }
+    .section-title small { color: var(--muted); }
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .button-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface-alt);
+      color: var(--text);
+      border: 1px solid var(--border);
+      transition: background 0.2s ease;
+    }
+    .button-pill.active, .button-pill:hover {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+    }
+    .post-composer {
+      display: grid;
+      gap: 12px;
+    }
+    .post-composer textarea {
+      width: 100%;
+      min-height: 100px;
+      resize: vertical;
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    .composer-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .composer-actions label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+    .composer-actions input[type=file] {
+      display: none;
+    }
+    .composer-actions button {
+      margin-left: auto;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-weight: 600;
+    }
+    .feed-list, .story-list, .request-list, .friend-list, .dm-list, .notification-list, .bookmark-list, .profile-posts {
+      display: grid;
+      gap: 16px;
+    }
+    .post-card, .story-card, .user-card, .message-card, .notification-card, .profile-card {
+      background: var(--surface-alt);
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid var(--border);
+    }
+    .post-card header,
+    .user-card header,
+    .story-card header,
+    .message-card header,
+    .notification-card header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--primary-soft);
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .profile-avatar {
+      width: 84px;
+      height: 84px;
+      font-size: 1.8rem;
+    }
+    .name-block {
+      flex: 1;
+      min-width: 0;
+    }
+    .name-block h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .name-block small {
+      display: block;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .post-media img,
+    .post-media audio {
+      width: 100%;
+      border-radius: 16px;
+      margin-top: 12px;
+    }
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .post-actions button {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .post-actions button.active {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .story-row {
+      display: grid;
+      gap: 12px;
+      grid-auto-flow: column;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .story-card {
+      min-width: 200px;
+      flex: 0 0 auto;
+    }
+    .search-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .search-grid input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      color: var(--text);
+    }
+    .friend-card, .request-card, .dm-card {
+      display: grid;
+      gap: 12px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+    }
+    .friend-card footer,
+    .request-card footer,
+    .dm-card footer {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .tile-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .stat-tile {
+      background: var(--surface);
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      padding: 18px;
+    }
+    .stat-tile h4 { margin: 0 0 8px; font-size: 1rem; }
+    .stat-tile p { margin: 0; color: var(--muted); }
+    .profile-card .profile-row {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: 1fr 1fr;
+    }
+    .profile-card button.danger {
+      background: var(--danger);
+      color: #fff;
+    }
+    .message-thread {
+      max-height: 440px;
+      overflow-y: auto;
+      display: grid;
+      gap: 12px;
+      padding-right: 4px;
+    }
+    .message-thread .message-card {
+      background: var(--surface);
+      border-radius: 18px;
+    }
+    .message-card.incoming { align-self: start; }
+    .message-card.outgoing { align-self: end; background: var(--primary-soft); }
+    .message-card p { margin: 0 0 6px; }
+    .message-card small { color: var(--muted); }
+    .message-input {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .message-input textarea,
+    .message-input input {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--input-bg);
+      padding: 14px 16px;
+      color: var(--text);
+    }
+    .message-input button {
+      align-self: flex-end;
+      width: fit-content;
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: var(--primary);
+      color: #fff;
+    }
+    .friend-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .profile-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .profile-actions button,
+    .friend-actions button,
+    .request-card button,
+    .dm-card button {
+      flex: 1 1 auto;
+    }
+    .system-architecture {
+      display: grid;
+      gap: 12px;
+    }
+    .architecture-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: var(--surface-alt);
+      border: 1px solid var(--border);
+    }
+    .architecture-row span { color: var(--muted); }
+    .architecture-row strong { color: var(--text); }
+    .fullscreen-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      z-index: 50;
+    }
+    .modal-card {
+      background: var(--surface);
+      border-radius: 28px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      width: min(560px, 100%);
+      padding: 24px;
+      display: grid;
+      gap: 16px;
+    }
+    .modal-card header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+    .modal-card header h3 { margin: 0; }
+    .modal-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+    .modal-controls button {
+      padding: 12px 16px;
+      border-radius: 14px;
+    }
+    .small-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+    .status-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #34d399;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    .floating-controls {
+      display: none;
+    }
+    .install-hint,
+    .toast {
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      display: grid;
+      gap: 10px;
+      box-shadow: var(--shadow);
+      width: min(560px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 100;
+      display: none;
+    }
+    .toast.show { display: grid; }
+    .toast button {
+      justify-self: end;
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 12px;
+    }
+    @media (max-width: 1160px) {
+      .nav-grid { grid-template-columns: 1fr; }
+      .sidebar, .chat-sidebar { position: relative; top: auto; max-height: none; }
+      .chat-sidebar { display: block; }
+    }
+    @media (max-width: 840px) {
+      .nav-grid { grid-template-columns: 1fr; }
+      .sidebar, .chat-sidebar { padding: 16px; }
+    }
+    @media (max-width: 720px) {
+      .sidebar { display: none; }
+      .main-content { padding: 0; }
+      .chat-sidebar { display: none; }
+      .app-shell { padding: 0; }
+      .topbar { grid-template-columns: 1fr; }
+      .composer-actions { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <section id="authView" class="auth-panel">
+      <header>
+        <h1>🩺 Dr. Ngong Mawien Social</h1>
+        <p>Mobile-first social PWA with posts, stories, chat, calls, notifications, and secure Firebase auth.</p>
+      </header>
+      <div class="auth-card">
+        <div class="auth-switch">
+          <button id="showLoginBtn" class="button-pill active">Login</button>
+          <button id="showRegisterBtn" class="button-pill">Create Account</button>
+        </div>
+        <div id="loginForm">
+          <label>Email<input id="loginEmail" type="email" placeholder="you@example.com" autocomplete="username" /></label>
+          <label>Password<input id="loginPassword" type="password" placeholder="••••••••" autocomplete="current-password" /></label>
+          <button id="loginBtn">Log In</button>
+          <button id="resetBtn" class="button-pill">Forgot Password?</button>
+        </div>
+        <div id="registerForm" class="hidden">
+          <label>Full Name<input id="registerName" type="text" placeholder="Dr. Ngong Mawien" autocomplete="name" /></label>
+          <label>Email<input id="registerEmail" type="email" placeholder="you@example.com" autocomplete="email" /></label>
+          <label>Password<input id="registerPassword" type="password" placeholder="Min 6 characters" autocomplete="new-password" /></label>
+          <button id="registerBtn">Create New Account</button>
+        </div>
+        <p id="authStatus" style="color: var(--danger); margin:0; display:none;"></p>
+      </div>
+    </section>
+
+    <section id="appView" class="app-panel hidden">
+      <div class="topbar">
+        <div>
+          <h2>Welcome, <span id="userDisplayName">Doctor</span></h2>
+          <small id="userEmailLine">Your secure medical community</small>
+        </div>
+        <div class="top-actions">
+          <button id="themeToggle" class="button-pill">Toggle Theme</button>
+          <button id="logoutBtn" class="button-pill">Logout</button>
+        </div>
+      </div>
+
+      <div id="installPrompt" class="install-hint hidden">
+        <p>Install the Dr. Ngong Mawien app for quick mobile access.</p>
+        <button id="installBtn">Install App</button>
+      </div>
+
+      <div class="nav-grid">
+        <aside class="sidebar">
+          <div class="nav-section">
+            <a href="#" data-view="feed" class="nav-link active"><span>📰 Feed</span><span class="small-tag">Home</span></a>
+            <a href="#" data-view="stories" class="nav-link"><span>🎞️ Stories</span></a>
+            <a href="#" data-view="search" class="nav-link"><span>🔍 Find People</span></a>
+            <a href="#" data-view="requests" class="nav-link"><span>👥 Requests</span><span id="requestsBadge" class="badge hidden">0</span></a>
+            <a href="#" data-view="friends" class="nav-link"><span>🤝 Friends</span></a>
+            <a href="#" data-view="dms" class="nav-link"><span>✉️ DMs</span></a>
+            <a href="#" data-view="saved" class="nav-link"><span>🔖 Saved</span></a>
+            <a href="#" data-view="profile" class="nav-link"><span>👤 Profile</span></a>
+          </div>
+        </aside>
+
+        <main class="main-content">
+          <section id="feedView" class="card">
+            <div class="post-composer">
+              <div class="section-title"><h3>Share an update</h3><small>Text, image, voice note, poll</small></div>
+              <textarea id="postText" placeholder="What's on your mind?"></textarea>
+              <div class="composer-actions">
+                <label>📷 Add Image<input id="postImage" type="file" accept="image/*" /></label>
+                <label>🎤 Add Voice<input id="postVoice" type="file" accept="audio/*" /></label>
+                <button id="publishPostBtn">Post</button>
+              </div>
+              <div class="button-group">
+                <button type="button" class="button-pill" id="togglePollBtn">Add Poll</button>
+              </div>
+              <div id="pollOptions" class="hidden" style="display:grid; gap:10px;">
+                <input id="pollOption1" type="text" placeholder="Poll option 1" />
+                <input id="pollOption2" type="text" placeholder="Poll option 2" />
+                <input id="pollOption3" type="text" placeholder="Poll option 3 (optional)" />
+              </div>
+            </div>
+            <div class="story-row" id="storyHeader"></div>
+            <div class="feed-list" id="feedList"></div>
+          </section>
+
+          <section id="storiesView" class="card hidden">
+            <div class="section-title"><h3>Stories</h3><small>24-hour updates from friends</small></div>
+            <div class="story-row" id="storiesList"></div>
+          </section>
+
+          <section id="searchView" class="card hidden">
+            <div class="section-title"><h3>Find people</h3></div>
+            <div class="search-grid">
+              <input id="searchInput" placeholder="Search users by name" />
+              <div id="searchResults"></div>
+            </div>
+          </section>
+
+          <section id="requestsView" class="card hidden">
+            <div class="section-title"><h3>Friend requests</h3></div>
+            <div id="requestList" class="request-list"></div>
+          </section>
+
+          <section id="friendsView" class="card hidden">
+            <div class="section-title"><h3>Friends</h3></div>
+            <div id="friendList" class="friend-list"></div>
+          </section>
+
+          <section id="dmsView" class="card hidden">
+            <div class="section-title"><h3>Direct Messages</h3><small>Chat privately with friends</small></div>
+            <div class="friend-list" id="dmFriendList"></div>
+            <div id="chatPanel" class="hidden">
+              <div class="section-title"><h3 id="chatTitle">Chat</h3></div>
+              <div class="message-thread" id="chatThread"></div>
+              <div class="message-input">
+                <textarea id="dmInput" placeholder="Write a message..."></textarea>
+                <div class="composer-actions">
+                  <label>🎤 Add Voice<input id="dmVoice" type="file" accept="audio/*" /></label>
+                  <button id="sendDmBtn">Send</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section id="savedView" class="card hidden">
+            <div class="section-title"><h3>Saved posts</h3></div>
+            <div id="savedList" class="bookmark-list"></div>
+          </section>
+
+          <section id="profileView" class="card hidden">
+            <div class="section-title"><h3>Profile</h3><small>Your account and activity</small></div>
+            <div class="profile-card">
+              <div style="display:grid; gap:16px;">
+                <div style="display:flex; gap:16px; align-items:center;">
+                  <div class="avatar profile-avatar" id="profileAvatar">NM</div>
+                  <div>
+                    <h3 id="profileName"></h3>
+                    <small id="profileEmail"></small>
+                  </div>
+                </div>
+                <div class="tile-row">
+                  <div class="stat-tile"><h4 id="profileFriendsCount">0</h4><p>Friends</p></div>
+                  <div class="stat-tile"><h4 id="profileViewsCount">0</h4><p>Profile views</p></div>
+                  <div class="stat-tile"><h4 id="profileStoriesCount">0</h4><p>Active stories</p></div>
+                </div>
+                <div class="profile-actions">
+                  <button id="uploadAvatarBtn" class="button-pill">Upload Photo</button>
+                  <button id="deleteAccountBtn" class="danger">Delete Account</button>
+                </div>
+                <div class="system-architecture">
+                  <div class="architecture-row"><strong>Authentication</strong><span>Firebase Auth / Email</span></div>
+                  <div class="architecture-row"><strong>Feed & Stories</strong><span>Firestore + real-time updates</span></div>
+                  <div class="architecture-row"><strong>DMs & Video Calls</strong><span>Firestore signaling + WebRTC</span></div>
+                  <div class="architecture-row"><strong>Notifications</strong><span>Realtime Firestore notifications</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="section-title"><h3>My recent posts</h3></div>
+            <div id="profilePosts" class="profile-posts"></div>
+          </section>
+        </main>
+
+        <aside class="chat-sidebar">
+          <div class="card">
+            <div class="section-title"><h3>Live global chat</h3></div>
+            <div id="globalChatMessages" class="message-thread"></div>
+            <div class="message-input">
+              <input id="globalChatInput" placeholder="Send a message to everyone" />
+              <button id="sendGlobalBtn">Send</button>
+            </div>
+          </div>
+          <div class="card" style="margin-top: 16px;">
+            <div class="section-title"><h3>Notifications</h3></div>
+            <div id="notificationList" class="notification-list"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <div id="callModal" class="fullscreen-modal hidden">
+    <div class="modal-card">
+      <header>
+        <div>
+          <h3 id="callTitle">Incoming call</h3>
+          <small id="callSubtitle">From a friend</small>
+        </div>
+        <button id="closeCallModal" class="button-pill">Close</button>
+      </header>
+      <div style="display:grid;gap:14px;">
+        <div style="display:flex; gap:14px; flex-wrap:wrap;">
+          <video id="localVideo" autoplay muted playsinline style="width:100%; max-height:240px; border-radius:18px; background:#000"></video>
+          <video id="remoteVideo" autoplay playsinline style="width:100%; max-height:240px; border-radius:18px; background:#000"></video>
+        </div>
+        <div class="modal-controls">
+          <button id="answerCallBtn" class="button-pill">Answer</button>
+          <button id="declineCallBtn" class="button-pill danger">Decline</button>
+          <button id="endCallBtn" class="button-pill danger hidden">End Call</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <input id="hiddenAvatarInput" type="file" accept="image/*" style="display:none;" />
+  <input id="hiddenCallTarget" type="text" class="hidden" />
+
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    const authView = document.getElementById('authView');
+    const appView = document.getElementById('appView');
+    const showLoginBtn = document.getElementById('showLoginBtn');
+    const showRegisterBtn = document.getElementById('showRegisterBtn');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const authStatus = document.getElementById('authStatus');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerEmail = document.getElementById('registerEmail');
+    const registerPassword = document.getElementById('registerPassword');
+    const registerName = document.getElementById('registerName');
+    const registerBtn = document.getElementById('registerBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const installPrompt = document.getElementById('installPrompt');
+    const installBtn = document.getElementById('installBtn');
+    const userDisplayName = document.getElementById('userDisplayName');
+    const userEmailLine = document.getElementById('userEmailLine');
+    const requestsBadge = document.getElementById('requestsBadge');
+    const feedList = document.getElementById('feedList');
+    const storyHeader = document.getElementById('storyHeader');
+    const storiesList = document.getElementById('storiesList');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+    const requestList = document.getElementById('requestList');
+    const friendList = document.getElementById('friendList');
+    const dmFriendList = document.getElementById('dmFriendList');
+    const chatPanel = document.getElementById('chatPanel');
+    const chatTitle = document.getElementById('chatTitle');
+    const chatThread = document.getElementById('chatThread');
+    const dmInput = document.getElementById('dmInput');
+    const sendDmBtn = document.getElementById('sendDmBtn');
+    const savedList = document.getElementById('savedList');
+    const profileName = document.getElementById('profileName');
+    const profileEmail = document.getElementById('profileEmail');
+    const profileAvatar = document.getElementById('profileAvatar');
+    const profileFriendsCount = document.getElementById('profileFriendsCount');
+    const profileViewsCount = document.getElementById('profileViewsCount');
+    const profileStoriesCount = document.getElementById('profileStoriesCount');
+    const profilePosts = document.getElementById('profilePosts');
+    const uploadAvatarBtn = document.getElementById('uploadAvatarBtn');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const postText = document.getElementById('postText');
+    const postImage = document.getElementById('postImage');
+    const postVoice = document.getElementById('postVoice');
+    const publishPostBtn = document.getElementById('publishPostBtn');
+    const togglePollBtn = document.getElementById('togglePollBtn');
+    const pollOptions = document.getElementById('pollOptions');
+    const pollOption1 = document.getElementById('pollOption1');
+    const pollOption2 = document.getElementById('pollOption2');
+    const pollOption3 = document.getElementById('pollOption3');
+    const storiesView = document.getElementById('storiesView');
+    const feedView = document.getElementById('feedView');
+    const searchView = document.getElementById('searchView');
+    const requestsView = document.getElementById('requestsView');
+    const friendsView = document.getElementById('friendsView');
+    const dmsView = document.getElementById('dmsView');
+    const savedView = document.getElementById('savedView');
+    const profileView = document.getElementById('profileView');
+    const globalChatInput = document.getElementById('globalChatInput');
+    const sendGlobalBtn = document.getElementById('sendGlobalBtn');
+    const globalChatMessages = document.getElementById('globalChatMessages');
+    const notificationList = document.getElementById('notificationList');
+    const toast = document.getElementById('toast');
+    const hiddenAvatarInput = document.getElementById('hiddenAvatarInput');
+    const callModal = document.getElementById('callModal');
+    const callTitle = document.getElementById('callTitle');
+    const callSubtitle = document.getElementById('callSubtitle');
+    const closeCallModal = document.getElementById('closeCallModal');
+    const answerCallBtn = document.getElementById('answerCallBtn');
+    const declineCallBtn = document.getElementById('declineCallBtn');
+    const endCallBtn = document.getElementById('endCallBtn');
+    const localVideo = document.getElementById('localVideo');
+    const remoteVideo = document.getElementById('remoteVideo');
+
+    let currentUser = null;
+    let activeView = 'feed';
+    let deferredPrompt = null;
+    let currentChatId = null;
+    let currentChatUser = null;
+    let activeCallDoc = null;
+    let peerConnection = null;
+    let localStream = null;
+    let remoteStream = null;
+    const servers = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
+
+    const views = {
+      feed: feedView,
+      stories: storiesView,
+      search: searchView,
+      requests: requestsView,
+      friends: friendsView,
+      dms: dmsView,
+      saved: savedView,
+      profile: profileView
+    };
+
+    const userTemplate = user => {
+      const card = document.createElement('div');
+      card.className = 'user-card';
+      card.innerHTML = `
+        <header>
+          <div class="avatar">${user.name.charAt(0).toUpperCase()}</div>
+          <div class="name-block">
+            <h4>${user.name}</h4>
+            <small>${user.email}</small>
+          </div>
+        </header>
+        <div class="friend-actions">
+          <button data-uid="${user.uid}" class="button-pill send-request-btn">Add Friend</button>
+        </div>
+      `;
+      return card;
+    };
+
+    const showToast = message => {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    };
+
+    const setView = viewKey => {
+      activeView = viewKey;
+      Object.values(views).forEach(view => view.classList.add('hidden'));
+      if (views[viewKey]) views[viewKey].classList.remove('hidden');
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.classList.toggle('active', link.dataset.view === viewKey);
+      });
+    };
+
+    const showAuthError = msg => {
+      authStatus.textContent = msg;
+      authStatus.style.display = 'block';
+      setTimeout(() => authStatus.style.display = 'none', 5000);
+    };
+
+    showLoginBtn.addEventListener('click', () => {
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      showLoginBtn.classList.add('active');
+      showRegisterBtn.classList.remove('active');
+    });
+    showRegisterBtn.addEventListener('click', () => {
+      loginForm.classList.add('hidden');
+      registerForm.classList.remove('hidden');
+      showLoginBtn.classList.remove('active');
+      showRegisterBtn.classList.add('active');
+    });
+
+    loginBtn.addEventListener('click', async () => {
+      try {
+        await auth.signInWithEmailAndPassword(loginEmail.value.trim(), loginPassword.value.trim());
+      } catch (err) {
+        showAuthError(err.message);
+      }
+    });
+
+    registerBtn.addEventListener('click', async () => {
+      try {
+        const name = registerName.value.trim();
+        const email = registerEmail.value.trim();
+        const password = registerPassword.value.trim();
+        if (!name || !email || password.length < 6) throw new Error('Please enter valid details.');
+        const result = await auth.createUserWithEmailAndPassword(email, password);
+        await result.user.updateProfile({ displayName: name });
+        await db.collection('users').doc(result.user.uid).set({
+          uid: result.user.uid,
+          name,
+          email,
+          photoURL: '',
+          friends: [],
+          friendRequests: [],
+          friendsCount: 0,
+          viewsCount: 0,
+          online: true,
+          status: 'Active',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          savedPosts: []
+        });
+      } catch (err) {
+        showAuthError(err.message);
+      }
+    });
+
+    resetBtn.addEventListener('click', async () => {
+      const email = loginEmail.value.trim();
+      if (!email) return showAuthError('Enter your email to reset password.');
+      try {
+        await auth.sendPasswordResetEmail(email);
+        showToast('Password reset email sent.');
+      } catch (err) {
+        showAuthError(err.message);
+      }
+    });
+
+    logoutBtn.addEventListener('click', async () => {
+      await auth.signOut();
+      currentUser = null;
+      setView('feed');
+    });
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      deferredPrompt = null;
+      installPrompt.classList.add('hidden');
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (currentUser) setUserOnlineStatus(document.visibilityState === 'visible');
+    });
+
+    const setUserOnlineStatus = online => {
+      if (!currentUser) return;
+      db.collection('users').doc(currentUser.uid).update({ online });
+    };
+
+    window.addEventListener('beforeinstallprompt', e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installPrompt.classList.remove('hidden');
+    });
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        setView(e.currentTarget.dataset.view);
+      });
+    });
+
+    const getUserDoc = async uid => {
+      const doc = await db.collection('users').doc(uid).get();
+      return doc.exists ? doc.data() : null;
+    };
+
+    const formatTime = timestamp => {
+      if (!timestamp) return 'just now';
+      const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+      return date.toLocaleString();
+    };
+
+    const renderFeed = async () => {
+      feedList.innerHTML = '<p>Loading feed...</p>';
+      const snapshot = await db.collection('posts').orderBy('createdAt', 'desc').limit(30).get();
+      feedList.innerHTML = '';
+      snapshot.forEach(doc => {
+        const post = doc.data();
+        const postCard = document.createElement('article');
+        postCard.className = 'post-card';
+        const liked = post.likes?.includes(currentUser.uid);
+        const saved = post.savedBy?.includes(currentUser.uid);
+        const hasPoll = post.poll && post.poll.options?.length;
+        const commentCount = post.comments?.length || 0;
+        postCard.innerHTML = `
+          <header>
+            <div class="avatar">${post.authorName?.charAt(0)?.toUpperCase() || 'D'}</div>
+            <div class="name-block">
+              <h4>${post.authorName || 'Anonymous'}</h4>
+              <small>${formatTime(post.createdAt)} · ${post.authorEmail || ''}</small>
+            </div>
+          </header>
+          <p>${post.content || ''}</p>
+          <div class="post-media"></div>
+          <div class="post-actions">
+            <button class="like-btn ${liked ? 'active' : ''}" data-id="${doc.id}">❤️ ${post.likes?.length || 0}</button>
+            <button class="comment-btn" data-id="${doc.id}">💬 ${commentCount}</button>
+            <button class="save-btn ${saved ? 'active' : ''}" data-id="${doc.id}">${saved ? 'Saved' : 'Save'}</button>
+            ${post.authorId === currentUser.uid ? `<button class="delete-post-btn" data-id="${doc.id}">Delete</button>` : ''}
+          </div>
+        `;
+        const mediaContainer = postCard.querySelector('.post-media');
+        if (post.image) mediaContainer.innerHTML += `<img src="${post.image}" alt="Post image" />`;
+        if (post.voice) mediaContainer.innerHTML += `<audio controls src="${post.voice}"></audio>`;
+        if (hasPoll) {
+          const pollHTML = post.poll.options.map((option, index) => {
+            const votes = option.votes || 0;
+            return `<button class="button-pill poll-btn" data-id="${doc.id}" data-index="${index}">${option.text} (${votes})</button>`;
+          }).join('');
+          mediaContainer.innerHTML += `<div style="display:grid; gap:10px; margin-top:14px;">${pollHTML}</div>`;
+        }
+        feedList.appendChild(postCard);
+      });
+      feedList.querySelectorAll('.like-btn').forEach(btn => btn.addEventListener('click', toggleLike));
+      feedList.querySelectorAll('.comment-btn').forEach(btn => promptComment);
+      feedList.querySelectorAll('.save-btn').forEach(btn => btn.addEventListener('click', toggleSave));
+      feedList.querySelectorAll('.delete-post-btn').forEach(btn => btn.addEventListener('click', deletePost));
+      feedList.querySelectorAll('.poll-btn').forEach(btn => btn.addEventListener('click', votePoll));
+    };
+
+    const renderStories = async () => {
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      storiesList.innerHTML = '<p>Loading stories...</p>';
+      const snapshot = await db.collection('stories').where('createdAt', '>', firebase.firestore.Timestamp.fromDate(twentyFourHoursAgo)).orderBy('createdAt', 'desc').get();
+      storiesList.innerHTML = '';
+      snapshot.forEach(doc => {
+        const story = doc.data();
+        const card = document.createElement('article');
+        card.className = 'story-card';
+        card.innerHTML = `
+          <header>
+            <div class="avatar">${story.authorName?.charAt(0)?.toUpperCase() || 'D'}</div>
+            <div class="name-block">
+              <h4>${story.authorName}</h4>
+              <small>${formatTime(story.createdAt)}</small>
+            </div>
+          </header>
+          <p>${story.text}</p>
+        `;
+        storiesList.appendChild(card);
+      });
+      profileStoriesCount.textContent = snapshot.size;
+    };
+
+    const createStoryTile = () => {
+      storyHeader.innerHTML = `
+        <div class="story-card">
+          <header>
+            <div class="avatar">+</div>
+            <div class="name-block"><h4>Your Story</h4><small>Tap to add</small></div>
+          </header>
+          <button id="addStoryBtn" class="button-pill">Add Story</button>
+        </div>
+      `;
+      document.getElementById('addStoryBtn').addEventListener('click', async () => {
+        const text = prompt('Enter your story text');
+        if (!text) return;
+        await db.collection('stories').add({
+          authorId: currentUser.uid,
+          authorName: currentUser.displayName,
+          text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        showToast('Story shared');
+      });
+    };
+
+    const renderSearch = async query => {
+      searchResults.innerHTML = 'Searching...';
+      const snapshot = await db.collection('users').where('name', '>=', query).where('name', '<=', query + '\uf8ff').limit(10).get();
+      searchResults.innerHTML = '';
+      if (snapshot.empty) return searchResults.innerHTML = '<p>No users found.</p>';
+      snapshot.forEach(doc => {
+        if (doc.id === currentUser.uid) return;
+        const user = doc.data();
+        searchResults.appendChild(userTemplate(user));
+      });
+      searchResults.querySelectorAll('.send-request-btn').forEach(btn => btn.addEventListener('click', sendFriendRequest));
+    };
+
+    searchInput.addEventListener('input', e => {
+      const query = e.target.value.trim();
+      if (!query) return searchResults.innerHTML = '';
+      renderSearch(query);
+    });
+
+    const renderRequests = async () => {
+      const doc = await db.collection('users').doc(currentUser.uid).get();
+      const user = doc.data();
+      requestList.innerHTML = '';
+      const requests = user.friendRequests || [];
+      if (requests.length === 0) return requestList.innerHTML = '<p>No pending friend requests.</p>';
+      requestsBadge.textContent = requests.length;
+      requestsBadge.classList.remove('hidden');
+      await Promise.all(requests.map(async uid => {
+        const requester = await getUserDoc(uid);
+        const card = document.createElement('article');
+        card.className = 'request-card';
+        card.innerHTML = `
+          <header>
+            <div class="avatar">${requester.name.charAt(0).toUpperCase()}</div>
+            <div class="name-block"><h4>${requester.name}</h4><small>${requester.email}</small></div>
+          </header>
+          <footer>
+            <button class="button-pill accept-request-btn" data-uid="${uid}">Accept</button>
+            <button class="button-pill" data-uid="${uid}">Decline</button>
+          </footer>
+        `;
+        requestList.appendChild(card);
+      }));
+      requestList.querySelectorAll('.accept-request-btn').forEach(btn => btn.addEventListener('click', acceptFriendRequest));
+      requestList.querySelectorAll('.request-card button:not(.accept-request-btn)').forEach(btn => btn.addEventListener('click', declineFriendRequest));
+    };
+
+    const renderFriends = async () => {
+      const doc = await db.collection('users').doc(currentUser.uid).get();
+      const user = doc.data();
+      friendList.innerHTML = '';
+      dmFriendList.innerHTML = '';
+      const friends = user.friends || [];
+      if (friends.length === 0) friendList.innerHTML = '<p>You have no friends yet. Find people to connect.</p>';
+      await Promise.all(friends.map(async uid => {
+        const friend = await getUserDoc(uid);
+        const card = document.createElement('article');
+        card.className = 'friend-card';
+        card.innerHTML = `
+          <header>
+            <div class="avatar">${friend.name.charAt(0).toUpperCase()}</div>
+            <div class="name-block"><h4>${friend.name}</h4><small>${friend.email}</small></div>
+          </header>
+          <footer>
+            <button class="button-pill dm-btn" data-uid="${friend.uid}" data-name="${friend.name}">Chat</button>
+            <button class="button-pill call-btn" data-uid="${friend.uid}" data-name="${friend.name}">Call</button>
+          </footer>
+        `;
+        friendList.appendChild(card);
+        dmFriendList.appendChild(card.cloneNode(true));
+      }));
+      dmFriendList.querySelectorAll('.dm-btn').forEach(btn => openDM);
+      dmFriendList.querySelectorAll('.call-btn').forEach(btn => initCall);
+      friendList.querySelectorAll('.dm-btn').forEach(btn => openDM);
+      friendList.querySelectorAll('.call-btn').forEach(btn => initCall);
+    };
+
+    const renderSaved = async () => {
+      const userDoc = await db.collection('users').doc(currentUser.uid).get();
+      const savedPosts = userDoc.data().savedPosts || [];
+      if (!savedPosts.length) return savedList.innerHTML = '<p>No saved posts yet.</p>';
+      const snapshot = await db.collection('posts').where(firebase.firestore.FieldPath.documentId(), 'in', savedPosts).get();
+      savedList.innerHTML = '';
+      snapshot.forEach(doc => {
+        const post = doc.data();
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.innerHTML = `<header><div class="avatar">${post.authorName?.charAt(0).toUpperCase() || 'D'}</div><div class="name-block"><h4>${post.authorName}</h4><small>${formatTime(post.createdAt)}</small></div></header><p>${post.content}</p>`;
+        savedList.appendChild(card);
+      });
+    };
+
+    const renderProfile = async () => {
+      const doc = await db.collection('users').doc(currentUser.uid).get();
+      const user = doc.data();
+      const profileVisits = user.viewsCount || 0;
+      profileName.textContent = user.name;
+      profileEmail.textContent = user.email;
+      profileAvatar.textContent = user.name.charAt(0).toUpperCase();
+      profileFriendsCount.textContent = user.friends?.length || 0;
+      profileViewsCount.textContent = profileVisits;
+      profileStoriesCount.textContent = user.activeStories || 0;
+      const postsSnapshot = await db.collection('posts').where('authorId', '==', currentUser.uid).orderBy('createdAt', 'desc').limit(10).get();
+      profilePosts.innerHTML = '';
+      if (postsSnapshot.empty) profilePosts.innerHTML = '<p>No posts yet.</p>';
+      postsSnapshot.forEach(doc => {
+        const post = doc.data();
+        const card = document.createElement('article');
+        card.className = 'post-card';
+        card.innerHTML = `<h4>${post.content || 'Shared an update'}</h4><small>${formatTime(post.createdAt)}</small>`;
+        profilePosts.appendChild(card);
+      });
+    };
+
+    const renderNotifications = async () => {
+      const snapshot = await db.collection('notifications').where('userId', '==', currentUser.uid).orderBy('timestamp', 'desc').limit(20).get();
+      notificationList.innerHTML = '';
+      if (snapshot.empty) notificationList.innerHTML = '<p>No notifications yet.</p>';
+      snapshot.forEach(doc => {
+        const note = doc.data();
+        const card = document.createElement('article');
+        card.className = 'notification-card';
+        card.innerHTML = `<header><div class="name-block"><h4>${note.fromName || 'System'}</h4><small>${formatTime(note.timestamp)}</small></div></header><p>${note.message}</p>`;
+        notificationList.appendChild(card);
+      });
+    };
+
+    const sendFriendRequest = async e => {
+      const targetUid = e.currentTarget.dataset.uid;
+      if (!targetUid) return;
+      const target = db.collection('users').doc(targetUid);
+      await target.update({ friendRequests: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) });
+      await createNotification(targetUid, `${currentUser.displayName} sent you a friend request.`, 'friend_request');
+      showToast('Friend request sent');
+    };
+
+    const acceptFriendRequest = async e => {
+      const uid = e.currentTarget.dataset.uid;
+      if (!uid) return;
+      const userRef = db.collection('users').doc(currentUser.uid);
+      const friendRef = db.collection('users').doc(uid);
+      await userRef.update({
+        friendRequests: firebase.firestore.FieldValue.arrayRemove(uid),
+        friends: firebase.firestore.FieldValue.arrayUnion(uid),
+        friendsCount: firebase.firestore.FieldValue.increment(1)
+      });
+      await friendRef.update({
+        friends: firebase.firestore.FieldValue.arrayUnion(currentUser.uid),
+        friendsCount: firebase.firestore.FieldValue.increment(1)
+      });
+      await createNotification(uid, `${currentUser.displayName} accepted your friend request!`, 'friend_accept');
+      showToast('Friend request accepted');
+      renderRequests();
+      renderFriends();
+    };
+
+    const declineFriendRequest = async e => {
+      const uid = e.currentTarget.dataset.uid;
+      if (!uid) return;
+      const userRef = db.collection('users').doc(currentUser.uid);
+      await userRef.update({ friendRequests: firebase.firestore.FieldValue.arrayRemove(uid) });
+      showToast('Friend request declined');
+      renderRequests();
+    };
+
+    const openDM = async e => {
+      const uid = e.currentTarget.dataset.uid;
+      const name = e.currentTarget.dataset.name;
+      if (!uid) return;
+      currentChatUser = { uid, name };
+      currentChatId = [currentUser.uid, uid].sort().join('_');
+      chatTitle.textContent = `Chat with ${name}`;
+      chatPanel.classList.remove('hidden');
+      await loadChatMessages(currentChatId);
+    };
+
+    const loadChatMessages = async chatId => {
+      chatThread.innerHTML = '<p>Loading conversation...</p>';
+      const messagesSnapshot = await db.collection('chats').doc(chatId).collection('messages').orderBy('timestamp', 'asc').get();
+      chatThread.innerHTML = '';
+      messagesSnapshot.forEach(doc => {
+        const message = doc.data();
+        const card = document.createElement('article');
+        card.className = 'message-card ' + (message.senderId === currentUser.uid ? 'outgoing' : 'incoming');
+        card.innerHTML = `<p>${message.text || 'Voice message'}</p><small>${formatTime(message.timestamp)}</small>`;
+        if (message.voice) card.innerHTML = `<audio controls src="${message.voice}"></audio>` + card.innerHTML;
+        chatThread.appendChild(card);
+      });
+      chatThread.scrollTop = chatThread.scrollHeight;
+    };
+
+    sendDmBtn.addEventListener('click', async () => {
+      if (!currentChatId || !currentChatUser) return;
+      const text = dmInput.value.trim();
+      const voiceFile = document.getElementById('dmVoice').files[0];
+      let voiceUrl = '';
+      if (voiceFile) voiceUrl = await fileToBase64(voiceFile);
+      if (!text && !voiceUrl) return showToast('Add a message or voice note.');
+      const threadRef = db.collection('chats').doc(currentChatId).collection('messages');
+      await threadRef.add({
+        senderId: currentUser.uid,
+        text,
+        voice: voiceUrl,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      await db.collection('chats').doc(currentChatId).set({
+        participants: [currentUser.uid, currentChatUser.uid],
+        participantNames: { [currentUser.uid]: currentUser.displayName, [currentChatUser.uid]: currentChatUser.name },
+        lastMessage: text || 'Voice message',
+        lastMessageTime: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      dmInput.value = '';
+      document.getElementById('dmVoice').value = '';
+      await loadChatMessages(currentChatId);
+    });
+
+    const fileToBase64 = file => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
+    const createNotification = async (userId, message, type) => {
+      await db.collection('notifications').add({
+        userId,
+        fromName: currentUser.displayName,
+        message,
+        type,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        read: false
+      });
+    };
+
+    const sendGlobalMessage = async () => {
+      const text = globalChatInput.value.trim();
+      if (!text) return;
+      await db.collection('globalChat').add({
+        senderId: currentUser.uid,
+        senderName: currentUser.displayName,
+        text,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      globalChatInput.value = '';
+    };
+
+    sendGlobalBtn.addEventListener('click', sendGlobalMessage);
+
+    const renderGlobalChat = async () => {
+      const snapshot = await db.collection('globalChat').orderBy('timestamp', 'desc').limit(40).get();
+      globalChatMessages.innerHTML = '';
+      snapshot.docs.reverse().forEach(doc => {
+        const msg = doc.data();
+        const card = document.createElement('article');
+        card.className = 'message-card incoming';
+        card.innerHTML = `<p><strong>${msg.senderName}:</strong> ${msg.text}</p><small>${formatTime(msg.timestamp)}</small>`;
+        globalChatMessages.appendChild(card);
+      });
+      globalChatMessages.scrollTop = globalChatMessages.scrollHeight;
+    };
+
+    const publishPost = async () => {
+      const content = postText.value.trim();
+      const imageFile = postImage.files[0];
+      const voiceFile = postVoice.files[0];
+      const pollOptionsList = [pollOption1.value.trim(), pollOption2.value.trim(), pollOption3.value.trim()].filter(Boolean);
+      if (!content && !imageFile && !voiceFile && pollOptionsList.length < 2) return showToast('Write a post or attach media.');
+      const postData = {
+        authorId: currentUser.uid,
+        authorName: currentUser.displayName,
+        authorEmail: currentUser.email,
+        content,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        likes: [],
+        comments: [],
+        savedBy: [],
+        poll: pollOptionsList.length >= 2 ? { options: pollOptionsList.map(text => ({ text, votes: 0 })) } : null
+      };
+      if (imageFile) postData.image = await fileToBase64(imageFile);
+      if (voiceFile) postData.voice = await fileToBase64(voiceFile);
+      await db.collection('posts').add(postData);
+      postText.value = '';
+      postImage.value = '';
+      postVoice.value = '';
+      pollOption1.value = '';
+      pollOption2.value = '';
+      pollOption3.value = '';
+      pollOptions.classList.add('hidden');
+      showToast('Post shared');
+      await renderFeed();
+      await renderProfile();
+    };
+
+    publishPostBtn.addEventListener('click', publishPost);
+    togglePollBtn.addEventListener('click', () => pollOptions.classList.toggle('hidden'));
+
+    const toggleLike = async e => {
+      const postId = e.currentTarget.dataset.id;
+      const postRef = db.collection('posts').doc(postId);
+      const post = (await postRef.get()).data();
+      const liked = post.likes?.includes(currentUser.uid);
+      const update = liked ? { likes: firebase.firestore.FieldValue.arrayRemove(currentUser.uid) } : { likes: firebase.firestore.FieldValue.arrayUnion(currentUser.uid) };
+      await postRef.update(update);
+      if (!liked && post.authorId !== currentUser.uid) await createNotification(post.authorId, `${currentUser.displayName} liked your post.`, 'like');
+      renderFeed();
+    };
+
+    const toggleSave = async e => {
+      const postId = e.currentTarget.dataset.id;
+      const userRef = db.collection('users').doc(currentUser.uid);
+      const userDoc = await userRef.get();
+      const savedPosts = userDoc.data().savedPosts || [];
+      const isSaved = savedPosts.includes(postId);
+      await userRef.update({ savedPosts: isSaved ? firebase.firestore.FieldValue.arrayRemove(postId) : firebase.firestore.FieldValue.arrayUnion(postId) });
+      showToast(isSaved ? 'Removed from saved' : 'Saved post');
+      renderSaved();
+      renderFeed();
+    };
+
+    const deletePost = async e => {
+      const postId = e.currentTarget.dataset.id;
+      if (!confirm('Delete this post?')) return;
+      await db.collection('posts').doc(postId).delete();
+      showToast('Post deleted');
+      renderFeed();
+      renderProfile();
+    };
+
+    const promptComment = e => {
+      const postId = e.currentTarget.dataset.id;
+      const text = prompt('Add a comment');
+      if (!text) return;
+      db.collection('posts').doc(postId).update({
+        comments: firebase.firestore.FieldValue.arrayUnion({
+          userId: currentUser.uid,
+          userName: currentUser.displayName,
+          text,
+          created: firebase.firestore.FieldValue.serverTimestamp()
+        })
+      });
+      createNotification(currentUser.uid, `${currentUser.displayName} commented on a post.`, 'comment');
+      showToast('Comment added');
+      renderFeed();
+    };
+
+    const votePoll = async e => {
+      const postId = e.currentTarget.dataset.id;
+      const index = Number(e.currentTarget.dataset.index);
+      const postRef = db.collection('posts').doc(postId);
+      const post = (await postRef.get()).data();
+      const voted = post.voters?.[currentUser.uid] !== undefined;
+      if (voted) return showToast('You already voted.');
+      const options = post.poll.options;
+      options[index].votes += 1;
+      await postRef.update({
+        'poll.options': options,
+        [`voters.${currentUser.uid}`]: index
+      });
+      showToast('Voted successfully');
+      renderFeed();
+    };
+
+    const getUserAnalytics = async uid => {
+      const snapshot = await db.collection('users').doc(uid).get();
+      return snapshot.data();
+    };
+
+    const uploadAvatar = async () => {
+      hiddenAvatarInput.click();
+    };
+    hiddenAvatarInput.addEventListener('change', async () => {
+      const file = hiddenAvatarInput.files[0];
+      if (!file) return;
+      const url = await fileToBase64(file);
+      await db.collection('users').doc(currentUser.uid).update({ photoURL: url });
+      showToast('Profile photo uploaded');
+      renderProfile();
+    });
+
+    deleteAccountBtn.addEventListener('click', async () => {
+      if (!confirm('Delete your account permanently? This cannot be undone.')) return;
+      await db.collection('users').doc(currentUser.uid).delete();
+      await auth.currentUser.delete();
+      showToast('Account deleted');
+    });
+
+    const initCall = async e => {
+      const targetUid = e.currentTarget.dataset.uid;
+      const targetName = e.currentTarget.dataset.name;
+      if (!targetUid) return;
+      await startCall(targetUid, targetName);
+    };
+
+    const startCall = async (targetUid, targetName) => {
+      callModal.classList.remove('hidden');
+      callTitle.textContent = `Calling ${targetName}`;
+      callSubtitle.textContent = 'Waiting for response...';
+      answerCallBtn.classList.add('hidden');
+      endCallBtn.classList.remove('hidden');
+      declineCallBtn.classList.add('hidden');
+      await setupLocalMedia();
+      const callDoc = db.collection('calls').doc();
+      activeCallDoc = callDoc;
+      peerConnection = new RTCPeerConnection(servers);
+      remoteStream = new MediaStream();
+      remoteVideo.srcObject = remoteStream;
+      localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+      peerConnection.ontrack = event => event.streams[0] && remoteStream.addTrack(event.streams[0].getTracks()[0]);
+      peerConnection.onicecandidate = event => {
+        if (event.candidate) callDoc.collection('candidates').add({ candidate: event.candidate.toJSON() });
+      };
+      const offerDescription = await peerConnection.createOffer();
+      await peerConnection.setLocalDescription(offerDescription);
+      const offer = { type: offerDescription.type, sdp: offerDescription.sdp };
+      await callDoc.set({
+        caller: currentUser.uid,
+        callee: targetUid,
+        offer,
+        status: 'ringing',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      callDoc.collection('candidates').onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(async change => {
+          if (change.type === 'added' && change.doc.data().candidate) {
+            const candidate = new RTCIceCandidate(change.doc.data().candidate);
+            await peerConnection.addIceCandidate(candidate);
+          }
+        });
+      });
+      db.collection('calls').where('callee', '==', currentUser.uid).onSnapshot(async snap => {
+        snap.docChanges().forEach(async change => {
+          if (change.type === 'modified') {
+            const data = change.doc.data();
+            if (data.answer && !peerConnection.currentRemoteDescription) {
+              const answerDesc = new RTCSessionDescription(data.answer);
+              await peerConnection.setRemoteDescription(answerDesc);
+              callTitle.textContent = `In call with ${targetName}`;
+            }
+            if (data.status === 'ended') { endCall(); }
+          }
+        });
+      });
+    };
+
+    const setupLocalMedia = async () => {
+      localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      localVideo.srcObject = localStream;
+      localVideo.muted = true;
+    };
+
+    answerCallBtn.addEventListener('click', async () => {
+      if (!activeCallDoc) return;
+      await setupLocalMedia();
+      peerConnection = new RTCPeerConnection(servers);
+      remoteStream = new MediaStream();
+      remoteVideo.srcObject = remoteStream;
+      localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+      peerConnection.ontrack = event => event.streams[0] && remoteStream.addTrack(event.streams[0].getTracks()[0]);
+      peerConnection.onicecandidate = event => {
+        if (event.candidate) activeCallDoc.collection('candidates').add({ candidate: event.candidate.toJSON() });
+      };
+      const callData = (await activeCallDoc.get()).data();
+      await peerConnection.setRemoteDescription(callData.offer);
+      const answerDescription = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answerDescription);
+      await activeCallDoc.update({ answer: { type: answerDescription.type, sdp: answerDescription.sdp }, status: 'connected' });
+      activeCallDoc.collection('candidates').onSnapshot(snapshot => {
+        snapshot.docChanges().forEach(async change => {
+          if (change.type === 'added' && change.doc.data().candidate) {
+            const candidate = new RTCIceCandidate(change.doc.data().candidate);
+            await peerConnection.addIceCandidate(candidate);
+          }
+        });
+      });
+      callTitle.textContent = 'Call connected';
+      answerCallBtn.classList.add('hidden');
+      declineCallBtn.classList.add('hidden');
+      endCallBtn.classList.remove('hidden');
+    });
+
+    declineCallBtn.addEventListener('click', async () => {
+      if (activeCallDoc) await activeCallDoc.update({ status: 'ended' });
+      endCall();
+    });
+
+    endCallBtn.addEventListener('click', async () => {
+      if (activeCallDoc) await activeCallDoc.update({ status: 'ended' });
+      endCall();
+    });
+
+    closeCallModal.addEventListener('click', () => {
+      if (activeCallDoc) activeCallDoc.update({ status: 'ended' });
+      endCall();
+    });
+
+    const endCall = () => {
+      callModal.classList.add('hidden');
+      if (peerConnection) peerConnection.close();
+      if (localStream) localStream.getTracks().forEach(track => track.stop());
+      if (remoteStream) remoteStream.getTracks().forEach(track => track.stop());
+      peerConnection = null;
+      localStream = null;
+      remoteStream = null;
+      activeCallDoc = null;
+    };
+
+    const watchRealtime = () => {
+      db.collection('posts').orderBy('createdAt', 'desc').onSnapshot(renderFeed);
+      db.collection('stories').orderBy('createdAt', 'desc').onSnapshot(renderStories);
+      db.collection('globalChat').orderBy('timestamp', 'desc').limit(40).onSnapshot(renderGlobalChat);
+      db.collection('notifications').where('userId', '==', currentUser.uid).orderBy('timestamp', 'desc').onSnapshot(renderNotifications);
+    };
+
+    auth.onAuthStateChanged(async user => {
+      if (user) {
+        currentUser = user;
+        authView.classList.add('hidden');
+        appView.classList.remove('hidden');
+        userDisplayName.textContent = user.displayName || 'Doctor';
+        userEmailLine.textContent = user.email;
+        await db.collection('users').doc(currentUser.uid).set({
+          uid: currentUser.uid,
+          name: currentUser.displayName || 'Doctor',
+          email: currentUser.email,
+          online: true
+        }, { merge: true });
+        setView(activeView);
+        renderFeed();
+        createStoryTile();
+        renderStories();
+        renderRequests();
+        renderFriends();
+        renderSaved();
+        renderProfile();
+        renderNotifications();
+        renderGlobalChat();
+        watchRealtime();
+      } else {
+        authView.classList.remove('hidden');
+        appView.classList.add('hidden');
+      }
+    });
+
+    const initialTheme = localStorage.getItem('theme');
+    if (initialTheme === 'dark') document.body.classList.add('dark');
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').then(() => console.log('Service worker registered')).catch(err => console.error(err));
+    }
+  </script>
+</body>
+</html>
